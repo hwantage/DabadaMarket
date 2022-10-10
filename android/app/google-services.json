@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "996690855629",
+    "project_id": "dabadamarket",
+    "storage_bucket": "dabadamarket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996690855629:android:b8d2cca05c61ed892a4b84",
+        "android_client_info": {
+          "package_name": "com.dabadamarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996690855629-9o2vlbdackrbhbt4mo00kfdg62bv9ed0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dabadamarket",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "996690855629-014oppi9449v7auglh11s86i3krgcmcq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlW4DuSgYLB1OxOCBe_A7lBSTqlu5nRpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996690855629-014oppi9449v7auglh11s86i3krgcmcq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
