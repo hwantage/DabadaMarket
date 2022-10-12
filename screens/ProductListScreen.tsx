@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {default as Text} from '../components/common/DabadaText';
 import {useTranslation} from 'react-i18next';
 
 function ProductListScreen() {

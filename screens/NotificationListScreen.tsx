@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {default as Text} from '../components/common/DabadaText';
 
 function NotificationListScreen() {
   return <Text>NotificationListScreen</Text>;

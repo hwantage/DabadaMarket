@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Pressable,
-  StyleSheet,
-  Platform,
-  ActionSheetIOS,
-} from 'react-native';
+import {View, Pressable, StyleSheet, Platform, ActionSheetIOS} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
@@ -14,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import ActionSheetModal from './ActionSheetModal';
 
-interface interface_imagePickerOption {
+interface type_imagePickerOption {
   mediaType: 'photo' | 'video' | 'mixed';
   maxWidth: number;
   maxHeight: number;
@@ -22,7 +16,7 @@ interface interface_imagePickerOption {
 }
 
 const TABBAR_HEIGHT = 49;
-const imagePickerOption: interface_imagePickerOption = {
+const imagePickerOption: type_imagePickerOption = {
   mediaType: 'photo',
   maxWidth: 768,
   maxHeight: 768,

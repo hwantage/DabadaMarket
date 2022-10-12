@@ -4,11 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function ActionSheetModal({visible, onClose, actions}: any) {
   return (
-    <Modal
-      visible={visible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onClose}>
+    <Modal visible={visible} transparent={true} animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.background} onPress={onClose}>
         <View style={styles.whiteBox}>
           {actions.map((action: any) => (
@@ -20,12 +16,7 @@ function ActionSheetModal({visible, onClose, actions}: any) {
                 onClose();
               }}
               key={action.text}>
-              <Icon
-                name={action.icon}
-                color="#757575"
-                size={24}
-                style={styles.icon}
-              />
+              <Icon name={action.icon} color="#757575" size={24} style={styles.icon} />
               <Text>{action.text}</Text>
             </Pressable>
           ))}
