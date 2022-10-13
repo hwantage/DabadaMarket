@@ -33,7 +33,7 @@ function AppStackRoot() {
 
   return (
     <Stack.Navigator>
-      {authInfo ? (
+      {authInfo.id ? (
         <>
           <Stack.Screen name="BottomTab" component={BottomTab} options={{headerShown: false}} />
           <Stack.Screen name="ChattingListScreen" component={ChattingListScreen} options={{title: 'ChattingListScreen'}} />
@@ -58,8 +58,8 @@ function AppStackRoot() {
         </>
       ) : (
         <>
-          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{title: 'LoginScreen'}} />
-          <Stack.Screen name="JoinScreen" component={JoinScreen} options={{title: 'JoinScreen'}} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}} />
+          <Stack.Screen name="JoinScreen" component={JoinScreen} options={{headerShown: false}} />
         </>
       )}
     </Stack.Navigator>

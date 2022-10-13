@@ -1,7 +1,13 @@
 import {atom} from 'recoil';
 
-export const authInfoState = atom({
-  key: 'authInfoState',
+export interface authInfoProps {
+  id: string;
+  displayName: string;
+  photoURL: string;
+}
+
+export const authInfoState = atom<authInfoProps>({
+  key: 'authInfo',
   default: {
     id: '',
     displayName: '',
