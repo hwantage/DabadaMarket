@@ -1,16 +1,20 @@
 import {atom} from 'recoil';
 
 export interface authInfoProps {
-  id: string;
-  displayName: string;
-  photoURL: string;
+  u_id: string;
+  u_nickname: string;
+  u_group: string;
+  u_lang: string;
+  u_photoUrl: string | {} | null;
 }
 
 export const authInfoState = atom<authInfoProps>({
   key: 'authInfo',
   default: {
-    id: '',
-    displayName: '',
-    photoURL: '',
+    u_id: '',
+    u_nickname: '',
+    u_group: '',
+    u_lang: '',
+    u_photoUrl: '',
   },
 });

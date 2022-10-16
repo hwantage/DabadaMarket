@@ -1,8 +1,22 @@
 {
-  "title": "Simple to do app",
-  "add_placeholder": "Add items",
+  "title": "Dabada Market",
+  "common": {
+    "email": "Email",
+    "password": "Password",
+    "passwordConfirm": "Confirm Password",
+    "login": "Login",
+    "join": "Join",
+    "fail": "Fail",
+    "nickname": "Nickname"
+  },
   "button": {
     "save": "Save",
-    "add": "Add"
+    "add": "Add",
+    "cancel": "Cancel"
+  },
+  "msg": {
+    "enterEmail": "이메일을 입력하십시오.",
+    "enterPassword": "비밀번호를 입력하십시오.",
+    "notMatchPassword": "비밀번호가 일치하지 않습니다."
   }
 }

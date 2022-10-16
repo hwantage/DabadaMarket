@@ -1,8 +1,31 @@
 {
-  "title": "심플 할 일 앱",
-  "add": "추가",
+  "title": "다바다 마켓",
+  "common": {
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordConfirm": "비밀번호 확인",
+    "login": "로그인",
+    "join": "회원가입",
+    "fail": "실패",
+    "nickname": "닉네임",
+    "title": "제목",
+    "contents": "내용",
+    "price": "가격"
+  },
   "button": {
     "save": "저장",
-    "add": "추가"
+    "add": "추가",
+    "cancel": "취소"
+  },
+  "msg": {
+    "enterEmail": "이메일을 입력하십시오.",
+    "enterPassword": "비밀번호를 입력하십시오.",
+    "notMatchPassword": "비밀번호가 일치하지 않습니다.",
+    "emailAlreadyInUse": "이미 가입된 이메일입니다.",
+    "wrongPassword": "잘못된 비밀번호입니다.",
+    "userNotFound": "존재하지 않는 계정입니다.",
+    "invalidEmail": "유효하지 않은 이메일 주소입니다.",
+    "weakPassword": "비밀번호는 6자리 이상입니다.",
+    "fail": "실패했습니다."
   }
 }

@@ -2,7 +2,7 @@
 import auth from '@react-native-firebase/auth';
 import {authInfoProps} from '../recoil/authInfoAtom';
 
-export function signIn(email: string, password: string) {
+export function login(email: string, password: string) {
   console.log(email, password);
   return auth().signInWithEmailAndPassword(email, password);
 }
@@ -15,7 +15,7 @@ export function subscribeAuth(callback: any) {
   return auth().onAuthStateChanged(callback);
 }
 
-export function signOut() {
+export function logout() {
   return auth().signOut();
 }
 
@@ -24,15 +24,17 @@ import firestore from '@react-native-firebase/firestore';
 
 export const usersCollection = firestore().collection('users');
 
-export function createUser({id, displayName, photoURL}: authInfoProps) {
-  return usersCollection.doc(id).set({
-    id,
-    displayName,
-    photoURL,
+export function createUser({u_id, u_nickname, u_photoUrl, u_group, u_lang}: authInfoProps) {
+  return usersCollection.doc(u_id).set({
+    u_id,
+    u_nickname,
+    u_photoUrl,
+    u_group,
+    u_lang,
   });
 }
 
-export async function getUserInfo(id: string): Promise<any> {
-  const doc = await usersCollection.doc(id).get();
+export async function getUserInfo(u_id: string): Promise<any> {
+  const doc = await usersCollection.doc(u_id).get();
   return doc.data();
 }

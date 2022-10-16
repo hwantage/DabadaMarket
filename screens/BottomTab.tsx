@@ -3,7 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, View} from 'react-native';
 import AppStackProduct from './AppStackProduct';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import CameraButton from '../components/CameraButton';
+import ProductAddButton from '../components/common/ProductAddButton';
 import AppStackNotification from './AppStackNotification';
 import AppStackChatting from './AppStackChatting';
 import AppStackMy from './AppStackMy';
@@ -45,7 +45,7 @@ function BottomTab() {
           />
         </Tab.Navigator>
       </View>
-      <CameraButton />
+      <ProductAddButton />
     </>
   );
 }
