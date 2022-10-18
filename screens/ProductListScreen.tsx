@@ -12,11 +12,14 @@ function ProductListScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
+  console.log(authInfo);
+
+  /* 우측 상단 이미지 (검색) */
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => <TopRightButton name="search" onPress={() => navigation.push('SearchScreen')} />,
     });
-  }, [navigation, authInfo]);
+  }, [navigation]);
 
   return <Text>{t('button.add')}</Text>;
 }

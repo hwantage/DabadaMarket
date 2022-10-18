@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Pressable, Text, Platform} from 'react-native';
+import {StyleSheet, View, Pressable, Platform} from 'react-native';
+import {default as Text} from './/DabadaText';
 
 type DabadaButtonProps = {
   onPress: any;
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     // backgroundColor 제거
   },
   primaryWrapper: {
-    backgroundColor: '#6200ee',
+    backgroundColor: '#347deb',
   },
   text: {
     fontWeight: 'bold',
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   secondaryText: {
-    color: '#6200ee',
+    color: '#347deb',
   },
   margin: {
     marginBottom: 58,

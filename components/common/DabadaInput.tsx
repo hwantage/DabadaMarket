@@ -9,7 +9,7 @@ interface type_BorderedInput extends TextInputProps {
 }
 
 function DabadaInput({hasMarginBottom, ...rest}: type_BorderedInput, ref: LegacyRef<TextInput> | undefined) {
-  return <TextInput style={[styles.input, hasMarginBottom && styles.margin]} ref={ref} {...rest} />;
+  return <TextInput style={[styles.input, hasMarginBottom && styles.margin]} ref={ref} {...rest} placeholderTextColor="#95befc" />;
 }
 const styles = StyleSheet.create({
   input: {
@@ -17,8 +17,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 16,
     borderRadius: 4,
-    height: 48,
     backgroundColor: 'white',
+    textAlignVertical: 'top',
+    paddingBottom: 2,
   },
   margin: {
     marginBottom: 16,

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     }),
   },
   circle: {
-    backgroundColor: '#6200ee',
+    backgroundColor: '#347deb',
     borderRadius: 27,
     height: 54,
     width: 54,

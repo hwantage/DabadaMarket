@@ -27,8 +27,8 @@ function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
-    email: '',
-    password: '',
+    email: 'hwantagexsw2@gmail.com',
+    password: 'q9q9q9',
     confirmPassword: '',
   });
 

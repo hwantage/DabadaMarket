@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator} from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS} from 'react-native';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import {createUser} from '../../utils/auth';
 import DabadaInput from '../common/DabadaInput';
@@ -10,6 +10,21 @@ import type {StackNavigationProp} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useTranslation} from 'react-i18next';
+import ActionSheetModal from '../ActionSheetModal';
+
+interface type_imagePickerOption {
+  mediaType: 'photo' | 'video' | 'mixed';
+  maxWidth: number;
+  maxHeight: number;
+  includeBase64: boolean;
+}
+
+const imagePickerOption: type_imagePickerOption = {
+  mediaType: 'photo',
+  maxWidth: 768,
+  maxHeight: 768,
+  includeBase64: Platform.OS === 'android',
+};
 
 function ModifyProfile() {
   const {t} = useTranslation();
@@ -18,6 +33,46 @@ function ModifyProfile() {
   const [nickname, setNickname] = useState(authInfo.u_nickname);
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const onPickImage = (res: any) => {
+    if (res.didCancel || !res) {
+      console.log(' 취소 ');
+      return;
+    }
+    console.log(res);
+    setResponse(res);
+  };
+
+  const onLaunchCamera = () => {
+    launchCamera(imagePickerOption, onPickImage);
+  };
+
+  const onLaunchImageLibrary = () => {
+    launchImageLibrary(imagePickerOption, onPickImage);
+  };
+
+  const onPress = () => {
+    if (Platform.OS === 'android') {
+      setModalVisible(true);
+      return;
+    }
+
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        title: '사진 업로드',
+        options: ['카메라로 촬영하기', '사진 선택하기', '취소'],
+        cancelButtonIndex: 2,
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          onLaunchCamera();
+        } else if (buttonIndex === 1) {
+          onLaunchImageLibrary();
+        }
+      },
+    );
+  };
 
   const onSubmit = async () => {
     setLoading(true);
@@ -38,7 +93,7 @@ function ModifyProfile() {
 
       photoURL = response ? await reference.getDownloadURL() : null;
     } else {
-      photoURL = authInfo?.u_photoUrl || {};
+      photoURL = authInfo.u_photoUrl || {};
     }
 
     const userInfo = {
@@ -58,28 +113,9 @@ function ModifyProfile() {
     navigation.goBack();
   };
 
-  const onSelectImage = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        maxWidth: 512,
-        maxHeight: 512,
-        includeBase64: Platform.OS === 'android',
-      },
-      res => {
-        if (res.didCancel) {
-          console.log(' 취소 ');
-          return;
-        }
-        console.log(res);
-        setResponse(res);
-      },
-    );
-  };
-
   return (
     <View style={styles.block}>
-      <Pressable onPress={onSelectImage}>
+      <Pressable onPress={onPress}>
         <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
       </Pressable>
 
@@ -93,6 +129,22 @@ function ModifyProfile() {
           </View>
         )}
       </View>
+      <ActionSheetModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        actions={[
+          {
+            icon: 'camera-alt',
+            text: '카메라로 촬영하기',
+            onPress: onLaunchCamera,
+          },
+          {
+            icon: 'photo',
+            text: '사진 선택하기',
+            onPress: onLaunchImageLibrary,
+          },
+        ]}
+      />
     </View>
   );
 }

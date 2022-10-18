@@ -14,7 +14,7 @@ function BottomTab() {
   return (
     <>
       <View style={styles.block}>
-        <Tab.Navigator screenOptions={{headerShown: false, tabBarShowLabel: false, tabBarActiveTintColor: '#6200ee'}}>
+        <Tab.Navigator screenOptions={{headerShown: false, tabBarShowLabel: false, tabBarActiveTintColor: '#347deb'}}>
           <Tab.Screen
             name="AppStackProduct"
             component={AppStackProduct}
