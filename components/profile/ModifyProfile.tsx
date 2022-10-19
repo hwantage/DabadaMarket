@@ -121,7 +121,7 @@ function ModifyProfile() {
 
       <View style={styles.form}>
         <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={false} />
-        {loading && <ActivityIndicator size={32} color="#6200ee" style={styles.spinner} />}
+        {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
         {!loading && (
           <View style={styles.buttons}>
             <DabadaButton title={t('button.save', '저장')} onPress={onSubmit} hasMarginBottom={true} />

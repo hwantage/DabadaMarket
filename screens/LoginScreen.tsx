@@ -104,7 +104,7 @@ function LoginScreen() {
           {isJoin && <DabadaInput hasMarginBottom={false} placeholder={t('common.passwordConfirm', '비밀번호 확인')} value={form.confirmPassword} secureTextEntry blurOnSubmit={false} returnKeyType="done" onChangeText={(text: string) => createChangeTextHandler('confirmPassword', text)} onSubmitEditing={onSubmit} ref={ref_confirmPassword} />}
           {loading && (
             <View style={styles.spinnerWrapper}>
-              <ActivityIndicator size={32} color="#6200ee" />
+              <ActivityIndicator size={32} color="#347deb" />
             </View>
           )}
           {!loading && (

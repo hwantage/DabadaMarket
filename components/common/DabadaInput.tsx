@@ -1,14 +1,14 @@
 import React, {LegacyRef} from 'react';
 import {StyleSheet, TextInput, TextInputProps} from 'react-native';
 
-interface type_BorderedInput extends TextInputProps {
+interface DabadaInputProps extends TextInputProps {
   hasMarginBottom: boolean;
   autoCompleteType?: 'email';
   onChangeText: (text: string) => void;
   onSubmitEditing?: () => void | Promise<void>;
 }
 
-function DabadaInput({hasMarginBottom, ...rest}: type_BorderedInput, ref: LegacyRef<TextInput> | undefined) {
+function DabadaInput({hasMarginBottom, ...rest}: DabadaInputProps, ref: LegacyRef<TextInput> | undefined) {
   return <TextInput style={[styles.input, hasMarginBottom && styles.margin]} ref={ref} {...rest} placeholderTextColor="#95befc" />;
 }
 const styles = StyleSheet.create({

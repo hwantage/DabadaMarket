@@ -8,13 +8,15 @@ export interface authInfoProps {
   u_photoUrl: string | {} | null;
 }
 
+export const authInfoDefault: authInfoProps = {
+  u_id: '',
+  u_nickname: '',
+  u_group: '',
+  u_lang: '',
+  u_photoUrl: '',
+};
+
 export const authInfoState = atom<authInfoProps>({
   key: 'authInfo',
-  default: {
-    u_id: '',
-    u_nickname: '',
-    u_group: '',
-    u_lang: '',
-    u_photoUrl: '',
-  },
+  default: authInfoDefault,
 });

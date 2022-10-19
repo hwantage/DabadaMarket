@@ -1,18 +1,24 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {useTranslation} from 'react-i18next';
-import {default as Text} from '../components/common/DabadaText';
-import {useRecoilState} from 'recoil';
-import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
+import {ActivityIndicator, FlatList, ListRenderItem, RefreshControl, StyleSheet} from 'react-native';
 import TopRightButton from '../components/common/TopRightButton';
+import ProductCard from '../components/product/ProductCard';
+import {productProps} from '../utils/products';
+import SplashScreen from 'react-native-splash-screen';
+import useProducts from '../hooks/useProducts';
 
 function ProductListScreen() {
-  const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
+  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts();
 
-  console.log(authInfo);
+  const productsReady = products !== null;
+
+  useEffect(() => {
+    if (productsReady) {
+      SplashScreen.hide();
+    }
+  }, [productsReady]);
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
@@ -21,6 +27,20 @@ function ProductListScreen() {
     });
   }, [navigation]);
 
-  return <Text>{t('button.add')}</Text>;
+  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} />;
+  const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
+  const listRefreshControl: any = <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={['#347deb']} />;
+
+  return <FlatList<productProps> data={products} renderItem={renderItem} keyExtractor={item => item.p_id} contentContainerStyle={styles.container} onEndReached={onLoadMore} onEndReachedThreshold={0.75} refreshControl={listRefreshControl} ListFooterComponent={listFooterComponent} />;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 48,
+  },
+  spinner: {
+    height: 64,
+  },
+});
+
 export default ProductListScreen;

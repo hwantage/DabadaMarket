@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userInfo: {
-    paddingTop: 80,
+    paddingTop: 40,
     paddingBottom: 64,
     alignItems: 'center',
   },

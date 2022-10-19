@@ -11,8 +11,9 @@ import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {useTranslation} from 'react-i18next';
 import TopRightButton from '../components/common/TopRightButton';
-import {productProps, createProduct, createProductImage, productImageProps} from '../utils/product';
+import {createProduct, productProps} from '../utils/products';
 import uuid from 'react-native-uuid';
+import events from '../utils/events';
 
 function ProductAddScreen() {
   const {t} = useTranslation();
@@ -33,6 +34,7 @@ function ProductAddScreen() {
     p_buyer_id: '',
     p_category: 1, // 고정값(카테고리 기능 추후 구현)
     p_view: 0,
+    p_images: [],
   });
   const [images, setImages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,7 +42,6 @@ function ProductAddScreen() {
   /* 상품 저장 */
   const onSubmit = useCallback(async () => {
     setLoading(true);
-    let productImage: productImageProps[] = [];
 
     await Promise.all(
       images.map(async (item: any, index: number) => {
@@ -54,15 +55,16 @@ function ProductAddScreen() {
         }
         let imageURL: string = await reference.getDownloadURL();
 
-        productImage.push({pi_id: uuid.v4().toString(), p_id: product.p_id, p_url: imageURL});
+        product.p_images.push({pi_id: uuid.v4().toString(), p_url: imageURL});
       }),
     ).then(() => {
       console.log('product::', product);
       createProduct(product); // Firebase 상품 등록
-      createProductImage(product.p_id, productImage); // Firebase 이미지 등록
-      navigation.navigate('BottomTab');
+      navigation.pop();
+      events.emit('refresh');
+      //navigation.navigate('BottomTab');
     });
-  }, [navigation, product, images]);
+  }, [navigation, images, product]);
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
