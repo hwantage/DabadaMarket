@@ -54,9 +54,6 @@ export async function getProducts({u_id, mode, p_id}: {u_id?: string; mode?: str
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
   }));
-
-  console.log(products);
-
   return products;
 }
 
