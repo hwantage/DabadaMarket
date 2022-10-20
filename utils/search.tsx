@@ -4,14 +4,13 @@ import firestore from '@react-native-firebase/firestore';
 export const searchCollection = firestore().collection('searchRecent');
 
 export interface searchProps {
-  keywords:
-    | [
-        {
-          k_id: string;
-          u_id?: string;
-          k_word: string;
-        },
-      ];
+  keywords: [
+    {
+      k_id: string;
+      u_id?: string;
+      k_word: string;
+    },
+  ];
 }
 
 export function createSearchRecent(u_id: string, recentSearchs: searchProps) {

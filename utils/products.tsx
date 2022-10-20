@@ -54,7 +54,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
     query = query.where('p_status', 'in', [1, 2, 3]);
   }
   if (keyword) {
-    query = query.startAt([keyword]).endAt([keyword + '\uf8ff']);
+    query = query.startAt(keyword).endAt(keyword + '\uf8ff');
   }
 
   if (p_id) {

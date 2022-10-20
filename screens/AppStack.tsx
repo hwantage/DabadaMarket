@@ -11,7 +11,6 @@ import MyBuyScreen from './MyBuyScreen';
 import MyHomeScreen from './MyHomeScreen';
 import MyKeywordScreen from './MyKeywordScreen';
 import MyProfileModifyScreen from './MyProfileModifyScreen';
-import MyProfileScreen from './MyProfileScreen';
 import MySellScreen from './MySellScreen';
 import NotificationListScreen from './NotificationListScreen';
 import ProductAddScreen from './ProductAddScreen';
@@ -22,7 +21,6 @@ import ReviewScreen from './ReviewScreen';
 import SearchScreen from './SearchScreen';
 import SettingScreen from './SettingScreen';
 import UserHomeScreen from './UserHomeScreen';
-import UserProfileScreen from './UserProfileScreen';
 import UserSellScreen from './UserSellScreen';
 
 import {useRecoilState} from 'recoil';
@@ -42,7 +40,6 @@ export type RootStackParamList = {
   MyHomeScreen: undefined;
   MyKeywordScreen: undefined;
   MyProfileModifyScreen: undefined;
-  MyProfileScreen: undefined;
   MySellScreen: undefined;
   NotificationListScreen: undefined;
   ProductAddScreen: undefined;
@@ -54,7 +51,6 @@ export type RootStackParamList = {
   SearchResultScreen: {keyword: string};
   SettingScreen: undefined;
   UserHomeScreen: {u_id: string};
-  UserProfileScreen: undefined;
   UserSellScreen: {u_id: string};
   LoginScreen: undefined;
 };
@@ -93,7 +89,6 @@ function AppStackRoot() {
           <Stack.Screen name="MyHomeScreen" component={MyHomeScreen} options={{title: '내 정보'}} />
           <Stack.Screen name="MyKeywordScreen" component={MyKeywordScreen} options={{title: 'MyKeywordScreen'}} />
           <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{headerShown: false}} />
-          <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} options={{title: 'MyProfileScreen'}} />
           <Stack.Screen name="MySellScreen" component={MySellScreen} options={{title: '내 판매 상품'}} />
           <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: 'NotificationListScreen'}} />
           <Stack.Screen name="ProductAddScreen" component={ProductAddScreen} options={{title: '상품 등록'}} />
@@ -105,7 +100,6 @@ function AppStackRoot() {
           <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{title: '검색 결과'}} />
           <Stack.Screen name="SettingScreen" component={SettingScreen} options={{title: '설정'}} />
           <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} options={{title: '판매자 정보'}} />
-          <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{title: 'UserProfileScreen'}} />
           <Stack.Screen name="UserSellScreen" component={UserSellScreen} options={{title: '판매자 판매 상품'}} />
         </>
       ) : (

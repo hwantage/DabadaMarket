@@ -14,7 +14,6 @@ function UserHomeScreen({navigation, route}: UserHomeScreenProps) {
   const {u_id} = route.params;
 
   useEffect(() => {
-    console.log(u_id);
     getUserInfo(u_id).then(_user => {
       setUser(_user);
     });

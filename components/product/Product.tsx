@@ -30,14 +30,12 @@ function Product({product}: ProductProps) {
   };
 
   const getPrevImage = useCallback((): void => {
-    console.log(imageIndex);
     if (imageIndex > 0) {
       setImageIndex(imageIndex - 1);
     }
   }, [imageIndex]);
 
   const getNextImage = useCallback(() => {
-    console.log(imageIndex, product.p_images.length);
     if (imageIndex < product.p_images.length - 1) {
       setImageIndex(imageIndex + 1);
     }

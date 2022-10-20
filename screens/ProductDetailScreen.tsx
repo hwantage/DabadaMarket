@@ -12,8 +12,6 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const product = route.params;
 
-  console.log('상세 제품 정보 :: ', product);
-
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => <TopRightButton name="more-vert" onPress={() => {}} />,

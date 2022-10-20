@@ -3,7 +3,6 @@ import auth from '@react-native-firebase/auth';
 import {authInfoProps} from '../recoil/authInfoAtom';
 
 export function login(email: string, password: string) {
-  console.log(email, password);
   return auth().signInWithEmailAndPassword(email, password);
 }
 

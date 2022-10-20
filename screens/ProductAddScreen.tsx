@@ -62,7 +62,6 @@ function ProductAddScreen() {
       createProduct(product); // Firebase 상품 등록
       navigation.pop();
       events.emit('refresh');
-      //navigation.navigate('BottomTab');
     });
   }, [navigation, images, product]);
 
@@ -85,7 +84,6 @@ function ProductAddScreen() {
       });
 
       console.log('response: ', res);
-      console.log(res[0]?.realPath);
       setImages(res);
     } catch (e: any) {
       console.log(e.code, e.message);
