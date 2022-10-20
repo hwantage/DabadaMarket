@@ -11,7 +11,7 @@ function AppStackMy() {
         name="MyHomeScreen"
         component={MyHomeScreen}
         options={{
-          title: 'MyHomeScreen List',
+          title: '내 정보',
         }}
       />
     </Stack.Navigator>

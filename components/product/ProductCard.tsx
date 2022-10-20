@@ -14,14 +14,14 @@ function ProductCard({product}: ProductCardProps) {
   const date = useMemo(() => (product.p_regdate ? new Date(product.p_regdate) : new Date()), [product.p_regdate]);
   const navigation = useNavigation<StackNavigationProp<any>>();
 
-  const onPress = () => {
-    navigation.navigate('ProductDetailScreen');
+  const onPress = (productInfo: productProps) => {
+    navigation.navigate('ProductDetailScreen', productInfo);
   };
 
   return (
     <>
       <View style={styles.block}>
-        <Pressable style={styles.row} onPress={onPress}>
+        <Pressable style={styles.row} onPress={() => onPress(product)}>
           <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" />
           <View style={styles.paddingBlock}>
             <Text style={styles.p_title}>{product.p_title}</Text>

@@ -10,15 +10,15 @@ import useProducts from '../hooks/useProducts';
 
 function ProductListScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts();
+  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({});
 
-  const productsReady = products !== null;
+  const productsReady = products !== undefined;
 
   useEffect(() => {
     if (productsReady) {
       SplashScreen.hide();
     }
-  }, [productsReady]);
+  }, [products, productsReady]);
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
@@ -27,7 +27,9 @@ function ProductListScreen() {
     });
   }, [navigation]);
 
-  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} />;
+  const renderItem: ListRenderItem<productProps> = ({item}) => {
+    return productsReady ? <ProductCard product={item} /> : <></>;
+  };
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
   const listRefreshControl: any = <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={['#347deb']} />;
 

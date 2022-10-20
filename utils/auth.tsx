@@ -19,7 +19,7 @@ export function logout() {
   return auth().signOut();
 }
 
-/* 사용자 정보 유지를 위한 Context */
+/* 사용자 정보 */
 import firestore from '@react-native-firebase/firestore';
 
 export const usersCollection = firestore().collection('users');

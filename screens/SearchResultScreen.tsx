@@ -1,20 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import type {StackNavigationProp} from '@react-navigation/stack';
+import type {StackScreenProps} from '@react-navigation/stack';
 import {ActivityIndicator, FlatList, ListRenderItem, RefreshControl, StyleSheet, View} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import TopRightButton from '../components/common/TopRightButton';
 import ProductCard from '../components/product/ProductCard';
 import {productProps} from '../utils/products';
 import useProducts from '../hooks/useProducts';
-import {useRecoilState} from 'recoil';
-import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
-import DabadaButton from '../components/common/DabadaButton';
+import {RootStackParamList} from './AppStack';
 
-function MyBuyScreen() {
-  const navigation = useNavigation<StackNavigationProp<any>>();
-  const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: authInfo.u_id, querymode: 'buy'});
+type SearchResultScreenProps = StackScreenProps<RootStackParamList, 'SearchResultScreen'>;
+
+function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
+  const {keyword} = route.params;
+  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({keyword: keyword});
   const [loading, setLoading] = useState(true);
 
   const productsReady = products !== undefined;
@@ -23,7 +21,7 @@ function MyBuyScreen() {
     if (productsReady) {
       setLoading(false);
     }
-  }, [products, productsReady]);
+  }, [keyword, productsReady]);
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
@@ -40,10 +38,7 @@ function MyBuyScreen() {
     <>
       {!loading && products !== undefined && products?.length === 0 ? (
         <>
-          <Text>구매하신 상품이 존재하지 않습니다.</Text>
-          <View style={styles.buttons}>
-            <DabadaButton hasMarginBottom={true} title="상품 구경 가기" onPress={() => navigation.push('BottomTab')} />
-          </View>
+          <Text>검색 결과가 존재하지 않습니다.</Text>
         </>
       ) : (
         <></>
@@ -72,9 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttons: {
-    margin: 24,
-  },
 });
 
-export default MyBuyScreen;
+export default SearchResultScreen;

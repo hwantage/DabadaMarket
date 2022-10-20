@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-
+export const productCollection = firestore().collection('product');
 export const PAGE_SIZE = 12;
 
 export interface productImageProps {
@@ -24,7 +24,50 @@ export interface productProps {
   p_images: productImageProps[];
 }
 
-export const productCollection = firestore().collection('product');
+// 상품 리스트 조회 type
+export interface getProductsProps {
+  u_id?: string;
+  p_id?: string;
+  cursormode?: 'older' | 'newer' | '';
+  querymode?: '' | 'sell' | 'buy';
+  keyword?: string;
+}
+
+export const getProductsDefault: getProductsProps = {
+  u_id: '',
+  p_id: '',
+  cursormode: '',
+  querymode: '',
+};
+
+export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: getProductsProps = getProductsDefault): Promise<productProps[]> {
+  console.log('getProduct :: ', u_id, p_id, cursormode, querymode, keyword);
+  let query = productCollection.orderBy('p_regdate', 'desc').limit(PAGE_SIZE);
+
+  if (querymode === 'buy') {
+    query = query.where('p_buyer_id', '==', u_id);
+  } else if (querymode === 'sell') {
+    if (u_id) {
+      query = query.where('u_id', '==', u_id);
+    }
+  } else {
+    query = query.where('p_status', 'in', [1, 2, 3]);
+  }
+  if (keyword) {
+    query = query.startAt([keyword]).endAt([keyword + '\uf8ff']);
+  }
+
+  if (p_id) {
+    const cursorDoc = await productCollection.doc(p_id).get();
+    query = cursormode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
+  }
+
+  const snapshot = await query.get();
+  const products: any = snapshot.docs.map(doc => ({
+    ...doc.data(),
+  }));
+  return products;
+}
 
 // 상품 등록
 export function createProduct(product: productProps) {
@@ -36,46 +79,7 @@ export async function getProductInfo(p_id: string): Promise<any> {
   const doc = await productCollection.doc(p_id).get();
   return doc.data();
 }
-
-// 상품 리스트
-export async function getProducts({u_id, mode, p_id}: {u_id?: string; mode?: string; p_id?: string} = {u_id: '', mode: '', p_id: ''}): Promise<productProps[]> {
-  console.log('getProduct :: ', u_id, mode, p_id);
-  let query = productCollection.orderBy('p_regdate', 'desc').limit(PAGE_SIZE);
-  if (u_id) {
-    query = query.where('u_id', '==', u_id);
-  }
-  if (p_id) {
-    const cursorDoc = await productCollection.doc(p_id).get();
-    query = mode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
-  }
-
-  const snapshot = await query.get();
-
-  const products: any = snapshot.docs.map(doc => ({
-    ...doc.data(),
-  }));
-  return products;
-}
-
-// 이전 목록 보기
-export async function getOlderProducts(p_id: string, u_id?: string) {
-  return getProducts({
-    u_id,
-    mode: 'older',
-    p_id,
-  });
-}
-
-// 최신 목록 보기
-export async function getNewerProducts(p_id: string, u_id?: string) {
-  return getProducts({
-    u_id,
-    mode: 'newer',
-    p_id,
-  });
-}
-
 // 상품 삭제
-export function removePost(p_id: string) {
+export function removeProduct(p_id: string) {
   return productCollection.doc(p_id).delete();
 }
