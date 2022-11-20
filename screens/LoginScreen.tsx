@@ -10,6 +10,8 @@ import {useSetRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {login, join, getUserInfo} from '../utils/auth';
 import {useTranslation} from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {chattingInfoState} from '../recoil/chattingAtom';
 
 type ParamList = {
   params: {
@@ -25,6 +27,7 @@ function LoginScreen() {
   const ref_confirmPassword = useRef<TextInput>(null);
   const isJoin = route.params?.isJoin;
   const [loading, setLoading] = useState(false);
+  const setChattingInfoState = useSetRecoilState(chattingInfoState);
 
   const [form, setForm] = useState({
     email: 'hwantagexsw2@gmail.com',
@@ -72,6 +75,7 @@ function LoginScreen() {
         navigation.navigate('MyProfileModifyScreen');
       } else {
         setAuthInfo(userInfo);
+        getChattingData(user.uid);
       }
     } catch (e: any) {
       if (e.code === 'auth/email-already-in-use') {
@@ -90,6 +94,26 @@ function LoginScreen() {
       console.log(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getChattingData = async (uid: string) => {
+    try {
+      const value = await AsyncStorage.getItem('@chattingInfo');
+
+      console.log('ChattingData uid', uid);
+      console.log('ChattingData1', value);
+      if (value !== null) {
+        let allChattingInfoState = JSON.parse(value);
+        let myChattingInfoState = allChattingInfoState.filter(chattingInfo => chattingInfo.u_id === uid);
+
+        console.log('ChattingData2', myChattingInfoState);
+        setChattingInfoState(myChattingInfoState);
+
+        // value previously stored
+      }
+    } catch (e) {
+      // error reading value
     }
   };
 

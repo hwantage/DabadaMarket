@@ -8,7 +8,9 @@ import {productProps} from '../../utils/products';
 import DabadaButton from '../common/DabadaButton';
 import Avatar from '../profile/Avatar';
 import {getUserInfo} from '../../utils/auth';
-import {authInfoProps} from '../../recoil/authInfoAtom';
+import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
+import {useRecoilValue} from 'recoil';
+import {chattingInfoState} from '../../recoil/chattingAtom';
 
 interface ProductProps {
   product: productProps;
@@ -18,7 +20,11 @@ function Product({product}: ProductProps) {
   const [user, setUser] = useState<authInfoProps>();
   const [imageIndex, setImageIndex] = useState<number>(0);
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const chattingStateInfo = useRecoilValue(chattingInfoState);
+  const myInfo = useRecoilValue(authInfoState);
 
+  console.log(myInfo);
+  console.log(product.u_id);
   useEffect(() => {
     getUserInfo(product.u_id).then(_user => {
       setUser(_user);
@@ -40,6 +46,17 @@ function Product({product}: ProductProps) {
       setImageIndex(imageIndex + 1);
     }
   }, [imageIndex, product.p_images.length]);
+
+  const goChattingScreen = () => {
+    let c_id = '';
+    chattingStateInfo.map(chattingState => {
+      if (chattingState.c_p_id === product.p_id && chattingState.c_to_id === product.u_id) {
+        c_id = chattingState.c_id;
+      }
+    });
+
+    navigation.push('ChattingRoomScreen', {u_id: product.u_id, p_id: product.p_id, c_id});
+  };
 
   return (
     <ScrollView>
@@ -90,16 +107,11 @@ function Product({product}: ProductProps) {
           </View>
           <Text style={styles.p_price}>{product.p_contents}</Text>
         </View>
-
-        <View style={styles.buttons}>
-          <DabadaButton
-            hasMarginBottom={true}
-            title="채팅으로 거래하기"
-            onPress={() => {
-              navigation.push('ChattingRoomScreen');
-            }}
-          />
-        </View>
+        {myInfo.u_id !== product.u_id && (
+          <View style={styles.buttons}>
+            <DabadaButton hasMarginBottom={true} title="채팅으로 거래하기" onPress={goChattingScreen} />
+          </View>
+        )}
       </View>
     </ScrollView>
   );
