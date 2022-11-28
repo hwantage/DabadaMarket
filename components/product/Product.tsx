@@ -55,7 +55,7 @@ function Product({product}: ProductProps) {
       }
     });
 
-    navigation.push('ChattingRoomScreen', {u_id: product.u_id, p_id: product.p_id, c_id});
+    navigation.push('ChattingRoomScreen', {u_id: product.u_id, p_id: product.p_id, c_id, p_title: product.p_title});
   };
 
   return (

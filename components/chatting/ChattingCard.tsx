@@ -13,6 +13,7 @@ interface ChattingCardProps {
 function ChattingCard({chatInfo}: ChattingCardProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [myInfo] = useRecoilState(authInfoState);
+  const readCnt = myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_from_not_read_cnt : chatInfo.c_to_not_read_cnt;
 
   const onPress = () => {
     navigation.navigate('ChattingRoomScreen', {p_id: chatInfo.c_p_id, u_id: myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_id : chatInfo.c_from_id, c_id: chatInfo.c_id});
@@ -34,7 +35,14 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
               <Text style={styles.c_title}>{myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_nickname : chatInfo.c_from_nickname}</Text>
               <Text style={styles.c_regdate}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
             </View>
-            <Text style={styles.c_lastMessage}>{chatInfo.c_lastMessage}</Text>
+            <View style={styles.chattingTopRow}>
+              <Text style={styles.c_lastMessage}>{chatInfo.c_lastMessage}</Text>
+              {readCnt > 0 && (
+                <View style={styles.notReadBadgeRow}>
+                  <Text style={styles.c_notReadMessage}>{readCnt}</Text>
+                </View>
+              )}
+            </View>
           </View>
         </Pressable>
       </View>
@@ -51,6 +59,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
   },
   chattingTextRow: {
+    width: '100%',
     paddingHorizontal: 16,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -59,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '70%',
+    width: '90%',
   },
   row: {
     flexDirection: 'row',
@@ -76,6 +85,18 @@ const styles = StyleSheet.create({
   },
   c_lastMessage: {
     fontSize: 14,
+  },
+  c_notReadMessage: {
+    fontSize: 14,
+    color: 'white',
+  },
+  notReadBadgeRow: {
+    width: 20,
+    height: 20,
+    backgroundColor: 'red',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   p_price: {
     lineHeight: 16,

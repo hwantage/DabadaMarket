@@ -10,8 +10,22 @@ export interface chattingProps {
   c_to_nickname: string;
   c_to_id: string;
   c_p_id: string;
+  c_p_title: string;
   c_lastMessage: string;
   c_regdate: number;
+  c_to_online: boolean;
+  c_from_online: boolean;
+  c_to_not_read_cnt: number;
+  c_from_not_read_cnt: number;
+}
+
+export interface updateChattingProps {
+  c_lastMessage?: string;
+  c_regdate?: number;
+  c_to_online?: boolean;
+  c_from_online?: boolean;
+  c_from_not_read_cnt?: number;
+  c_to_not_read_cnt?: number;
 }
 
 export async function getChatting(u_id: string): Promise<chattingProps[]> {
@@ -44,6 +58,8 @@ export async function compareDiffChattingDate(c_id: string, c_regdate: number) {
   if (!chattingData) {
     return false;
   }
+  console.log('c_regdate', c_regdate);
+  console.log('chattingData.c_regdate', chattingData.c_regdate);
   return c_regdate !== chattingData.c_regdate;
 }
 
@@ -58,6 +74,7 @@ export function createChatting(chatting: chattingProps) {
   return chattingCollection.doc(chatting.c_id).set({...chatting});
 }
 
-export function updateChatting(c_id: string, text: string, updatedDate: number) {
-  return chattingCollection.doc(c_id).update({c_lastMessage: text, c_regdate: updatedDate});
+export function updateChatting(c_id: string, updateObj: updateChattingProps) {
+  console.log('update!!! ', updateObj);
+  return chattingCollection.doc(c_id).update(updateObj);
 }

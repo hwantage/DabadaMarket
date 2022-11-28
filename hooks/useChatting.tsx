@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {chattingProps, getChatting} from '../utils/chatting';
 
 export default function useChatting(u_id: string) {
