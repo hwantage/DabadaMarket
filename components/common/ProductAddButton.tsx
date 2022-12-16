@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Pressable, StyleSheet, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 
@@ -28,7 +28,7 @@ function ProductAddButton() {
           }}
           style={styles.circle}
           onPress={onPress}>
-          <Icon name="post-add" color="white" size={24} />
+          <Icon name="plus-thick" color="white" size={28} />
         </Pressable>
       </View>
     </>
@@ -42,10 +42,12 @@ const styles = StyleSheet.create({
     height: 54,
     width: 54,
     position: 'absolute',
+    marginBottom: 10,
     left: '50%',
     transform: [
       {
         translateX: -27,
+        // translateY: 5,
       },
     ],
     ...Platform.select({
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     }),
   },
   circle: {
-    backgroundColor: '#347deb',
+    backgroundColor: '#039DF4',
     borderRadius: 27,
     height: 54,
     width: 54,

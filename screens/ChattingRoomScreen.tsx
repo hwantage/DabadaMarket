@@ -1,10 +1,10 @@
+import React, {useEffect, useState, useCallback} from 'react';
 import {GiftedChat, IMessage, SystemMessage} from 'react-native-gifted-chat';
-import React, {useState, useEffect, useCallback} from 'react';
 import db from '@react-native-firebase/database';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Image} from 'react-native';
+import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import uuid from 'react-native-uuid';
@@ -16,6 +16,15 @@ import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
+
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {default as Text} from '../components/common/DabadaText';
+import Avatar from '../components/profile/Avatar';
+import Profile from '../components/profile/Profile';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import TopLeftButton from '../components/common/TopLeftButton';
+import TopRightButton from '../components/common/TopRightButton';
+
 const database = db().ref('chatting');
 type ChattingRoomScreenProps = StackScreenProps<RootStackParamList, 'ChattingRoomScreen'>;
 
@@ -413,55 +422,169 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <GiftedChat
-        locale="ko"
-        messages={messages}
-        onSend={message => {
-          sendMessage(message);
-        }}
-        user={{
-          _id: myInfo.u_id,
-          name: myInfo.u_nickname,
-        }}
-        //this.props.route.params.nickname
-        renderSystemMessage={onRenderSystemMessage}
-        placeholder="message 입력"
-        onPressAvatar={onPressAvatar}
-        // onPressActionButton={this.onPressActionButton}
-        // renderUsernameOnMessage
-      />
-      {/* <RBSheet
-        ref={ref => {
-          this.Standard = ref;
-        }}
-        height={230}
-        closeOnDragDown
-        customStyles={{
-          container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
-        }}>
+    // 주임님 conflict
+    // <View style={{flex: 1, backgroundColor: 'white'}}>
+    //   <GiftedChat
+    //     locale="ko"
+    //     messages={messages}
+    //     onSend={message => {
+    //       sendMessage(message);
+    //     }}
+    //     user={{
+    //       _id: myInfo.u_id,
+    //       name: myInfo.u_nickname,
+    //     }}
+    //     //this.props.route.params.nickname
+    //     renderSystemMessage={onRenderSystemMessage}
+    //     placeholder="message 입력"
+    //     onPressAvatar={onPressAvatar}
+    //     // onPressActionButton={this.onPressActionButton}
+    //     // renderUsernameOnMessage
+    //   />
+    //   {/* <RBSheet
+    //     ref={ref => {
+    //       this.Standard = ref;
+    //     }}
+    //     height={230}
+    //     closeOnDragDown
+    //     customStyles={{
+    //       container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
+    //     }}>
+    //     <View>
+    //       <TouchableOpacity onPress={this.onHandleEmail}>
+    //         <MaterialIcons name={'report-problem'} />
+    //         <Text />
+    //       </TouchableOpacity>
+    //     </View>
+    //     <View>
+    //       <View>
+    //         <Ionicons name={'ios-person'} />
+    //         <Text>유저정보</Text>
+    //         <Text>{reportUser}</Text>
+    //       </View>
+    //     </View>
+    //     <View>
+    //       <TouchableOpacity>
+    //         <MaterialIcons name={'thumb-down-alt'} />
+    //         <Text>싫어요</Text>
+    //         <Text />
+    //       </TouchableOpacity>
+    //     </View>
+    //   </RBSheet> */}
+    // </View>
+    <SafeAreaProvider>
+      <TouchableOpacity style={styles.touchFlex}>
+        <Image style={styles.imageBox} />
         <View>
-          <TouchableOpacity onPress={this.onHandleEmail}>
-            <MaterialIcons name={'report-problem'} />
-            <Text />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <View>
-            <Ionicons name={'ios-person'} />
-            <Text>유저정보</Text>
-            <Text>{reportUser}</Text>
+          <View style={styles.row}>
+            <Text style={styles.bold3}>판매중</Text>
+            <Text style={styles.text}>knk 아워홈 식권 20장</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.bold3}>50,000원</Text>
           </View>
         </View>
-        <View>
-          <TouchableOpacity>
-            <MaterialIcons name={'thumb-down-alt'} />
-            <Text>싫어요</Text>
-            <Text />
-          </TouchableOpacity>
-        </View>
-      </RBSheet> */}
-    </View>
+      </TouchableOpacity>
+      <Chat messages={messages} onSendPress={handleSendPress} user={user} color={'#c00'} />
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  fullscreen: {
+    flex: 1,
+    paddingHorizontal: 2,
+  },
+  touchFlex: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: '#dfdfdf',
+  },
+  flex: {
+    paddingVertical: 24,
+    flexDirection: 'row',
+  },
+  flex2: {
+    // flex: 1,
+    //paddingVertical: 6,
+    flexDirection: 'row',
+  },
+  flex3: {
+    flex: 1,
+    // paddingVertical: 10,
+    // flexDirection: 'row',
+  },
+  flex4: {
+    // flex: 1,
+    width: '100%',
+    // alignItems: 'flex-start',
+    // justifyContent: 'flex-start',
+    // marginBottom: -30,
+    // paddingVertical: 10,
+    flexDirection: 'row',
+  },
+  row: {
+    //paddingTop: 10,
+    // textAlign: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 2,
+    // justifyContent: 'flex-start',
+    // paddingVertical: 10,
+  },
+  bold1: {marginTop: 16, marginLeft: 16, fontSize: 18, fontWeight: 'bold', color: '#039DF4'},
+  bold2: {fontSize: 18, fontWeight: 'bold'},
+  bold3: {fontSize: 16, fontWeight: 'bold'},
+  bold4: {fontSize: 14},
+  dot: {paddingHorizontal: 4, marginTop: 8},
+  text: {
+    fontSize: 14,
+    //color: '#039DF4',
+    marginLeft: 6,
+  },
+  imageBox: {
+    backgroundColor: '#cdcdcd',
+    alignItems: 'flex-start',
+    width: 50,
+    height: 50,
+    borderRadius: 6,
+    //backgroundColor: 'transparent',
+    color: '#898989',
+    marginRight: 12,
+  },
+  sellProduct: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderTopColor: '#b9b9b9',
+    borderBottomColor: '#b9b9b9',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  review: {
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: '#b9b9b9',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  button: {
+    backgroundColor: 'transparent',
+    color: '#039DF4',
+    borderWidth: 1.5,
+    borderRadius: 5,
+    borderStyle: 'solid',
+    height: 38,
+    alignItems: 'center',
+    borderBottomColor: '#039DF4',
+    borderRightColor: '#039DF4',
+    borderTopColor: '#039DF4',
+    borderLeftColor: '#039DF4',
+  },
+});
 export default ChattingRoomScreen;

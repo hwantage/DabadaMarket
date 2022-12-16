@@ -25,18 +25,20 @@ function Profile({profileUser}: avatarProps) {
   };
 
   return (
-    <View style={styles.userInfo}>
-      <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={128} />
-      <Text style={styles.nickName}>{user?.u_nickname}</Text>
-      <Text style={styles.groupName}>{user?.u_group}</Text>
-      <View>
+    <>
+      <View style={styles.userInfo}>
+        <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={48} />
+        <Text style={styles.nickName}>{user?.u_nickname}</Text>
+        {/* <Text style={styles.groupName}>{user?.u_group}</Text> */}
+      </View>
+      <View style={styles.block}>
         {authInfo.u_id === user?.u_id && (
-          <Pressable onPress={onPress}>
-            <Text style={styles.modifyProfile}>프로필 수정</Text>
+          <Pressable onPress={onPress} style={styles.button}>
+            <Text style={styles.text}>프로필 수정</Text>
           </Pressable>
         )}
       </View>
-    </View>
+    </>
   );
 }
 
@@ -45,14 +47,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userInfo: {
-    paddingTop: 40,
-    paddingBottom: 64,
-    alignItems: 'center',
+    paddingVertical: 24,
+    flexDirection: 'row',
   },
   nickName: {
     marginTop: 8,
-    fontSize: 24,
-    color: '#424242',
+    marginLeft: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#039DF4',
   },
   groupName: {
     marginTop: 8,
@@ -62,6 +65,24 @@ const styles = StyleSheet.create({
   modifyProfile: {
     fontSize: 12,
     color: 'gray',
+  },
+  text: {
+    fontSize: 16,
+    color: '#039DF4',
+    marginTop: 6,
+  },
+  button: {
+    backgroundColor: 'transparent',
+    color: '#039DF4',
+    borderWidth: 1.5,
+    borderRadius: 5,
+    borderStyle: 'solid',
+    height: 38,
+    alignItems: 'center',
+    borderBottomColor: '#039DF4',
+    borderRightColor: '#039DF4',
+    borderTopColor: '#039DF4',
+    borderLeftColor: '#039DF4',
   },
 });
 

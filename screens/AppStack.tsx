@@ -6,6 +6,7 @@ import SplashScreen from 'react-native-splash-screen';
 import BottomTab from './BottomTab';
 import ChattingListScreen from './ChattingListScreen';
 import ChattingRoomScreen from './ChattingRoomScreen';
+import JoinScreen from './JoinScreen';
 import LoginScreen from './LoginScreen';
 import MyBuyScreen from './MyBuyScreen';
 import MyHomeScreen from './MyHomeScreen';
@@ -19,6 +20,7 @@ import ProductListScreen from './ProductListScreen';
 import ProductModifyScreen from './ProductModifyScreen';
 import ReviewScreen from './ReviewScreen';
 import SearchScreen from './SearchScreen';
+import StartScreen from './StartScreen';
 import SettingScreen from './SettingScreen';
 import UserHomeScreen from './UserHomeScreen';
 import UserSellScreen from './UserSellScreen';
@@ -27,6 +29,8 @@ import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {productProps} from '../utils/products';
 import SearchResultScreen from './SearchResultScreen';
+import TopRightButton from '../components/common/TopRightButton';
+import TopLeftButton from '../components/common/TopLeftButton';
 
 export interface u_idProp {
   u_id: string;
@@ -49,10 +53,12 @@ export type RootStackParamList = {
   ReviewScreen: undefined;
   SearchScreen: undefined;
   SearchResultScreen: {keyword: string};
+  StartScreen: undefined;
   SettingScreen: undefined;
   UserHomeScreen: {u_id: string};
   UserSellScreen: {u_id: string};
   LoginScreen: undefined;
+  JoinScreen: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -88,23 +94,25 @@ function AppStackRoot() {
           <Stack.Screen name="MyBuyScreen" component={MyBuyScreen} options={{title: '내 구매 상품'}} />
           <Stack.Screen name="MyHomeScreen" component={MyHomeScreen} options={{title: '내 정보'}} />
           <Stack.Screen name="MyKeywordScreen" component={MyKeywordScreen} options={{title: 'MyKeywordScreen'}} />
-          <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{headerShown: false}} />
+          <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{title: '프로필 수정'}} />
           <Stack.Screen name="MySellScreen" component={MySellScreen} options={{title: '내 판매 상품'}} />
-          <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: 'NotificationListScreen'}} />
-          <Stack.Screen name="ProductAddScreen" component={ProductAddScreen} options={{title: '상품 등록'}} />
+          <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: '키워드 알림'}} />
+          <Stack.Screen name="ProductAddScreen" component={ProductAddScreen} options={{title: '거래 글쓰기'}} />
           <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{title: '상품 상세'}} />
           <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{title: t('title', '다바다 마켓')}} />
-          <Stack.Screen name="ProductModifyScreen" component={ProductModifyScreen} options={{title: 'ProductModifyScreen'}} />
+          <Stack.Screen name="ProductModifyScreen" component={ProductModifyScreen} options={{title: '글 수정하기'}} />
           <Stack.Screen name="ReviewScreen" component={ReviewScreen} options={{title: 'ReviewScreen'}} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} options={{title: '상품 검색'}} />
           <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{title: '검색 결과'}} />
+          <Stack.Screen name="StartScreen" component={StartScreen} options={{headerShown: false}} />
           <Stack.Screen name="SettingScreen" component={SettingScreen} options={{title: '설정'}} />
           <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} options={{title: '판매자 정보'}} />
           <Stack.Screen name="UserSellScreen" component={UserSellScreen} options={{title: '판매자 판매 상품'}} />
+          <Stack.Screen name="JoinScreen" component={JoinScreen} options={{title: '회원가입'}} />
         </>
       ) : (
         <>
-          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{title: '로그인'}} />
         </>
       )}
     </Stack.Navigator>
