@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     fontFamily: 'sans-serif-thin',
     fontWeight: '800',
     fontSize: 40,
-    color: 'black',
+    color: '#353535',
   },
 });
 
