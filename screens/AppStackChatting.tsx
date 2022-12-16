@@ -11,7 +11,7 @@ function AppStackChatting() {
         name="ChattingListScreen"
         component={ChattingListScreen}
         options={{
-          title: 'ChattingListScreen List',
+          title: '채팅',
         }}
       />
     </Stack.Navigator>

@@ -1,18 +1,15 @@
 import React, {useState, useRef} from 'react';
-import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, TouchableOpacity, StyleSheet, View, TextInput} from 'react-native';
+import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, TextInput, Image} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import DabadaInput from '../components/common/DabadaInput';
 import DabadaButton from '../components/common/DabadaButton';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {useSetRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {login, join, getUserInfo} from '../utils/auth';
 import {useTranslation} from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {chattingInfoState} from '../recoil/chattingAtom';
 
 type ParamList = {
   params: {
@@ -20,7 +17,7 @@ type ParamList = {
   };
 };
 
-function LoginScreen() {
+function StartScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const {t} = useTranslation();
   const route = useRoute<RouteProp<ParamList, 'params'>>();
@@ -28,7 +25,6 @@ function LoginScreen() {
   const ref_confirmPassword = useRef<TextInput>(null);
   const isJoin = route.params?.isJoin;
   const [loading, setLoading] = useState(false);
-  const setChattingInfoState = useSetRecoilState(chattingInfoState);
 
   const [form, setForm] = useState({
     email: 'hwantagexsw2@gmail.com',
@@ -76,7 +72,6 @@ function LoginScreen() {
         navigation.navigate('MyProfileModifyScreen');
       } else {
         setAuthInfo(userInfo);
-        getChattingData(user.uid);
       }
     } catch (e: any) {
       if (e.code === 'auth/email-already-in-use') {
@@ -98,35 +93,11 @@ function LoginScreen() {
     }
   };
 
-  const getChattingData = async (uid: string) => {
-    try {
-      const value = await AsyncStorage.getItem('@chattingInfo');
-
-      console.log('ChattingData uid', uid);
-      console.log('ChattingData1', value);
-      if (value !== null) {
-        let allChattingInfoState = JSON.parse(value);
-        let myChattingInfoState = allChattingInfoState.filter(chattingInfo => chattingInfo.u_id === uid);
-
-        console.log('ChattingData2', myChattingInfoState);
-        setChattingInfoState(myChattingInfoState);
-
-        // value previously stored
-      }
-    } catch (e) {
-      // error reading value
-    }
-  };
-
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
-        {/* <Text style={styles.text}>{t('title', '다바다 마켓')}</Text> */}
-        {/* <Image style={styles.circle} source={require('../assets/dabada.png')} /> */}
+        <Image style={styles.circle} source={require('../assets/dabada.png')} />
         <View style={styles.form}>
-          <DabadaInput hasMarginBottom={true} placeholder={t('common.email', '이메일')} value={form.email} autoCapitalize="none" autoCorrect={false} autoCompleteType="email" keyboardType="email-address" returnKeyType="next" blurOnSubmit={false} onChangeText={(text: string) => createChangeTextHandler('email', text)} onSubmitEditing={() => ref_password.current?.focus()} />
-          <DabadaInput hasMarginBottom={true} placeholder={t('common.password', '비밀번호')} value={form.password} secureTextEntry blurOnSubmit={false} returnKeyType={isJoin ? 'next' : 'done'} onChangeText={(text: string) => createChangeTextHandler('password', text)} onSubmitEditing={() => (isJoin ? ref_confirmPassword.current?.focus() : onSubmit())} ref={ref_password} />
-          {isJoin && <DabadaInput hasMarginBottom={false} placeholder={t('common.passwordConfirm', '비밀번호 확인')} value={form.confirmPassword} secureTextEntry blurOnSubmit={false} returnKeyType="done" onChangeText={(text: string) => createChangeTextHandler('confirmPassword', text)} onSubmitEditing={onSubmit} ref={ref_confirmPassword} />}
           {loading && (
             <View style={styles.spinnerWrapper}>
               <ActivityIndicator size={32} color="#347deb" />
@@ -136,33 +107,17 @@ function LoginScreen() {
             <View style={styles.buttons}>
               {!isJoin && (
                 <>
-                  <DabadaButton title={t('common.login', '로그인')} hasMarginBottom={true} onPress={onSubmit} />
-                  {/* <DabadaButton
-                    title={t('common.join', '회원가입')}
-                    theme="secondary"
-                    hasMarginBottom={false}
-                    onPress={() => {
-                      navigation.push('LoginScreen', {isJoin: true});
-                    }}
-                  /> */}
-                  <View style={styles.container}>
-                    <BouncyCheckbox
-                      size={24}
-                      fillColor="#039DF4"
-                      unfillColor="#FFFFFF"
-                      text="자동 로그인"
-                      textStyle={{
-                        textDecorationLine: 'none',
+                  <DabadaButton title={t('button.start', '시작하기')} hasMarginBottom={true} onPress={onSubmit} />
+                  <View style={styles.flexBox}>
+                    <Text style={styles.text}>이미 계정이 있나요?</Text>
+                    <DabadaButton
+                      title="로그인"
+                      theme="secondary"
+                      hasMarginBottom={false}
+                      onPress={() => {
+                        navigation.push('LoginScreen', {isJoin: true});
                       }}
-                      innerIconStyle={{borderRadius: 4}}
-                      iconStyle={{borderRadius: 4}}
-                      onPress={(isChecked: boolean) => {}}
                     />
-                  </View>
-                  <View style={styles.container2}>
-                    <TouchableOpacity style={styles.googleBtn}>
-                      <Text style={styles.text}>Google 로그인</Text>
-                    </TouchableOpacity>
                   </View>
                 </>
               )}
@@ -191,25 +146,25 @@ const styles = StyleSheet.create({
   fullscreen: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 40,
     // justifyContent: 'center',
-    // marginTop: -0,
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  form: {
-    // marginTop: 44,
-    width: '100%',
+    // marginTop: -80,
+    marginTop: 80,
     paddingHorizontal: 16,
   },
+  text: {
+    fontSize: 12,
+    color: '#b9b9b9',
+    marginRight: 8,
+  },
+  form: {
+    marginTop: 120,
+    width: '100%',
+  },
   buttons: {
-    // marginTop: 24,
+    marginTop: 24,
   },
   spinnerWrapper: {
-    // marginTop: 64,
+    marginTop: 64,
     height: 104,
     justifyContent: 'center',
     alignItems: 'center',
@@ -217,53 +172,18 @@ const styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
   },
-  flex1: {
-    flex: 1,
-  },
-  radioLableFont: {
-    fontSize: 12,
-  },
-  radioGroup: {
-    flexDirection: 'row',
-    alignContent: 'center',
-  },
-  radioLabel: {
-    flex: 2,
-    alignSelf: 'center',
-  },
-  block: {
-    alignItems: 'center',
+  circle: {
     marginTop: 24,
-    paddingHorizontal: 16,
-    width: '100%',
-  },
-  imageBox: {
     backgroundColor: '#cdcdcd',
-    width: 78,
-    height: 78,
-    marginRight: 5,
-    borderRadius: 4,
+    borderRadius: 120,
+    width: 240,
+    height: 240,
   },
-  imageContainer: {
-    paddingBottom: 5,
-  },
-  container: {
-    width: '100%',
-    flex: 1,
-    paddingTop: -90,
-    marginBottom: -60,
-  },
-  container2: {
-    width: '100%',
-    flex: 1,
-    marginBottom: -240,
-  },
-  googleBtn: {
-    borderRadius: 4,
-    height: 48,
-    alignItems: 'center',
+  flexBox: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: '#898989',
+    alignItems: 'center',
+    marginTop: -60,
   },
 });
-export default LoginScreen;
+export default StartScreen;

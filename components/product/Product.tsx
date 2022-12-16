@@ -63,7 +63,7 @@ function Product({product}: ProductProps) {
       <View style={styles.block}>
         <View style={[styles.head, styles.paddingBlock]}>
           <Pressable onPress={getPrevImage}>
-            <Text style={styles.text}>{'<'}</Text>
+            <Text style={styles.text}>{'<사진 왼쪽 버튼'}</Text>
           </Pressable>
           <Pressable style={styles.row} onPress={onPressImage}>
             <Image source={product.p_images.length > 0 ? {uri: product.p_images[imageIndex].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" />
