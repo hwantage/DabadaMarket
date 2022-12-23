@@ -47,7 +47,7 @@ function UserHomeScreen({navigation, route}: UserHomeScreenProps) {
       <SafeAreaView style={styles.fullscreen}>
         <View style={styles.flex}>
           <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={60} />
-          <Text style={styles.bold1}>hkchoi</Text>
+          <Text style={styles.bold1}>hwan77</Text>
         </View>
         <View style={styles.sellProduct}>
           <View style={styles.flex}>
@@ -86,7 +86,7 @@ function UserHomeScreen({navigation, route}: UserHomeScreenProps) {
           <View style={styles.flex2}>
             <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={48} />
             <View>
-              <Text style={styles.bold3}>hwan77</Text>
+              <Text style={styles.bold3}>hkchoi</Text>
               <View style={styles.row}>
                 <Text>판매자</Text>
                 <Icon style={styles.dot} name="circle" size={4} color="#898989" />

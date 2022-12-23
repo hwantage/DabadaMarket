@@ -47,7 +47,6 @@ function ProductCard({product}: ProductCardProps) {
             </View>
             <View style={styles.review}>
               <Text style={styles.tag_soldout}>거래완료</Text>
-
               <View style={styles.iconBox}>
                 <Icon name="thumb-up" color="#898989" size={16} />
                 <Text style={styles.p_price}>{product.p_like}</Text>

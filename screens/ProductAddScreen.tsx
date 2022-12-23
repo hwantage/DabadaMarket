@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, Alert, ScrollView, TextInput} from 'react-native';
+import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, Alert, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
-import {RadioButton} from 'react-native-paper';
 import DabadaInputLine from '../components/common/DabadaInputLine';
 import DabadaInput from '../components/common/DabadaInput';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import storage from '@react-native-firebase/storage';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -112,46 +112,131 @@ function ProductAddScreen() {
   };
 
   return (
-    <View style={styles.block}>
-      <ScrollView contentContainerStyle={styles.imageContainer} horizontal={true} showsHorizontalScrollIndicator={true}>
-        <Pressable onPress={onSelectImage} style={styles.imageBox}>
-          <Icon style={styles.icon} name="add-a-photo" size={38} />
-          <Text style={styles.photoNum}>1/10</Text>
-        </Pressable>
-        <Pressable onPress={onSelectImage} style={styles.imageBox}>
-          <Icon style={styles.icon} name="add-a-photo" size={38} />
-          <View style={styles.mainPhotoBox}>
-            <Text style={styles.mainPhotoText}>대표 사진</Text>
+    <View style={styles.fullscreen}>
+      <View>
+        <ScrollView contentContainerStyle={styles.imageContainer} horizontal={true} showsHorizontalScrollIndicator={true}>
+          <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
+            <Icon style={styles.icon} name="add-a-photo" size={38} />
+            <Text style={styles.photoNum}>1/10</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
+            <Icon style={styles.icon} name="add-a-photo" size={38} />
+            <Icon style={styles.relative} name="cancel" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
+            <Icon style={styles.icon} name="add-a-photo" size={38} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
+            <Icon style={styles.icon} name="add-a-photo" size={38} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
+            <Icon style={styles.icon} name="add-a-photo" size={38} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
+            <Icon style={styles.icon} name="add-a-photo" size={38} />
+          </TouchableOpacity>
+          {images.map((item: any, index: number) => (
+            <Image key={index} style={styles.imageBox} source={{uri: item.path}} />
+          ))}
+        </ScrollView>
+      </View>
+      <View style={styles.block}>
+        <View style={styles.form}>
+          <DabadaInputLine style={styles.border} placeholder={t('common.title', '제목')} value={product.p_title} onChangeText={(text: string) => setProduct({...product, p_title: text})} hasMarginBottom={false} />
+          <View style={styles.radioGroup}>
+            <View style={styles.container}>
+              <BouncyCheckbox
+                size={18}
+                fillColor="#039DF4"
+                unfillColor="#FFFFFF"
+                text="그냥 바다"
+                textStyle={{
+                  textDecorationLine: 'none',
+                  marginLeft: -8,
+                  fontSize: 14,
+                }}
+                innerIconStyle={{borderRadius: 12}}
+                iconStyle={{borderRadius: 12, width: 11, height: 11.5}}
+                onPress={(isChecked: boolean) => {}}
+                checkIconImageSource={false}
+              />
+            </View>
+            <View style={styles.container}>
+              <BouncyCheckbox
+                size={18}
+                fillColor="#039DF4"
+                unfillColor="#FFFFFF"
+                text="그냥 바다"
+                textStyle={{
+                  textDecorationLine: 'none',
+                  marginLeft: -8,
+                  fontSize: 14,
+                }}
+                innerIconStyle={{borderRadius: 12}}
+                iconStyle={{borderRadius: 12, width: 11, height: 11.5}}
+                onPress={(isChecked: boolean) => {}}
+                checkIconImageSource={false}
+              />
+            </View>
+            <View style={styles.container}>
+              <BouncyCheckbox
+                size={18}
+                fillColor="#039DF4"
+                unfillColor="#FFFFFF"
+                text="그냥 바다"
+                textStyle={{
+                  textDecorationLine: 'none',
+                  marginLeft: -8,
+                  fontSize: 14,
+                }}
+                innerIconStyle={{borderRadius: 12}}
+                iconStyle={{borderRadius: 12, width: 11, height: 11.5}}
+                onPress={(isChecked: boolean) => {}}
+                checkIconImageSource={false}
+              />
+            </View>
+            <View style={styles.container}>
+              <BouncyCheckbox
+                size={18}
+                fillColor="#039DF4"
+                unfillColor="#FFFFFF"
+                text="그냥 바다"
+                textStyle={{
+                  textDecorationLine: 'none',
+                  marginLeft: -8,
+                  fontSize: 14,
+                }}
+                innerIconStyle={{borderRadius: 12}}
+                iconStyle={{borderRadius: 12, width: 11, height: 11.5}}
+                onPress={(isChecked: boolean) => {}}
+                checkIconImageSource={false}
+              />
+            </View>
+
+            {/*
+            원래 소스
+            <View style={styles.radioContainer}>
+              <RadioButton value="free" status={product.p_badatype === 'free' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'free'})} />
+              <Text style={styles.radioLableFont}>{t('badatype.free', '그냥바다')}</Text>
+            </View>
+            <View style={styles.radioContainer}>
+              <RadioButton value="money" status={product.p_badatype === 'money' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'money'})} />
+              <Text style={styles.radioLableFont}>{t('badatype.money', '현금바다')}</Text>
+            </View>
+            <View style={styles.radioContainer}>
+              <RadioButton value="drink" status={product.p_badatype === 'drink' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
+              <Text style={styles.radioLableFont}>{t('badatype.drink', '한잔바다')}</Text>
+            </View>
+            <View style={styles.radioContainer}>
+              <RadioButton value="secret" status={product.p_badatype === 'secret' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
+              <Text style={styles.radioLableFont}>{t('badatype.secret', '몰래바다')}</Text>
+            </View>
+            */}
           </View>
-        </Pressable>
-        {images.map((item: any, index: number) => (
-          <Image key={index} style={styles.imageBox} source={{uri: item.path}} />
-        ))}
-      </ScrollView>
-      <Icon style={styles.relative} name="cancel" size={24} />
-      <View style={styles.form}>
-        <DabadaInputLine style={styles.border} placeholder={t('common.title', '제목')} value={product.p_title} onChangeText={(text: string) => setProduct({...product, p_title: text})} hasMarginBottom={false} />
-        <View style={styles.radioGroup}>
-          <View style={styles.radioContainer}>
-            <RadioButton value="free" status={product.p_badatype === 'free' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'free'})} />
-            <Text style={styles.radioLableFont}>{t('badatype.free', '그냥바다')}</Text>
+          <DabadaInputLine placeholder={t('common.price', '가격')} value={product.p_price} onChangeText={(text: string) => onChangedPrice(text)} returnKeyType="next" keyboardType="numeric" hasMarginBottom={true} onSubmitEditing={() => ref_contents.current?.focus()} />
+          <View style={styles.flex1}>
+            <DabadaInput style={styles.input} placeholder={'게시글을 작성해주세요.\n(판매 금지 물품은 게시가 제한 될 수 있어요.)'} value={product.p_contents} onChangeText={(text: string) => setProduct({...product, p_contents: text})} returnKeyType="default" multiline={true} numberOfLines={10} hasMarginBottom={false} ref={ref_contents} />
           </View>
-          <View style={styles.radioContainer}>
-            <RadioButton value="money" status={product.p_badatype === 'money' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'money'})} />
-            <Text style={styles.radioLableFont}>{t('badatype.money', '현금바다')}</Text>
-          </View>
-          <View style={styles.radioContainer}>
-            <RadioButton value="drink" status={product.p_badatype === 'drink' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
-            <Text style={styles.radioLableFont}>{t('badatype.drink', '한잔바다')}</Text>
-          </View>
-          <View style={styles.radioContainer}>
-            <RadioButton value="secret" status={product.p_badatype === 'secret' ? 'checked' : 'unchecked'} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
-            <Text style={styles.radioLableFont}>{t('badatype.secret', '몰래바다')}</Text>
-          </View>
-        </View>
-        <DabadaInputLine placeholder={t('common.price', '가격')} value={product.p_price} onChangeText={(text: string) => onChangedPrice(text)} returnKeyType="next" keyboardType="numeric" hasMarginBottom={true} onSubmitEditing={() => ref_contents.current?.focus()} />
-        <View style={styles.flex1}>
-          <DabadaInput style={styles.input} placeholder={'게시글을 작성해주세요.\n(판매 금지 물품은 게시가 제한 될 수 있어요.)'} value={product.p_contents} onChangeText={(text: string) => setProduct({...product, p_contents: text})} returnKeyType="default" multiline={true} numberOfLines={10} hasMarginBottom={false} ref={ref_contents} />
         </View>
       </View>
     </View>
@@ -159,6 +244,10 @@ function ProductAddScreen() {
 }
 
 const styles = StyleSheet.create({
+  fullscreen: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
   flex1: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -172,8 +261,11 @@ const styles = StyleSheet.create({
   },
   radioGroup: {
     flexDirection: 'row',
-    alignContent: 'center',
-    paddingVertical: 10,
+    // alignItems: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContents: 'center',
+    paddingVertical: 12,
   },
   radioLabel: {
     flex: 2,
@@ -200,15 +292,23 @@ const styles = StyleSheet.create({
     color: '#b9b9b9',
   },
   block: {
-    alignItems: 'center',
-    marginTop: 18,
+    // alignItems: 'flex-start',
+    // marginTop: 18,
     paddingHorizontal: 16,
-    width: '100%',
+    // width: '100%',
+    flex: 1,
+    // flexDirection: 'row',
+  },
+  container: {
+    // width: '100%',
+    // flexDirection: 'row',
+    flex: 1,
+    // marginBottom: -60,
   },
   relative: {
     position: 'absolute',
-    left: 186,
-    top: -8,
+    left: 71,
+    top: -10,
     zIndex: 10,
   },
   text: {
@@ -232,7 +332,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderWidth: 3,
     borderRadius: 10,
-    marginRight: 4,
+    marginRight: 8,
     //color: '#fff',
   },
   mainPhotoBox: {
@@ -256,25 +356,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   form: {
-    marginTop: 16,
+    marginTop: 8,
     width: '100%',
   },
   imageContainer: {
-    flex: 1,
-    borderRadius: 5,
-    height: 90,
+    // flex: 1,
+    // borderRadius: 5,
+    // height: 90,
+    // paddingVertical: 10,
+    padding: 12,
+    // flexDirection: 'row',
   },
   input: {
     height: 160,
     // paddingBottom: 160,
-    borderWidth: 1,
+    // borderWidth: 1,
     borderRadius: 4,
-    borderStyle: 'solid',
+    // borderStyle: 'solid',
     alignItems: 'flex-start',
-    borderBottomColor: '#b9b9b9',
-    borderRightColor: '#b9b9b9',
-    borderTopColor: '#b9b9b9',
-    borderLeftColor: '#b9b9b9',
+    border: 'none',
+    // borderBottomColor: '#b9b9b9',
+    // borderRightColor: '#b9b9b9',
+    // borderTopColor: '#b9b9b9',
+    // borderLeftColor: '#b9b9b9',
     textAlignVertical: 'top',
   },
 });

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {View, StyleSheet, SafeAreaView, FlatList, Text, TouchableOpacity, ScrollView} from 'react-native';
 import Avatar from '../components/profile/Avatar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TopRightButton from '../components/common/TopRightButton';
@@ -82,129 +82,129 @@ function ChattingListScreen() {
   //const listRefreshControl = <RefreshControl colors={['#347deb']} />;
 
   // 주임님 소스
-  //return <FlatList<chattingProps> data={chatting} renderItem={renderItem} ListEmptyComponent={renderEmpty} keyExtractor={item => item.c_id} contentContainerStyle={styles.container} onEndReachedThreshold={0.75} />;
+  return <FlatList<chattingProps> data={chatting} renderItem={renderItem} ListEmptyComponent={renderEmpty} keyExtractor={item => item.c_id} contentContainerStyle={styles.container} onEndReachedThreshold={0.75} />;
 
   // 임시 소스
-  return (
-    <>
-      <ScrollView style={styles.fullscreen}>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            {/* <Profile profileUser={myInfo} /> */}
-            <Avatar size={48} />
-            {/* <Text>111</Text> */}
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>hwan77</Text>
-              <Text style={styles.bold4}>1시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 거래였습니다 감사합니다^^</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>hkChoi</Text>
-              <Text style={styles.bold4}>2시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>네고는 안됩니다 ^^;</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>heeCastle</Text>
-              <Text style={styles.bold4}>5시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>badasea</Text>
-              <Text style={styles.bold4}>어제</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>이모티콘을 보냈어요.</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>badasea</Text>
-              <Text style={styles.bold4}>5시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>badasea</Text>
-              <Text style={styles.bold4}>5시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>badasea</Text>
-              <Text style={styles.bold4}>5시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>badasea</Text>
-              <Text style={styles.bold4}>5시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
-    </>
-  );
+  // return (
+  //   <>
+  //     <ScrollView style={styles.fullscreen}>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           {/* <Profile profileUser={myInfo} /> */}
+  //           <Avatar size={48} />
+  //           {/* <Text>111</Text> */}
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>hwan77</Text>
+  //             <Text style={styles.bold4}>1시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>좋은 거래였습니다 감사합니다^^</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>hkChoi</Text>
+  //             <Text style={styles.bold4}>2시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>네고는 안됩니다 ^^;</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>heeCastle</Text>
+  //             <Text style={styles.bold4}>5시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>badasea</Text>
+  //             <Text style={styles.bold4}>어제</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>이모티콘을 보냈어요.</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>badasea</Text>
+  //             <Text style={styles.bold4}>5시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>badasea</Text>
+  //             <Text style={styles.bold4}>5시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>badasea</Text>
+  //             <Text style={styles.bold4}>5시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.touchFlex}>
+  //         <View style={styles.flex2}>
+  //           <Avatar size={48} />
+  //         </View>
+  //         <View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold3}>badasea</Text>
+  //             <Text style={styles.bold4}>5시간 전</Text>
+  //           </View>
+  //           <View style={styles.row}>
+  //             <Text style={styles.bold4}>좋은 주말 보내세요~</Text>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //     </ScrollView>
+  //   </>
+  // );
 }
 
 const styles = StyleSheet.create({
