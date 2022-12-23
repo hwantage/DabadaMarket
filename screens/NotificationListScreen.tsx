@@ -37,6 +37,11 @@ function NotificationListScreen() {
   return (
     <>
       <ScrollView style={styles.fullscreen}>
+        <View style={styles.between}>
+          <Icon name="close" size={24} />
+          {/* <Text style={styles.text}>소만사</Text> */}
+          <TouchableOpacity style={styles.text_bl}>설정</TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.touchFlex}>
           <Image style={styles.imageBox} />
           <View style={styles.flex3}>
@@ -302,6 +307,10 @@ const styles = StyleSheet.create({
     // marginBottom: -30,
     // paddingVertical: 10,
     flexDirection: 'row',
+  },
+  between: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   row: {
     paddingTop: 10,
