@@ -1,5 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
+import {productProps} from './products';
 export const chattingCollection = firestore().collection('chatting');
+
+export enum CHAT_PRODUCT_STATE {
+  SELL = '판매중',
+  RESERVATION = '예약중',
+  COMPLETE = '판매완료',
+}
 
 export interface chattingProps {
   c_id: string;
@@ -9,14 +16,14 @@ export interface chattingProps {
   c_to_photoUrl: string | {} | null;
   c_to_nickname: string;
   c_to_id: string;
-  c_p_id: string;
-  c_p_title: string;
+  c_product: productProps;
   c_lastMessage: string;
   c_regdate: number;
   c_to_online: boolean;
   c_from_online: boolean;
   c_to_not_read_cnt: number;
   c_from_not_read_cnt: number;
+  c_product_state: CHAT_PRODUCT_STATE;
 }
 
 export interface updateChattingProps {
@@ -26,6 +33,7 @@ export interface updateChattingProps {
   c_from_online?: boolean;
   c_from_not_read_cnt?: number;
   c_to_not_read_cnt?: number;
+  c_product_state?: CHAT_PRODUCT_STATE;
 }
 
 export async function getChatting(u_id: string): Promise<chattingProps[]> {

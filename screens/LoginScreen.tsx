@@ -137,14 +137,14 @@ function LoginScreen() {
               {!isJoin && (
                 <>
                   <DabadaButton title={t('common.login', '로그인')} hasMarginBottom={true} onPress={onSubmit} />
-                  {/* <DabadaButton
+                  <DabadaButton
                     title={t('common.join', '회원가입')}
                     theme="secondary"
                     hasMarginBottom={false}
                     onPress={() => {
                       navigation.push('LoginScreen', {isJoin: true});
                     }}
-                  /> */}
+                  />
                   <View style={styles.container}>
                     <BouncyCheckbox
                       size={24}
