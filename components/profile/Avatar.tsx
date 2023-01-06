@@ -7,6 +7,21 @@ export interface avatarProps {
 }
 
 function Avatar({source, size}: avatarProps) {
+  if (!source) {
+    return (
+      <Image
+        source={source || require('../../assets/user.png')}
+        resizeMode="cover"
+        style={[
+          {
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+          },
+        ]}
+      />
+    );
+  }
   return (
     <Image
       source={source || require('../../assets/user.png')}

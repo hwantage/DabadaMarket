@@ -11,6 +11,7 @@ import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useTranslation} from 'react-i18next';
 import ActionSheetModal from '../ActionSheetModal';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface type_imagePickerOption {
   mediaType: 'photo' | 'video' | 'mixed';
@@ -114,20 +115,22 @@ function ModifyProfile() {
   };
 
   return (
-    <View style={styles.block}>
+    <View style={styles.fullscreen}>
       <Pressable onPress={onPress}>
         <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
+        <Icon name="enhance-photo-translate" size={26} style={styles.icon} />
       </Pressable>
 
       <View style={styles.form}>
         <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={false} />
         {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
-        {!loading && (
-          <View style={styles.buttons}>
-            <DabadaButton title={t('button.save', '저장')} onPress={onSubmit} hasMarginBottom={true} />
-            <DabadaButton title={t('button.cancel', '취소')} onPress={onCancel} theme="secondary" hasMarginBottom={false} />
-          </View>
-        )}
+        {/* {!loading && (
+          // <View style={styles.buttons}>
+          //   <DabadaButton title={t('button.save', '저장')} onPress={onSubmit} hasMarginBottom={true} />
+          //   <DabadaButton title={t('button.cancel', '취소')} onPress={onCancel} theme="secondary" hasMarginBottom={false} />
+          // </View>
+          //상단 tab으로 close와 submit 추가하기.
+        )} */}
       </View>
       <ActionSheetModal
         visible={modalVisible}
@@ -150,6 +153,9 @@ function ModifyProfile() {
 }
 
 const styles = StyleSheet.create({
+  fullscreen: {
+    flex: 1,
+  },
   block: {
     alignItems: 'center',
     marginTop: 24,
@@ -161,8 +167,11 @@ const styles = StyleSheet.create({
     borderRadius: 64,
     width: 128,
     height: 128,
+    marginVertical: 36,
   },
   form: {
+    flex: 1,
+    flexDirection: 'row',
     marginTop: 16,
     width: '100%',
   },
@@ -172,6 +181,11 @@ const styles = StyleSheet.create({
   spinner: {
     marginTop: 48,
     height: 104,
+  },
+  icon: {
+    position: 'absolute',
+    top: 120,
+    right: 140,
   },
 });
 

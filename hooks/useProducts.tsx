@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {getProducts, PAGE_SIZE} from '../utils/products';
+import {getProducts, getProductCnt, PAGE_SIZE} from '../utils/products';
 import useProductsEventEffect from './useProductsEventEffect';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -7,6 +7,7 @@ import {productProps, getProductsProps} from '../utils/products';
 
 export default function useProducts({u_id, querymode, keyword}: getProductsProps) {
   const [products, setProducts] = useState<productProps[] | undefined>(undefined);
+  const [productCnt, setProductCnt] = useState<number>(0);
   const [noMoreProduct, setNoMoreProduct] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
@@ -18,6 +19,14 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
         setNoMoreProduct(true);
       }
     });
+
+    // buy | sell | sell_complete 인 경우 갯수 조회
+    if (querymode !== undefined) {
+      getProductCnt({u_id, querymode, keyword}).then(_cnt => {
+        console.log(_cnt);
+        setProductCnt(_cnt);
+      });
+    }
   }, [keyword, querymode, u_id]);
 
   const removeProduct = useCallback(
@@ -82,5 +91,6 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
     refreshing,
     onLoadMore,
     onRefresh,
+    productCnt,
   };
 }

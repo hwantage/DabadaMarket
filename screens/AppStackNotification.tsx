@@ -11,7 +11,7 @@ function AppStackNotification() {
         name="NotificationListScreen"
         component={NotificationListScreen}
         options={{
-          title: 'NotificationListScreen List',
+          title: '키워드 알림',
         }}
       />
     </Stack.Navigator>

@@ -43,24 +43,27 @@ const styles = StyleSheet.create({
     // backgroundColor 제거
   },
   primaryWrapper: {
-    backgroundColor: '#347deb',
+    backgroundColor: '#039DF4',
   },
   text: {
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 18,
     color: 'white',
   },
   primaryText: {
     color: 'white',
   },
   secondaryText: {
-    color: '#347deb',
+    color: '#039DF4',
+    fontSize: 14,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    flex: 0,
   },
   margin: {
     marginBottom: 58,
   },
   block: {
-    flex: 1,
     zIndex: 0,
   },
 });
