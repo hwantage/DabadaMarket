@@ -1,7 +1,7 @@
 import React, {useEffect, useState, Fragment} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {ActivityIndicator, FlatList, useWindowDimensions, ListRenderItem, RefreshControl, StyleSheet, View} from 'react-native';
+import {ScrollView, TouchableOpacity, Image, ActivityIndicator, FlatList, useWindowDimensions, ListRenderItem, RefreshControl, StyleSheet, View} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import TopRightButton from '../components/common/TopRightButton';
 import ProductCard from '../components/product/ProductCard';
@@ -11,6 +11,7 @@ import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import ProductAddButton from '../components/common/ProductAddButton';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function MySellScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
@@ -87,7 +88,69 @@ function MySellScreen() {
           <ActivityIndicator size={32} color="#347deb" />
         </View>
       ) : (
-        <TabView renderTabBar={renderTabBar} navigationState={{index, routes}} renderScene={renderScene} onIndexChange={setIndex} initialLayout={{width: layout.width}} />
+        // <FlatList<productProps> data={products} renderItem={renderItem} keyExtractor={item => item.p_id} contentContainerStyle={styles.container} onEndReached={onLoadMore} onEndReachedThreshold={0.75} refreshControl={listRefreshControl} ListFooterComponent={listFooterComponent} />
+        <ScrollView>
+          {/* <Fragment> */}
+          <View style={{flex: 1}}>
+            <TabView style={styles.tab} renderTabBar={renderTabBar} navigationState={{index, routes}} renderScene={renderScene} onIndexChange={setIndex} initialLayout={{width: layout.width}} />
+            <TouchableOpacity style={styles.touchFlex}>
+              <Image style={styles.imageBox} />
+              <View style={styles.flex3}>
+                <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
+                <Text style={styles.bold2}>50,000원</Text>
+                <View style={styles.review}>
+                  <Text style={styles.tag_soldout}>거래완료</Text>
+                  <Icon name="chevron-right" size={30} color="#898989" />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.touchFlex}>
+              <Image style={styles.imageBox} />
+              <View style={styles.flex3}>
+                <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
+                <Text style={styles.bold2}>50,000원</Text>
+                <View style={styles.review}>
+                  <Text style={styles.tag_soldout}>거래완료</Text>
+                  <Icon name="chevron-right" size={30} color="#898989" />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.touchFlex}>
+              <Image style={styles.imageBox} />
+              <View style={styles.flex3}>
+                <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
+                <Text style={styles.bold2}>50,000원</Text>
+                <View style={styles.review}>
+                  <Text style={styles.tag_soldout}>거래완료</Text>
+                  <Icon name="chevron-right" size={30} color="#898989" />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.touchFlex}>
+              <Image style={styles.imageBox} />
+              <View style={styles.flex3}>
+                <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
+                <Text style={styles.bold2}>50,000원</Text>
+                <View style={styles.review}>
+                  <Text style={styles.tag_soldout}>거래완료</Text>
+                  <Icon name="chevron-right" size={30} color="#898989" />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.touchFlex}>
+              <Image style={styles.imageBox} />
+              <View style={styles.flex3}>
+                <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
+                <Text style={styles.bold2}>50,000원</Text>
+                <View style={styles.review}>
+                  <Text style={styles.tag_soldout}>거래완료</Text>
+                  <Icon name="chevron-right" size={30} color="#898989" />
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+          {/* </Fragment> */}
+        </ScrollView>
       )}
     </>
   );
@@ -109,6 +172,11 @@ const styles = StyleSheet.create({
   buttons: {
     margin: 24,
   },
+  tab: {
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: '#dfdfdf',
+  },
   fullscreen: {
     flex: 1,
     //paddingHorizontal: 22,
@@ -118,8 +186,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: '#b9b9b9',
+    borderBottomColor: '#dfdfdf',
     paddingHorizontal: 16,
+    backgroundColor: '#ffffff',
   },
   flex: {
     paddingVertical: 24,

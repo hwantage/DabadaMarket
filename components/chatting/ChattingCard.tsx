@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet, Pressable, TouchableOpacity} from 'react-native';
 import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import {useRecoilState} from 'recoil';
@@ -26,22 +26,38 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
 
   return (
     <>
-      <View style={styles.block}>
-        <Pressable style={styles.row} onPress={() => onPress()}>
-          {/* <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" /> */}
-          <Avatar source={{uri: myInfo.u_id === chatInfo.c_from_id ? chatInfo?.c_to_photoUrl : chatInfo?.c_from_photoUrl}} size={40} />
-          <View style={styles.chattingTextRow}>
-            <View style={styles.chattingTopRow}>
-              <Text style={styles.c_title}>{myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_nickname : chatInfo.c_from_nickname}</Text>
-              <Text style={styles.c_regdate}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
+      <View>
+        <Pressable style={styles.touchFlex} onPress={() => onPress()}>
+          <View style={styles.flex2}>
+            {/* <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" /> */}
+            <Avatar source={{uri: myInfo.u_id === chatInfo.c_from_id ? chatInfo?.c_to_photoUrl : chatInfo?.c_from_photoUrl}} size={48} />
+          </View>
+          <View>
+            <View style={styles.row}>
+              <Text style={styles.bold3}>{myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_nickname : chatInfo.c_from_nickname}</Text>
+              <Text style={styles.bold4}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
             </View>
-            <View style={styles.chattingTopRow}>
-              <Text style={styles.c_lastMessage}>{chatInfo.c_lastMessage}</Text>
+            <View style={styles.row}>
+              <Text style={styles.bold4}>{chatInfo.c_lastMessage}</Text>
               {readCnt > 0 && (
                 <View style={styles.notReadBadgeRow}>
                   <Text style={styles.c_notReadMessage}>{readCnt}</Text>
                 </View>
               )}
+            </View>
+          </View>
+        </Pressable>
+        <Pressable style={styles.touchFlex}>
+          <View style={styles.flex2}>
+            <Avatar size={48} />
+          </View>
+          <View>
+            <View style={styles.row}>
+              <Text style={styles.bold3}>hwan77</Text>
+              <Text style={styles.bold4}>1시간 전</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.bold4}>좋은 거래였습니다 감사합니다^^</Text>
             </View>
           </View>
         </Pressable>
@@ -52,11 +68,11 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
 
 const styles = StyleSheet.create({
   block: {
-    paddingTop: 10,
-    paddingLeft: 15,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'grey',
+    // paddingTop: 10,
+    // paddingLeft: 15,
+    // paddingBottom: 10,
+    // borderBottomWidth: 1,
+    // borderBottomColor: 'grey',
   },
   chattingTextRow: {
     width: '100%',
@@ -115,6 +131,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
   },
+  touchFlex: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: '#dfdfdf',
+    backgroundColor: '#ffffff',
+  },
+  flex2: {
+    flexDirection: 'row',
+  },
+  bold3: {marginLeft: 8, fontSize: 16, fontWeight: 'bold'},
+  bold4: {marginLeft: 8, fontSize: 14},
 });
 
 export default ChattingCard;

@@ -27,9 +27,11 @@ function Profile({profileUser}: avatarProps) {
   return (
     <>
       <View style={styles.userInfo}>
-        <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={48} />
-        <Text style={styles.nickName}>{user?.u_nickname}</Text>
+        <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={140} />
         {/* <Text style={styles.groupName}>{user?.u_group}</Text> */}
+      </View>
+      <View style={styles.userInfo2}>
+        <Text style={styles.nickName}>{user?.u_nickname}</Text>
       </View>
       <View style={styles.block}>
         {authInfo.u_id === user?.u_id && (
@@ -47,13 +49,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userInfo: {
-    paddingVertical: 24,
+    paddingTop: 24,
+    paddingBottom: 12,
+    // paddingVertical: 24,
     flexDirection: 'row',
+    justifyContent: 'center',
+    // flex: 1,
+  },
+  userInfo2: {
+    // paddingTop: 10,
+    // paddingTop: -8,
+    paddingBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   nickName: {
-    marginTop: 8,
-    marginLeft: 16,
-    fontSize: 18,
+    // flex: 1,
+    // flexDirection: 'row',
+    // marginTop: 8,
+    // marginLeft: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#039DF4',
   },

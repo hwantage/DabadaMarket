@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {GiftedChat, IMessage, SystemMessage} from 'react-native-gifted-chat';
 import db from '@react-native-firebase/database';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Image} from 'react-native';
+// import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useRecoilValue} from 'recoil';
@@ -351,23 +352,55 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           // renderUsernameOnMessage
         />
       </View>
-    </View>
-    // <SafeAreaProvider>
-    //   <TouchableOpacity style={styles.touchFlex}>
-    //     <Image style={styles.imageBox} />
-    //     <View>
-    //       <View style={styles.row}>
-    //         <Text style={styles.bold3}>판매중</Text>
-    //         <Text style={styles.text}>knk 아워홈 식권 20장</Text>
-    //       </View>
-    //       <View style={styles.row}>
-    //         <Text style={styles.bold3}>50,000원</Text>
-    //       </View>
-    //     </View>
-    //   </TouchableOpacity>
-    //   <Chat messages={messages} onSendPress={handleSendPress} user={user} color={'#c00'} />
-    // </SafeAreaProvider>
+    </>
   );
+}
+{
+  /* <Chat
+      renderBubble={renderBubble}
+      theme={{
+        ...defaultTheme,
+        colors: {...defaultTheme.colors, primary: '#1d1c21'},
+      }}
+      messages={messages}
+      // onSendPress={handleSendPress}
+      user={'user'}
+      color={'#c00'}
+    /> */
+}
+{
+  /* <RBSheet
+      ref={ref => {
+        this.Standard = ref;
+      }}
+      height={230}
+      closeOnDragDown
+      customStyles={{
+        container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
+      }}>
+      <View>
+        <TouchableOpacity onPress={this.onHandleEmail}>
+          <Icon name={'report-problem'} />
+          <Text />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <View>
+          <Icon name={'ios-person'} />
+          <Text>유저정보</Text>
+          {/* <Text>{reportUser}</Text> */
+}
+{
+  /* </View>
+      </View>
+      <View>
+        <TouchableOpacity>
+          <Icon name={'thumb-down-alt'} />
+          <Text>싫어요</Text>
+        </TouchableOpacity>
+      </View>
+    </RBSheet>
+  </View> */
 }
 
 const styles = StyleSheet.create({
@@ -382,6 +415,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#dfdfdf',
+    backgroundColor: '#fefefe',
   },
   flex: {
     paddingVertical: 24,

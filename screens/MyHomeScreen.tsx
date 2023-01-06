@@ -28,6 +28,10 @@ function MyHomeScreen() {
     navigation.push('MyBuyScreen');
   };
 
+  const onPressKeyword = () => {
+    navigation.push('NotificationListScreen');
+  };
+
   return (
     <>
       <SafeAreaView style={styles.fullscreen}>
@@ -44,6 +48,10 @@ function MyHomeScreen() {
             <Icon name="shopping-cart" size={30} color="#898989" />
             <Text style={styles.bold3}>구매내역</Text>
           </TouchableOpacity>
+          <TouchableOpacity title="키워드 알림" onPress={onPressKeyword} style={styles.row}>
+            <Icon name="notifications" size={30} color="#898989" />
+            <Text style={styles.bold3}>키워드 알림</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
       {/* <Profile profileUser={authInfo} />
@@ -59,6 +67,7 @@ const styles = StyleSheet.create({
   fullscreen: {
     flex: 1,
     paddingHorizontal: 22,
+    backgroundColor: '#ffffff',
   },
   flex: {
     // paddingVertical: 24,
@@ -76,8 +85,8 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
   },
   avatar: {
-    width: 20,
-    height: 20,
+    // width: 20,
+    // height: 20,
   },
   flex4: {
     // flex: 1,
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   row: {
-    paddingTop: 10,
+    paddingVertical: 8,
     // textAlign: 20,
     flexDirection: 'row',
     alignItems: 'center',
@@ -102,7 +111,7 @@ const styles = StyleSheet.create({
 
   // flex2: {paddingVertical: 24, flexDirection: 'row', alignItems: 'flex-end'},
   bold1: {marginTop: 16, marginLeft: 16, fontSize: 18, fontWeight: 'bold', color: '#039DF4'},
-  bold2: {fontSize: 18, fontWeight: 'bold'},
+  bold2: {fontSize: 18, fontWeight: 'bold', marginBottom: 4},
   bold3: {marginLeft: 8, fontSize: 18, fontWeight: 'bold'},
   dot: {paddingHorizontal: 4, marginTop: 8},
   text: {

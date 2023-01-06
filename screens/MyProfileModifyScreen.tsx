@@ -18,8 +18,6 @@ function MyProfileModifyScreen() {
     <>
       <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.select({ios: 'padding'})}>
         <SafeAreaView style={styles.block}>
-          {/* <Text style={styles.title}>환영합니다!</Text> */}
-          {/* <Text style={styles.description}>프로필을 설정하세요.</Text> */}
           <ModifyProfile />
         </SafeAreaView>
       </KeyboardAvoidingView>
@@ -33,6 +31,7 @@ const styles = StyleSheet.create({
   },
   block: {
     flex: 1,
+    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },

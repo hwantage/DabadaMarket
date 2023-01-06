@@ -146,16 +146,16 @@ function ProductAddScreen() {
           <DabadaInputLine style={styles.border} placeholder={t('common.title', '제목')} value={product.p_title} onChangeText={(text: string) => setProduct({...product, p_title: text})} hasMarginBottom={false} />
           <View style={styles.radioGroup}>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="그냥바다" disableBuiltInState={true} isChecked={product.p_badatype === 'free' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'free'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="그냥바다" innerIconStyle={{borderRadius: 12}} iconStyle={{borderRadius: 12, width: 11, height: 11.5}} disableBuiltInState={true} isChecked={product.p_badatype === 'free' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'free'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="현금바다" disableBuiltInState={true} isChecked={product.p_badatype === 'money' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'money'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="현금바다" innerIconStyle={{borderRadius: 12}} iconStyle={{borderRadius: 12, width: 11, height: 11.5}} disableBuiltInState={true} isChecked={product.p_badatype === 'money' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'money'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="한잔바다" disableBuiltInState={true} isChecked={product.p_badatype === 'drink' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="한잔바다" innerIconStyle={{borderRadius: 12}} iconStyle={{borderRadius: 12, width: 11, height: 11.5}} disableBuiltInState={true} isChecked={product.p_badatype === 'drink' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="몰래바다" disableBuiltInState={true} isChecked={product.p_badatype === 'secret' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="몰래바다" innerIconStyle={{borderRadius: 12}} iconStyle={{borderRadius: 12, width: 11, height: 11.5}} disableBuiltInState={true} isChecked={product.p_badatype === 'secret' ? true : false} textStyle={styles.chkTxt} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
             </View>
           </View>
           <DabadaInputLine placeholder={t('common.price', '가격')} value={product.p_price} onChangeText={(text: string) => onChangedPrice(text)} returnKeyType="next" keyboardType="numeric" hasMarginBottom={true} onSubmitEditing={() => ref_contents.current?.focus()} />
@@ -189,7 +189,8 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     display: 'flex',
     alignItems: 'center',
-    justifyContents: 'center',
+    marginLeft: 12,
+    // justifyContents: 'space-between',
     paddingVertical: 12,
   },
   radioLabel: {

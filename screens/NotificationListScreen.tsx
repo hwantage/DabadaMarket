@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-// import {useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {ActivityIndicator, FlatList, Image, ListRenderItem, RefreshControl, StyleSheet, View, SafeAreaView, TouchableOpacity, Pressable, ScrollView} from 'react-native';
+import {ActivityIndicator, Button, FlatList, Image, ListRenderItem, RefreshControl, StyleSheet, View, SafeAreaView, TouchableOpacity, Pressable, ScrollView, RecyclerViewBackedScrollViewComponent} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import TopLeftButton from '../components/common/TopLeftButton';
 import ProductCard from '../components/product/ProductCard';
@@ -14,7 +14,7 @@ import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import DabadaButton from '../components/common/DabadaButton';
 
 function NotificationListScreen() {
-  // const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: authInfo.u_id, querymode: 'buy'});
   const [loading, setLoading] = useState(true);
@@ -34,14 +34,22 @@ function NotificationListScreen() {
   //   });
   // }, [navigation]);
 
+  const onPressSetting = () => {
+    navigation.navigate('MyKeywordSettingScreen');
+  };
+
   return (
     <>
-      <ScrollView style={styles.fullscreen}>
-        <View style={styles.between}>
-          <Icon name="close" size={24} />
-          {/* <Text style={styles.text}>소만사</Text> */}
-          <TouchableOpacity style={styles.text_bl}>설정</TouchableOpacity>
+      <View style={styles.between2}>
+        <View style={styles.row2}>
+          <Icon name="notifications-on" size={24} style={styles.mgR} />
+          <Text style={styles.text}>알림 받는 키워드 3개</Text>
         </View>
+        <TouchableOpacity onPress={onPressSetting}>
+          <Text style={styles.text_bl}>설정</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={styles.fullscreen}>
         <TouchableOpacity style={styles.touchFlex}>
           <Image style={styles.imageBox} />
           <View style={styles.flex3}>
@@ -51,7 +59,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -65,7 +73,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -79,7 +87,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -93,7 +101,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -107,7 +115,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -121,7 +129,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -135,7 +143,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -149,7 +157,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -163,7 +171,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -177,7 +185,7 @@ function NotificationListScreen() {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>소만사</Text>
-              <Icon name="circle" size={8} style={styles.mgHor} />
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.text}>5분 전</Text>
             </View>
           </View>
@@ -311,6 +319,16 @@ const styles = StyleSheet.create({
   between: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  between2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#dfdfdf',
+    borderStyle: 'solid',
+    backgroundColor: '#ffffff',
   },
   row: {
     paddingTop: 10,
@@ -320,10 +338,17 @@ const styles = StyleSheet.create({
     // justifyContent: 'flex-start',
     // paddingVertical: 10,
   },
+  row2: {
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   mgT: {
     paddingVertical: 20,
   },
-
+  mgR: {
+    marginRight: 6,
+  },
   // flex2: {paddingVertical: 24, flexDirection: 'row', alignItems: 'flex-end'},
   bold_bl: {
     fontSize: 16,
@@ -339,7 +364,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#039DF4',
     //color: '#898989',
-    marginHorizontal: 5,
+    marginRight: 16,
   },
   sellProduct: {
     borderTopWidth: 1,

@@ -11,6 +11,7 @@ import LoginScreen from './LoginScreen';
 import MyBuyScreen from './MyBuyScreen';
 import MyHomeScreen from './MyHomeScreen';
 import MyKeywordScreen from './MyKeywordScreen';
+import MyKeywordSettingScreen from './MyKeywordSettingScreen';
 import MyProfileModifyScreen from './MyProfileModifyScreen';
 import MySellScreen from './MySellScreen';
 import NotificationListScreen from './NotificationListScreen';
@@ -43,6 +44,7 @@ export type RootStackParamList = {
   MyBuyScreen: undefined;
   MyHomeScreen: undefined;
   MyKeywordScreen: undefined;
+  MyKeywordSettingScreen: undefined;
   MyProfileModifyScreen: undefined;
   MySellScreen: undefined;
   NotificationListScreen: undefined;
@@ -90,10 +92,11 @@ function AppStackRoot() {
         <>
           <Stack.Screen name="BottomTab" component={BottomTab} options={{headerShown: false}} />
           <Stack.Screen name="ChattingListScreen" component={ChattingListScreen} options={{title: '채팅'}} />
-          <Stack.Screen name="ChattingRoomScreen" component={ChattingRoomScreen} options={{title: 'ChattingRoomScreen'}} />
+          <Stack.Screen name="ChattingRoomScreen" component={ChattingRoomScreen} options={{title: 'badasea(상대방ID)'}} />
           <Stack.Screen name="MyBuyScreen" component={MyBuyScreen} options={{title: '내 구매 상품'}} />
           <Stack.Screen name="MyHomeScreen" component={MyHomeScreen} options={{title: '내 정보'}} />
           <Stack.Screen name="MyKeywordScreen" component={MyKeywordScreen} options={{title: 'MyKeywordScreen'}} />
+          <Stack.Screen name="MyKeywordSettingScreen" component={MyKeywordSettingScreen} options={{title: '키워드 알림 설정'}} />
           <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{title: '프로필 수정'}} />
           <Stack.Screen name="MySellScreen" component={MySellScreen} options={{title: '내 판매 상품'}} />
           <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: '키워드 알림'}} />
@@ -101,7 +104,7 @@ function AppStackRoot() {
           <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{title: '상품 상세'}} />
           <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{title: t('title', '다바다 마켓')}} />
           <Stack.Screen name="ProductModifyScreen" component={ProductModifyScreen} options={{title: '글 수정하기'}} />
-          <Stack.Screen name="ReviewScreen" component={ReviewScreen} options={{title: 'ReviewScreen'}} />
+          <Stack.Screen name="ReviewScreen" component={ReviewScreen} options={{title: '거래 후기 보내기'}} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} options={{title: '상품 검색'}} />
           <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{title: '검색 결과'}} />
           <Stack.Screen name="StartScreen" component={StartScreen} options={{headerShown: false}} />
