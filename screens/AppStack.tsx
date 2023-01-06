@@ -29,6 +29,8 @@ import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {productProps} from '../utils/products';
 import SearchResultScreen from './SearchResultScreen';
+import TopRightButton from '../components/common/TopRightButton';
+import TopLeftButton from '../components/common/TopLeftButton';
 
 export interface u_idProp {
   u_id: string;

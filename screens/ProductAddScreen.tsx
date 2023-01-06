@@ -17,6 +17,7 @@ import TopRightButton from '../components/common/TopRightButton';
 import {createProduct, productProps} from '../utils/products';
 import uuid from 'react-native-uuid';
 import events from '../utils/events';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 
 function ProductAddScreen() {
   const {t} = useTranslation();
