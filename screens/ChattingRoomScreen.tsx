@@ -2,7 +2,7 @@ import React, {useEffect, useState, useCallback} from 'react';
 import {GiftedChat, IMessage, SystemMessage} from 'react-native-gifted-chat';
 import db from '@react-native-firebase/database';
 import {View, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Image} from 'react-native';
-import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
+// import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {authInfoState} from '../recoil/authInfoAtom';
@@ -421,58 +421,25 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
+  // const renderBubble = ({child, message, nextMessageInGroup}: {child: ReactNode; message: MessageType.Any; nextMessageInGroup: boolean}) => {
+  //   return (
+  //     <View
+  //       style={{
+  //         backgroundColor: user.id !== message.author.id ? '#ffffff' : '#1d1c21',
+  //         borderBottomLeftRadius: !nextMessageInGroup && user.id !== message.author.id ? 20 : 0,
+  //         borderBottomRightRadius: !nextMessageInGroup && user.id === message.author.id ? 20 : 0,
+  //         borderColor: '#1d1c21',
+  //         borderWidth: 1,
+  //         overflow: 'hidden',
+  //       }}>
+  //       {child}
+  //     </View>
+  //   );
+  // };
+
   return (
     // 주임님 conflict
-    // <View style={{flex: 1, backgroundColor: 'white'}}>
-    //   <GiftedChat
-    //     locale="ko"
-    //     messages={messages}
-    //     onSend={message => {
-    //       sendMessage(message);
-    //     }}
-    //     user={{
-    //       _id: myInfo.u_id,
-    //       name: myInfo.u_nickname,
-    //     }}
-    //     //this.props.route.params.nickname
-    //     renderSystemMessage={onRenderSystemMessage}
-    //     placeholder="message 입력"
-    //     onPressAvatar={onPressAvatar}
-    //     // onPressActionButton={this.onPressActionButton}
-    //     // renderUsernameOnMessage
-    //   />
-    //   {/* <RBSheet
-    //     ref={ref => {
-    //       this.Standard = ref;
-    //     }}
-    //     height={230}
-    //     closeOnDragDown
-    //     customStyles={{
-    //       container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
-    //     }}>
-    //     <View>
-    //       <TouchableOpacity onPress={this.onHandleEmail}>
-    //         <MaterialIcons name={'report-problem'} />
-    //         <Text />
-    //       </TouchableOpacity>
-    //     </View>
-    //     <View>
-    //       <View>
-    //         <Ionicons name={'ios-person'} />
-    //         <Text>유저정보</Text>
-    //         <Text>{reportUser}</Text>
-    //       </View>
-    //     </View>
-    //     <View>
-    //       <TouchableOpacity>
-    //         <MaterialIcons name={'thumb-down-alt'} />
-    //         <Text>싫어요</Text>
-    //         <Text />
-    //       </TouchableOpacity>
-    //     </View>
-    //   </RBSheet> */}
-    // </View>
-    <SafeAreaProvider>
+    <>
       <TouchableOpacity style={styles.touchFlex}>
         <Image style={styles.imageBox} />
         <View>
@@ -485,9 +452,74 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           </View>
         </View>
       </TouchableOpacity>
-      <Chat messages={messages} onSendPress={handleSendPress} user={user} color={'#c00'} />
-    </SafeAreaProvider>
+      <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <GiftedChat
+          locale="ko"
+          messages={messages}
+          onSend={message => {
+            sendMessage(message);
+          }}
+          user={{
+            _id: myInfo.u_id,
+            name: myInfo.u_nickname,
+          }}
+          //this.props.route.params.nickname
+          renderSystemMessage={onRenderSystemMessage}
+          placeholder="message 입력"
+          onPressAvatar={onPressAvatar}
+          // onPressActionButton={this.onPressActionButton}
+          // renderUsernameOnMessage
+        />
+      </View>
+    </>
   );
+}
+{
+  /* <Chat
+      renderBubble={renderBubble}
+      theme={{
+        ...defaultTheme,
+        colors: {...defaultTheme.colors, primary: '#1d1c21'},
+      }}
+      messages={messages}
+      // onSendPress={handleSendPress}
+      user={'user'}
+      color={'#c00'}
+    /> */
+}
+{
+  /* <RBSheet
+      ref={ref => {
+        this.Standard = ref;
+      }}
+      height={230}
+      closeOnDragDown
+      customStyles={{
+        container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
+      }}>
+      <View>
+        <TouchableOpacity onPress={this.onHandleEmail}>
+          <Icon name={'report-problem'} />
+          <Text />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <View>
+          <Icon name={'ios-person'} />
+          <Text>유저정보</Text>
+          {/* <Text>{reportUser}</Text> */
+}
+{
+  /* </View>
+      </View>
+      <View>
+        <TouchableOpacity>
+          <Icon name={'thumb-down-alt'} />
+          <Text>싫어요</Text>
+        </TouchableOpacity>
+      </View>
+    </RBSheet>
+  </View> */
 }
 
 const styles = StyleSheet.create({
@@ -502,6 +534,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#dfdfdf',
+    backgroundColor: '#fefefe',
   },
   flex: {
     paddingVertical: 24,

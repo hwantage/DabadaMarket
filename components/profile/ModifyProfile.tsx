@@ -1,7 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS} from 'react-native';
+import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS, TouchableOpacity} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {default as Text} from '../common/DabadaText';
 import storage from '@react-native-firebase/storage';
 import {createUser} from '../../utils/auth';
 import DabadaInput from '../common/DabadaInput';
@@ -12,6 +13,7 @@ import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useTranslation} from 'react-i18next';
 import ActionSheetModal from '../ActionSheetModal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DabadaInputLine from '../common/DabadaInputLine';
 
 interface type_imagePickerOption {
   mediaType: 'photo' | 'video' | 'mixed';
@@ -115,47 +117,65 @@ function ModifyProfile() {
   };
 
   return (
-    <View style={styles.fullscreen}>
-      <Pressable onPress={onPress}>
-        <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
-        <Icon name="enhance-photo-translate" size={26} style={styles.icon} />
-      </Pressable>
-
-      <View style={styles.form}>
-        <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={false} />
-        {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
-        {/* {!loading && (
+    <>
+      <View style={styles.fullscreen}>
+        <View style={styles.row}>
+          <Pressable onPress={onPress}>
+            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
+            <Icon name="enhance-photo-translate" size={26} style={styles.icon} />
+          </Pressable>
+        </View>
+        <View style={styles.fullscreen}>
+          <Text style={styles.bold2}>닉네임</Text>
+          <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={true} />
+          {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
+          {/* {!loading && (
           // <View style={styles.buttons}>
           //   <DabadaButton title={t('button.save', '저장')} onPress={onSubmit} hasMarginBottom={true} />
           //   <DabadaButton title={t('button.cancel', '취소')} onPress={onCancel} theme="secondary" hasMarginBottom={false} />
           // </View>
           //상단 tab으로 close와 submit 추가하기.
         )} */}
+          <ActionSheetModal
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            actions={[
+              {
+                icon: 'camera-alt',
+                text: '카메라로 촬영하기',
+                onPress: onLaunchCamera,
+              },
+              {
+                icon: 'photo',
+                text: '사진 선택하기',
+                onPress: onLaunchImageLibrary,
+              },
+            ]}
+          />
+        </View>
       </View>
-      <ActionSheetModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        actions={[
-          {
-            icon: 'camera-alt',
-            text: '카메라로 촬영하기',
-            onPress: onLaunchCamera,
-          },
-          {
-            icon: 'photo',
-            text: '사진 선택하기',
-            onPress: onLaunchImageLibrary,
-          },
-        ]}
-      />
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   fullscreen: {
     flex: 1,
+    paddingHorizontal: 12,
+    backgroundColor: '#ffffff',
+    width: '100%',
   },
+  row: {
+    // paddingVertical: 24,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    // marginTop: 60,
+    // justifyContent: 'flex-start',
+    // alignItems: 'flex-start',
+    // lineHeight: 20,
+  },
+  bold2: {fontSize: 18, fontWeight: 'bold', marginBottom: 8},
+  bold3: {marginLeft: 8, fontSize: 18, fontWeight: 'bold'},
   block: {
     alignItems: 'center',
     marginTop: 24,
@@ -170,10 +190,13 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   form: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
-    marginTop: 16,
-    width: '100%',
+    // marginTop: 16,
+    // width: '100%',
+  },
+  input: {
+    // flex: 1,
   },
   buttons: {
     marginTop: 48,
@@ -183,9 +206,12 @@ const styles = StyleSheet.create({
     height: 104,
   },
   icon: {
+    backgroundColor: '#ffffff',
+    padding: 4,
+    borderRadius: 16,
     position: 'absolute',
-    top: 120,
-    right: 140,
+    top: 140,
+    right: 6,
   },
 });
 

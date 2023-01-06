@@ -19,6 +19,10 @@ function MyBuyScreen() {
   const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: authInfo.u_id, querymode: 'buy'});
   const [loading, setLoading] = useState(true);
 
+  const onPressSendReview = () => {
+    navigation.push('ReviewScreen');
+  };
+
   const productsReady = products !== undefined;
 
   useEffect(() => {
@@ -50,15 +54,17 @@ function MyBuyScreen() {
               <View style={styles.review}>
                 <Text style={styles.tag_soldout}>거래완료</Text>
                 <View style={styles.row}>
-                  <Icon name="chat" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>2</Text>
-                  <Icon name="thumb-up-off-alt" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>3</Text>
+                  <Icon name="thumb-up" color="#898989" size={16} />
+                  <Text style={styles.p_price}>1</Text>
+                  <Icon name="chat" color="#898989" size={16} />
+                  <Text style={styles.p_price}>2</Text>
+                  <Icon name="remove-red-eye" color="#898989" size={16} />
+                  <Text style={styles.p_price}>10</Text>
                 </View>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onPressSendReview}>
             <View style={styles.reviewBtnFlex}>
               <Text style={styles.bold_bl}>후기 보내기</Text>
             </View>
@@ -71,10 +77,12 @@ function MyBuyScreen() {
               <View style={styles.review}>
                 <Text style={styles.tag_soldout}>거래완료</Text>
                 <View style={styles.row}>
-                  <Icon name="chat" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>2</Text>
-                  <Icon name="thumb-up-off-alt" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>3</Text>
+                  <Icon name="thumb-up" color="#898989" size={16} />
+                  <Text style={styles.p_price}>1</Text>
+                  <Icon name="chat" color="#898989" size={16} />
+                  <Text style={styles.p_price}>2</Text>
+                  <Icon name="remove-red-eye" color="#898989" size={16} />
+                  <Text style={styles.p_price}>10</Text>
                 </View>
               </View>
             </View>
@@ -92,10 +100,12 @@ function MyBuyScreen() {
               <View style={styles.review}>
                 <Text style={styles.tag_soldout}>거래완료</Text>
                 <View style={styles.row}>
-                  <Icon name="chat" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>2</Text>
-                  <Icon name="thumb-up-off-alt" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>3</Text>
+                  <Icon name="thumb-up" color="#898989" size={16} />
+                  <Text style={styles.p_price}>1</Text>
+                  <Icon name="chat" color="#898989" size={16} />
+                  <Text style={styles.p_price}>2</Text>
+                  <Icon name="remove-red-eye" color="#898989" size={16} />
+                  <Text style={styles.p_price}>10</Text>
                 </View>
               </View>
             </View>
@@ -108,10 +118,12 @@ function MyBuyScreen() {
               <View style={styles.review}>
                 <Text style={styles.tag_soldout}>거래완료</Text>
                 <View style={styles.row}>
-                  <Icon name="chat" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>2</Text>
-                  <Icon name="thumb-up-off-alt" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>3</Text>
+                  <Icon name="thumb-up" color="#898989" size={16} />
+                  <Text style={styles.p_price}>1</Text>
+                  <Icon name="chat" color="#898989" size={16} />
+                  <Text style={styles.p_price}>2</Text>
+                  <Icon name="remove-red-eye" color="#898989" size={16} />
+                  <Text style={styles.p_price}>10</Text>
                 </View>
               </View>
             </View>
@@ -124,10 +136,12 @@ function MyBuyScreen() {
               <View style={styles.review}>
                 <Text style={styles.tag_soldout}>거래완료</Text>
                 <View style={styles.row}>
-                  <Icon name="chat" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>2</Text>
-                  <Icon name="thumb-up-off-alt" size={18} color="#898989" />
-                  <Text style={styles.text_lg}>3</Text>
+                  <Icon name="thumb-up" color="#898989" size={16} />
+                  <Text style={styles.p_price}>1</Text>
+                  <Icon name="chat" color="#898989" size={16} />
+                  <Text style={styles.p_price}>2</Text>
+                  <Icon name="remove-red-eye" color="#898989" size={16} />
+                  <Text style={styles.p_price}>10</Text>
                 </View>
               </View>
             </View>
@@ -167,6 +181,14 @@ const styles = StyleSheet.create({
     height: 104,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // paddingTop: 14,
+    // marginRight: 16,
+    // marginBottom: 8,
+    justifyContent: 'flex-end',
   },
   buttons: {
     margin: 24,
@@ -250,6 +272,13 @@ const styles = StyleSheet.create({
     // marginBottom: -30,
     // paddingVertical: 10,
     flexDirection: 'row',
+  },
+  p_price: {
+    lineHeight: 17,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginHorizontal: 3,
+    color: '#898989',
   },
   row: {
     paddingTop: 10,

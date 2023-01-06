@@ -14,17 +14,16 @@ function DabadaInputLine({hasMarginBottom, ...rest}: DabadaInputLineProps, ref: 
 const styles = StyleSheet.create({
   input: {
     backgroundColor: 'transparent',
-    //textDecorationLine: 'underline',
     paddingHorizontal: 16,
     borderRadius: 4,
-    //backgroundColor: 'white',
     textAlignVertical: 'top',
     paddingBottom: 2,
     height: 44,
     alignItems: 'flex-start',
     borderBottomWidth: 1,
-    borderBottomColor: '#b9b9b9',
+    borderBottomColor: '#dfdfdf',
   },
+
   margin: {
     marginBottom: 12,
   },

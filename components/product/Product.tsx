@@ -113,15 +113,17 @@ function Product({product}: ProductProps) {
             <Text style={styles.text2}>{product.p_badatype}그냥 바다 or </Text>
             <Text style={styles.bold}>{product.p_price}50,000원</Text>
           </View>
-          <DabadaButton style={styles.button} hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
+          <View style={styles.buttons}>
+            <DabadaButton theme={'primary'} hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
+          </View>
         </View>
       </View>
 
-      {myInfo.u_id !== product.u_id && (
+      {/* {myInfo.u_id !== product.u_id && (
         <View style={styles.buttons}>
-          <DabadaButton hasMarginBottom={false} title="채팅으로 거래하기" onPress={goChattingScreen} />
+          <DabadaButton hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
         </View>
-      )}
+      )} */}
     </ScrollView>
   );
 }
@@ -190,7 +192,7 @@ const styles = StyleSheet.create({
     // marginBottom: 6,
     borderRadius: 6,
   },
-  text: {fontSize: 14, color: '#606060'},
+  // text: {fontSize: 14, color: '#606060'},
   text2: {fontSize: 14, color: '#606060', paddingHorizontal: 4},
   // button: {padding: 10},
   p_regdate: {
@@ -199,7 +201,8 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   buttons: {
-    margin: 30,
+    // margin: 30,
+    marginRight: -16,
     padding: 12,
     width: 100,
     fontSize: 10,
@@ -223,7 +226,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 16,
-    marginVertical: 8,
+    // marginVertical: 8,
   },
   borderTop: {
     borderTopWidth: 1,

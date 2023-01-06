@@ -74,11 +74,14 @@ function ProductCard({product}: ProductCardProps) {
               <Text style={styles.p_regdate}>{moment(product.p_regdate).fromNow()}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={p_badatype_css}>{p_badatype_str}</Text>
+              <Text style={styles.p_badatype}>{p_badatype_str}</Text>
+              <Icon name="circle" size={6} style={styles.mgHor} />
               <Text style={styles.bold2}>{product.p_price}</Text>
             </View>
             <View style={styles.review}>
-              <Text style={p_status_css}>{p_status_str}</Text>
+              <Text style={styles.tag_soldout}>{p_status_str}</Text>
+              {/* <Text style={styles.tag_reserve}>예약중</Text>
+              <Text style={styles.tag_sell}>판매중</Text> */}
               <View style={styles.iconBox}>
                 <Icon name="thumb-up" color="#898989" size={16} />
                 <Text style={styles.p_price}>{product.p_like}</Text>
@@ -103,6 +106,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#dfdfdf',
+    backgroundColor: '#ffffff',
   },
   paddingBlock: {
     paddingHorizontal: 16,
@@ -155,7 +159,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
   },
-
+  mgHor: {
+    marginHorizontal: 3,
+  },
   touchFlex: {
     // paddingVertical: 8,
     flexDirection: 'row',
@@ -183,15 +189,13 @@ const styles = StyleSheet.create({
   },
   tag_soldout: {
     color: '#ffffff',
-    backgroundColor: '#898989',
+    backgroundColor: '#808080',
     borderRadius: 20,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: '#808080',
-    borderTopColor: '#808080',
-    borderLeftColor: '#808080',
-    borderRightColor: '#808080',
+    borderColor: '#808080',
     fontSize: 12,
+    fontWeight: 'bold',
     height: 24,
     marginTop: 10,
     flexDirection: 'row',
@@ -201,19 +205,37 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   tag_reserve: {
-    backgroundColor: '#ccc',
+    color: '#808080',
+    backgroundColor: '#67FF4F',
     borderRadius: 20,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: '#000',
-    borderTopColor: '#000',
+    borderColor: '#67FF4F',
     fontSize: 12,
-    height: 26,
+    fontWeight: 'bold',
+    height: 24,
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  tag_sell: {
+    color: '#006FAF',
+    backgroundColor: '#40BFFF',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#40BFFF',
+    fontSize: 12,
+    fontWeight: 'bold',
+    height: 24,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
     paddingVertical: 4,
   },
 });
