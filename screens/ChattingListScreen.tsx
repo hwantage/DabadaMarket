@@ -5,13 +5,14 @@ import Avatar from '../components/profile/Avatar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TopRightButton from '../components/common/TopRightButton';
 import ChattingCard from '../components/chatting/ChattingCard';
-import Profile from '../components/profile/Profile';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
 import {chattingProps, getChatting} from '../utils/chatting';
 import {StackNavigationProp} from '@react-navigation/stack';
 import firestore from '@react-native-firebase/firestore';
-
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+dayjs.locale('ko');
 const chattingCollection = firestore().collection('chatting');
 function ChattingListScreen() {
   const [myInfo] = useRecoilState(authInfoState);
@@ -23,6 +24,8 @@ function ChattingListScreen() {
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
+    // let clock = new clockSync({});
+    // console.log('current Time', clock.getTime());
     console.log('myInfo', myInfo);
     // navigation.setOptions({
     //   headerRight: () => <TopRightButton name="search" onPress={() => navigation.push('SearchScreen')} />,
@@ -46,7 +49,6 @@ function ChattingListScreen() {
         });
         if (isChanged) {
           getChatting(myInfo.u_id).then(_chatting => {
-            console.log('getChat', _chatting);
             setChatting(_chatting);
           });
         }
@@ -59,13 +61,6 @@ function ChattingListScreen() {
       console.log('getChat', _chatting);
       setChatting(_chatting);
     });
-    // const unsubscribe = navigation.addListener('focus', () => {
-    //   getChatting(myInfo.u_id).then(_chatting => {
-    //     console.log('getChat', _chatting);
-    //     setChatting(_chatting);
-    //   });
-    // });
-    // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation, myInfo.u_id]);
   const renderEmpty = () => {

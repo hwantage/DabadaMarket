@@ -1,62 +1,112 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {GiftedChat, IMessage, SystemMessage} from 'react-native-gifted-chat';
 import db from '@react-native-firebase/database';
-import {View, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Image} from 'react-native';
-import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
+import {View, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import uuid from 'react-native-uuid';
-import {compareDiffChattingDate, createChatting, getChattingData, updateChatting, updateChattingProps} from '../utils/chatting';
+import {CHAT_PRODUCT_STATE, compareDiffChattingDate, createChatting, getChattingData, updateChatting, updateChattingProps} from '../utils/chatting';
 import {getUserInfo} from '../utils/auth';
 import {chattingInfoState, chattingStateProps} from '../recoil/chattingAtom';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
 import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
+import firestore from '@react-native-firebase/firestore';
 import 'dayjs/locale/ko';
-
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Picker} from '@react-native-picker/picker';
 import {default as Text} from '../components/common/DabadaText';
-import Avatar from '../components/profile/Avatar';
-import Profile from '../components/profile/Profile';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import TopLeftButton from '../components/common/TopLeftButton';
-import TopRightButton from '../components/common/TopRightButton';
-
 const database = db().ref('chatting');
 type ChattingRoomScreenProps = StackScreenProps<RootStackParamList, 'ChattingRoomScreen'>;
 
 function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
-  const {u_id, p_id, c_id, p_title} = route.params;
-  const [chattingId, setChattingId] = useState(c_id);
-  const [sendMessageCount, setSendMessageCount] = useState(0);
+  const {u_id, p_id, c_id, product} = route.params;
   const [chattingStateInfo, setChattingStateInfo] = useRecoilState(chattingInfoState);
-  const myInfo = useRecoilValue(authInfoState);
-  //const [reportUser, setReportUser] = useState(null);
-  const navigation = useNavigation<StackNavigationProp<any>>();
 
-  console.log('TTTT', chattingStateInfo);
-  console.log('TTTT2', chattingId);
+  const findChatInfoByProduct = chattingStateInfo && chattingStateInfo.length > 0 ? chattingStateInfo.filter(chat => chat?.c_product?.p_id === product?.p_id) : [];
+
+  const [chattingId, setChattingId] = useState(findChatInfoByProduct.length > 0 ? findChatInfoByProduct[0]?.c_id : c_id);
+  const [sendMessageCount, setSendMessageCount] = useState(0);
+  const myInfo = useRecoilValue(authInfoState);
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  console.log('TTTT', Object.keys(CHAT_PRODUCT_STATE));
+  console.log('TTTT2', chattingStateInfo);
   const filteredChattingState = chattingStateInfo && chattingStateInfo.length > 0 ? chattingStateInfo.filter(chatting => chatting.c_id === chattingId) : [];
-  const systemMessage = {
-    _id: 0,
-    text: '부적절하거나 불쾌감을 줄 수 있는 대화는 삼가 부탁드립니다. 회원제재를 받을 수 있습니다.',
-    createdAt: new Date().getTime(),
-    system: true,
-    user: {_id: ''},
-  };
   const [messages, setMessages] = useState<IMessage[]>(filteredChattingState.length > 0 ? [...filteredChattingState[0].c_messages] : []);
 
-  console.log('TTTT3', JSON.stringify(messages));
+  const [currentProductState, setCurrentProductState] = useState(filteredChattingState.length > 0 ? filteredChattingState[0]?.c_product_state : CHAT_PRODUCT_STATE.SELL);
+  // const systemMessage = {
+  //   _id: 0,
+  //   text: '부적절하거나 불쾌감을 줄 수 있는 대화는 삼가 부탁드립니다. 회원제재를 받을 수 있습니다.',
+  //   createdAt: new Date().getTime(),
+  //   system: true,
+  //   user: {_id: ''},
+  // };
+
+  useEffect(() => {
+    console.log('useEffect ', chattingStateInfo);
+    if (chattingId) {
+      initChattingData();
+      updateIsOnline(true);
+    }
+    // navigation.setOptions({
+    //   title: product.p_title ? product.p_title : filteredChattingState[0]?.c_product.p_title,
+    // });
+
+    return () => {
+      if (chattingId) {
+        updateIsOnline(false);
+      }
+      closeChat();
+    };
+  }, []);
+
+  const initChattingData = async () => {
+    const isDiff = await compareDiffChattingDate(chattingId, filteredChattingState[0]?.c_regdate);
+
+    // 채팅이 시작된 상태에서 (메시지를 한개라도 보내야 chattingId가 생성됨) 채팅 데이터가 없거나 날짜가 동기화 안 된 경우에 메시지를 새로 불러온다.
+    if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
+      console.log('isDiff', isDiff);
+      loadMessages();
+    }
+  };
+
+  const loadMessages = () => {
+    database.off(); //Detaches a callback previously attached with on()
+    console.log('load');
+    database.orderByChild('createdAt').on('value', snapshot => {
+      const messagesByServer: IMessage[] = [];
+
+      snapshot.forEach(data => {
+        const filteredData = messagesByServer.filter(m => m._id === data.key);
+        console.log('snap ', filteredData);
+        if (filteredData.length === 0) {
+          const serverData = data.val();
+          console.log('CHILD', serverData);
+          const message = {
+            _id: data.key || '',
+            text: serverData.text,
+            createdAt: serverData.createdAt,
+            user: {
+              _id: serverData?.user._id,
+              name: serverData.user.name,
+            },
+          };
+          if (serverData.c_id === chattingId && serverData?.c_product_p_id === filteredChattingState[0]?.c_product.p_id) {
+            messagesByServer.unshift(message);
+          }
+        }
+      });
+
+      console.log('messagesByServer', messagesByServer);
+      saveInitChattingData(messagesByServer);
+    });
+  };
+
   const saveInitChattingData = async (msg: IMessage[]) => {
     console.log('msg length ', msg.length);
     const oldChattingData = await getChattingData(chattingId);
-    // console.log('!!?@?@?@?@?@ ', oldChattingData);
-    // if ((oldChattingData?.c_to_id === myInfo.u_id && oldChattingData?.c_from_not_read_cnt === 0) || (oldChattingData?.c_from_id === myInfo.u_id && oldChattingData?.c_to_not_read_cnt === 0)) {
-    //   setSendMessageCount(0);
-    // }
 
     msg.map(data => {
       if (oldChattingData && oldChattingData.c_from_id !== myInfo.u_id) {
@@ -72,28 +122,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       c_messages: msg,
     };
 
-    console.log('oldChattingData', JSON.stringify(msg));
     setMessages(msg);
-    // setMessages(prevMessages => {
-    //   let newMessages: IMessage[] = [...prevMessages];
-    //   if (prevMessages.length === 1) {
-    //     console.log('test data1', prevMessages);
-    //     newMessages = [...msg, ...prevMessages];
-    //   } else {
-    //     console.log('test data2', newMessages);
-    //     msg.map(m => {
-    //       let findList = newMessages.filter(curMessage => curMessage._id !== 0 && m._id !== 0 && curMessage._id === m._id);
-
-    //       console.log('test data3', findList);
-    //       if (findList.length === 0) {
-    //         newMessages.unshift(m);
-    //       }
-    //     });
-    //   }
-    //   chattingInfo.c_messages = newMessages;
-    //   return newMessages;
-    // });
-    console.log('oldChattingData', chattingInfo);
 
     setChattingStateInfo(prevChattingInfo => {
       const findChattingInfo = prevChattingInfo.filter(chatInfo => chatInfo.c_id === chattingId);
@@ -123,83 +152,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       }
     });
   };
-  const initChattingData = async () => {
-    const isDiff = await compareDiffChattingDate(chattingId, filteredChattingState[0]?.c_regdate);
-    const oldChattingData = await getChattingData(chattingId);
-
-    if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
-      console.log('isDiff', isDiff);
-      loadMessages();
-    }
-    // c_id 가  recoil에 저장된 date와 원격서버에 있는 chatting date가 다른지 체크
-    // if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
-    //   //   //test();
-    //   //   console.log('?@?@?@?');
-    //   loadMessages(message => {
-    //     //console.log('current! ', message);
-    //     //setMessages(prevMessages => [message, ...prevMessages]);
-    //     // let newChattingInfo = [];
-    //     // let filteredChatting = chattingStateInfo.filter(chatting => chatting.c_id === c_id);
-    //     // if (filteredChatting.length === 0) {
-    //     //   return;
-    //     // } else {
-    //     //   console.log('filteredChatting', filteredChatting);
-    //     //   let filteredMessage = filteredChatting[0].c_messages.filter(msg => msg._id === message._id);
-    //     //   filteredChatting[0].c_messages = GiftedChat.append(filteredChatting[0].c_messages, message);
-    //     //   chattingStateInfo.filter(chatting => chatting.c_id !== c_id);
-    //     //   newChattingInfo.push(filteredChatting[0]);
-    //     // }
-    //     // setChattingStateInfo(newChattingInfo);
-    //     // storeChattingData(newChattingInfo);
-    //   });
-    // }
-  };
-  // const checkReadChatting = async () => {
-  //   const oldChattingData = await getChattingData(chattingId);
-  //   console.log('!!?@?@?@?@?@ ', oldChattingData);
-  //   if ((oldChattingData?.c_to_id === myInfo.u_id && oldChattingData?.c_from_not_read_cnt === 0) || (oldChattingData?.c_from_id === myInfo.u_id && oldChattingData?.c_to_not_read_cnt === 0)) {
-  //     setSendMessageCount(0);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   checkReadChatting();
-  // }, [filteredChattingState, sendMessageCount]);
-
-  useEffect(() => {
-    initChattingData();
-    navigation.setOptions({
-      title: p_title ? p_title : filteredChattingState[0]?.c_p_title,
-    });
-    console.log('?', filteredChattingState[0]);
-    updateIsOnline(true);
-    //listenToMessagesServer(data => saveInitChattingData([data]));
-    return () => {
-      console.log('?');
-      updateIsOnline(false);
-      closeChat();
-    };
-  }, []);
-
-  const listenToMessagesServer = callback => {
-    database.off(); //Detaches a callback previously attached with on()
-    const onReceive = data => {
-      const message = data.val();
-      const newMessages = messages.filter(currentMessage => currentMessage._id !== message._id);
-
-      console.log('test@@@@@@@@@', newMessages);
-      callback({
-        _id: data.key,
-        text: message.text,
-        createdAt: message.createdAt,
-        user: {
-          _id: message.user._id,
-          name: message.user.name,
-        },
-      });
-    };
-    database.on('child_added', onReceive);
-  };
 
   const updateIsOnline = (isOnline: boolean) => {
     if (filteredChattingState[0]?.c_from_id !== myInfo.u_id) {
@@ -209,88 +161,14 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
-  const loadMessages = () => {
-    database.off(); //Detaches a callback previously attached with on()
-
-    database.orderByChild('createdAt').on('value', snapshot => {
-      const messagesByServer: IMessage[] = [];
-
-      snapshot.forEach(data => {
-        const filteredData = messagesByServer.filter(m => m._id === data.key);
-        if (filteredData.length === 0) {
-          const serverData = data.val();
-          console.log('CHILD', serverData);
-          const message = {
-            _id: data.key || '',
-            text: serverData.text,
-            createdAt: serverData.createdAt,
-            user: {
-              _id: serverData?.user._id,
-              name: serverData.user.name,
-            },
-          };
-          if (serverData.c_id === chattingId && serverData.p_id === p_id) {
-            messagesByServer.unshift(message);
-          }
-        }
-      });
-
-      console.log('messagesByServer', messagesByServer);
-      saveInitChattingData(messagesByServer);
-    });
-  };
-
-  // const loadMessages = callback => {
-  //   database.off(); //Detaches a callback previously attached with on()
-  //   const onReceive = data => {
-  //     const message = data.val();
-
-  //     if (message.c_id === chattingId && message.p_id === p_id) {
-  //       console.log('test', message);
-  //       callback({
-  //         _id: data.key,
-  //         text: message.text,
-  //         createdAt: message.createdAt,
-  //         user: {
-  //           _id: message.user._id,
-  //           name: message.user.name,
-  //         },
-  //       });
-  //     }
-  //   };
-  //   // let d = this.getLimit();
-  //   // console.log(d);
-  //   database.orderByChild('locationInfo').once('value', snapshot => {
-  //     const arr = [];
-  //     snapshot.forEach(data => {
-  //       const message = data.val();
-  //       const convertedData = {
-  //         _id: data.key,
-  //         text: message.text,
-  //         createdAt: message.createdAt,
-  //         user: {
-  //           _id: message.user._id,
-  //           name: message.user.name,
-  //         },
-  //       };
-  //       if (message.c_id === chattingId && message.p_id === p_id) {
-  //         arr.unshift(convertedData);
-  //       }
-  //     });
-  //     saveInitChattingData(arr);
-  //   });
-  //   //database.orderByChild('locationInfo').on('child_added', onReceive);
-  // };
-
   /* 채팅 저장 */
   const addNewChattingInfo = useCallback(async (message: IMessage, newChattingId: string) => {
+    const current = new Date(firestore.Timestamp.now()?.seconds);
     const sellerInfo = await getUserInfo(u_id);
-    console.log(sellerInfo);
+
     if (!sellerInfo) {
       return;
     }
-    // setLoading(true);
-    //const reference = storage().ref(`/chatting/${roomId}/`);
     const chatting = {
       c_id: newChattingId,
       c_from_id: myInfo.u_id,
@@ -299,10 +177,10 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       c_to_id: u_id,
       c_to_nickname: sellerInfo.u_nickname,
       c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
-      c_p_id: p_id,
-      c_p_title: p_title,
+      c_product: product,
       c_lastMessage: message.text,
-      c_regdate: Date.now(),
+      c_regdate: firestore.Timestamp.now()?.seconds,
+      c_product_state: CHAT_PRODUCT_STATE.SELL,
     };
 
     const chattingInfo: chattingStateProps = {
@@ -337,7 +215,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
         const convertedChattingInfo = prevChattingInfo.map(chattingInfo => {
           if (chattingInfo.c_id === chattingId) {
             chattingInfo.c_lastMessage = message.text;
-            chattingInfo.c_regdate = updatedDate;
+            chattingInfo.c_regdate = firestore.Timestamp.now()?.seconds;
             chattingInfo.c_messages = [message, ...chattingInfo.c_messages];
           }
 
@@ -349,7 +227,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       });
 
       const currentChattingInfo = await getChattingData(chattingId);
-      const updChattingInfo: updateChattingProps = {c_lastMessage: message.text, c_regdate: updatedDate};
+      const updChattingInfo: updateChattingProps = {c_lastMessage: message.text, c_regdate: firestore.Timestamp.now()?.seconds};
 
       let readCnt = sendMessageCount;
       if ((currentChattingInfo?.c_to_id === myInfo.u_id && currentChattingInfo?.c_from_not_read_cnt === 0) || (currentChattingInfo?.c_from_id === myInfo.u_id && currentChattingInfo?.c_to_not_read_cnt === 0)) {
@@ -382,10 +260,17 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     console.log('현재 메시지@!?', messages);
     let currentChattingId = chattingId ? chattingId : uuid.v4().toString();
     let today = new Date();
-    let timestamp = today.toISOString();
+    var utc = require('dayjs/plugin/utc');
+    dayjs.extend(utc);
+    // let timestamp = today.toISOString();
+
+    const timestamp = firestore.Timestamp.now().toDate().toISOString();
+    //const t = new clockSync({});
+
+    console.log('timestamp', dayjs.utc().format());
     if (messages.length === 0) {
       console.log('!??');
-      addNewChattingInfo({...message[0], createdAt: timestamp, p_id, c_id: currentChattingId}, currentChattingId);
+      addNewChattingInfo({...message[0], createdAt: timestamp, c_id: currentChattingId}, currentChattingId);
       setChattingId(currentChattingId);
     } else {
       updateChattingInfo({...message[0], createdAt: timestamp, p_id, c_id: currentChattingId});
@@ -421,72 +306,67 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
+  const onChangeProductState = state => {
+    const updChattingInfo: updateChattingProps = {c_product_state: state, c_regdate: firestore.Timestamp.now()?.seconds};
+
+    updateChatting(chattingId, updChattingInfo);
+    setCurrentProductState(state);
+  };
+
   return (
     // 주임님 conflict
-    // <View style={{flex: 1, backgroundColor: 'white'}}>
-    //   <GiftedChat
-    //     locale="ko"
-    //     messages={messages}
-    //     onSend={message => {
-    //       sendMessage(message);
-    //     }}
-    //     user={{
-    //       _id: myInfo.u_id,
-    //       name: myInfo.u_nickname,
-    //     }}
-    //     //this.props.route.params.nickname
-    //     renderSystemMessage={onRenderSystemMessage}
-    //     placeholder="message 입력"
-    //     onPressAvatar={onPressAvatar}
-    //     // onPressActionButton={this.onPressActionButton}
-    //     // renderUsernameOnMessage
-    //   />
-    //   {/* <RBSheet
-    //     ref={ref => {
-    //       this.Standard = ref;
-    //     }}
-    //     height={230}
-    //     closeOnDragDown
-    //     customStyles={{
-    //       container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
-    //     }}>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={{flex: 0.2, borderWidth: 1}}>
+        <Text>제품명: {product ? product.p_title : filteredChattingState[0]?.c_product?.p_title}</Text>
+        {filteredChattingState[0]?.c_to_id === myInfo.u_id ? (
+          <View>
+            <Picker selectedValue={currentProductState} onValueChange={onChangeProductState}>
+              <Picker.Item label={CHAT_PRODUCT_STATE.SELL} value={CHAT_PRODUCT_STATE.SELL} />
+              <Picker.Item label={CHAT_PRODUCT_STATE.RESERVATION} value={CHAT_PRODUCT_STATE.RESERVATION} />
+              <Picker.Item label={CHAT_PRODUCT_STATE.COMPLETE} value={CHAT_PRODUCT_STATE.COMPLETE} />
+            </Picker>
+          </View>
+        ) : (
+          <View>
+            <Text>{filteredChattingState[0]?.c_product_state ? filteredChattingState[0]?.c_product_state : '판매중'}</Text>
+          </View>
+        )}
+      </View>
+      <View style={{flex: 0.8}}>
+        <GiftedChat
+          locale="ko"
+          messages={messages}
+          onSend={message => {
+            sendMessage(message);
+          }}
+          user={{
+            _id: myInfo.u_id,
+            name: myInfo.u_nickname,
+          }}
+          //this.props.route.params.nickname
+          renderSystemMessage={onRenderSystemMessage}
+          placeholder="message 입력"
+          onPressAvatar={onPressAvatar}
+          // onPressActionButton={this.onPressActionButton}
+          // renderUsernameOnMessage
+        />
+      </View>
+    </View>
+    // <SafeAreaProvider>
+    //   <TouchableOpacity style={styles.touchFlex}>
+    //     <Image style={styles.imageBox} />
     //     <View>
-    //       <TouchableOpacity onPress={this.onHandleEmail}>
-    //         <MaterialIcons name={'report-problem'} />
-    //         <Text />
-    //       </TouchableOpacity>
-    //     </View>
-    //     <View>
-    //       <View>
-    //         <Ionicons name={'ios-person'} />
-    //         <Text>유저정보</Text>
-    //         <Text>{reportUser}</Text>
+    //       <View style={styles.row}>
+    //         <Text style={styles.bold3}>판매중</Text>
+    //         <Text style={styles.text}>knk 아워홈 식권 20장</Text>
+    //       </View>
+    //       <View style={styles.row}>
+    //         <Text style={styles.bold3}>50,000원</Text>
     //       </View>
     //     </View>
-    //     <View>
-    //       <TouchableOpacity>
-    //         <MaterialIcons name={'thumb-down-alt'} />
-    //         <Text>싫어요</Text>
-    //         <Text />
-    //       </TouchableOpacity>
-    //     </View>
-    //   </RBSheet> */}
-    // </View>
-    <SafeAreaProvider>
-      <TouchableOpacity style={styles.touchFlex}>
-        <Image style={styles.imageBox} />
-        <View>
-          <View style={styles.row}>
-            <Text style={styles.bold3}>판매중</Text>
-            <Text style={styles.text}>knk 아워홈 식권 20장</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.bold3}>50,000원</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-      <Chat messages={messages} onSendPress={handleSendPress} user={user} color={'#c00'} />
-    </SafeAreaProvider>
+    //   </TouchableOpacity>
+    //   <Chat messages={messages} onSendPress={handleSendPress} user={user} color={'#c00'} />
+    // </SafeAreaProvider>
   );
 }
 
