@@ -98,8 +98,6 @@ function Product({product}: ProductProps) {
         <Text style={styles.p_price}>{product.p_contents}원하시는 장소로 가져가겠습니다.</Text>
       </View>
       <View style={styles.iconBox}>
-        <Icon name="thumb-up" color="#898989" size={16} />
-        <Text style={styles.p_price}>{product.p_like}</Text>
         <Icon name="chat" color="#898989" size={16} />
         <Text style={styles.p_price}>{product.p_chat}</Text>
         <Icon name="remove-red-eye" color="#898989" size={16} />
@@ -108,9 +106,7 @@ function Product({product}: ProductProps) {
       <View style={styles.borderTop}>
         <View style={styles.head2}>
           <View style={styles.row}>
-            <Icon name="thumb-up-off-alt" color="#898989" size={22} />
-            <Text style={styles.text2}>|</Text>
-            <Text style={styles.text2}>{product.p_badatype}그냥 바다 or </Text>
+            <Text style={styles.text2}>{product.p_badatype} 바다</Text>
             <Text style={styles.bold}>{product.p_price}50,000원</Text>
           </View>
           <View style={styles.buttons}>
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   // text: {fontSize: 14, color: '#606060'},
-  text2: {fontSize: 14, color: '#606060', paddingHorizontal: 4},
+  text2: {fontSize: 14, color: '#606060', paddingRight: 4},
   // button: {padding: 10},
   p_regdate: {
     color: '#757575',

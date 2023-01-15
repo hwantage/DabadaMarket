@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Pressable, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Pressable, TouchableOpacity, Image} from 'react-native';
 import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import {useRecoilState} from 'recoil';
@@ -26,42 +26,31 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
 
   return (
     <>
-      <View>
-        <Pressable style={styles.touchFlex} onPress={() => onPress()}>
+      <Pressable style={styles.touchFlex} onPress={() => onPress()}>
+        <View style={styles.between}>
           <View style={styles.flex2}>
-            {/* <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" /> */}
             <Avatar source={{uri: myInfo.u_id === chatInfo.c_from_id ? chatInfo?.c_to_photoUrl : chatInfo?.c_from_photoUrl}} size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>{myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_nickname : chatInfo.c_from_nickname}</Text>
-              <Text style={styles.bold4}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>{chatInfo.c_lastMessage}</Text>
-              {readCnt > 0 && (
-                <View style={styles.notReadBadgeRow}>
-                  <Text style={styles.c_notReadMessage}>{readCnt}</Text>
-                </View>
-              )}
-            </View>
-          </View>
-        </Pressable>
-        <Pressable style={styles.touchFlex}>
-          <View style={styles.flex2}>
-            <Avatar size={48} />
-          </View>
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.bold3}>hwan77</Text>
-              <Text style={styles.bold4}>1시간 전</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.bold4}>좋은 거래였습니다 감사합니다^^</Text>
+            <View>
+              <View style={styles.row}>
+                <Text style={styles.bold3}>{myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_nickname : chatInfo.c_from_nickname}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.bold4}>{chatInfo.c_lastMessage}</Text>
+                {readCnt > 0 && (
+                  <View style={styles.notReadBadgeRow}>
+                    <Text style={styles.c_notReadMessage}>{readCnt}</Text>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
-        </Pressable>
-      </View>
+          <View style={styles.flex3}>
+            <Text style={styles.bold4}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
+            <Image style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
+            {/* <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" /> */}
+          </View>
+        </View>
+      </Pressable>
     </>
   );
 }
@@ -88,7 +77,21 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  review: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  imageBox: {
+    backgroundColor: '#cdcdcd',
+    alignItems: 'flex-start',
+    width: 50,
+    height: 50,
+    borderRadius: 6,
+    color: '#898989',
+    marginLeft: 8,
   },
   c_title: {
     lineHeight: 26,
@@ -135,13 +138,29 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 12,
     flexDirection: 'row',
+    // justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#dfdfdf',
     backgroundColor: '#ffffff',
+    // flex: 1,
   },
   flex2: {
     flexDirection: 'row',
+    // justifyContent: 'space-between',
+  },
+  flex3: {
+    flexDirection: 'row',
+    flex: 2,
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  between: {
+    flexDirection: 'row',
+    // flex: 1,
+    // justifyContent: 'fl',
+    // backgroundColor: '#c00',
+    flex: 1,
   },
   bold3: {marginLeft: 8, fontSize: 16, fontWeight: 'bold'},
   bold4: {marginLeft: 8, fontSize: 14},

@@ -352,7 +352,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           // renderUsernameOnMessage
         />
       </View>
-    </>
+    </View>
   );
 }
 {
