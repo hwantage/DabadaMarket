@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS, TouchableOpacity} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {default as Text} from '../common/DabadaText';
@@ -14,6 +14,7 @@ import {useTranslation} from 'react-i18next';
 import ActionSheetModal from '../ActionSheetModal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DabadaInputLine from '../common/DabadaInputLine';
+import TopRightButton from '../common/TopRightButton';
 
 interface type_imagePickerOption {
   mediaType: 'photo' | 'video' | 'mixed';
@@ -37,6 +38,13 @@ function ModifyProfile() {
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  /* 우측 상단 이미지 (저장) */
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
+    });
+  }, [loading, navigation, onSubmit]);
 
   const onPickImage = (res: any) => {
     if (res.didCancel || !res) {

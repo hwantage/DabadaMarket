@@ -67,28 +67,27 @@ function ProductCard({product}: ProductCardProps) {
     <>
       <View style={styles.block}>
         <TouchableOpacity style={styles.touchFlex} onPress={() => onPress(product)}>
-          <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
-          <View style={styles.flex3}>
-            <View style={styles.review}>
-              <Text style={styles.bold1}>{product.p_title}</Text>
-              <Text style={styles.p_regdate}>{moment(product.p_regdate).fromNow()}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.p_badatype}>{p_badatype_str}</Text>
-              <Icon name="circle" size={6} style={styles.mgHor} />
-              <Text style={styles.bold2}>{product.p_price}</Text>
-            </View>
-            <View style={styles.review}>
-              <Text style={styles.tag_soldout}>{p_status_str}</Text>
-              {/* <Text style={styles.tag_reserve}>예약중</Text>
-              <Text style={styles.tag_sell}>판매중</Text> */}
-              <View style={styles.iconBox}>
-                <Icon name="thumb-up" color="#898989" size={16} />
-                <Text style={styles.p_price}>{product.p_like}</Text>
-                <Icon name="chat" color="#898989" size={16} />
-                <Text style={styles.p_price}>{product.p_chat}</Text>
-                <Icon name="remove-red-eye" color="#898989" size={16} />
-                <Text style={styles.p_price}>{product.p_view}</Text>
+          <View style={styles.review}>
+            <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
+            <View style={styles.flex3}>
+              <View style={styles.review}>
+                <Text style={styles.bold1}>{product.p_title}제목입니다</Text>
+                <Text style={styles.p_regdate}>{moment(product.p_regdate).fromNow()}</Text>
+              </View>
+              <View style={styles.review}>
+                <Text style={styles.p_badatype}>{p_badatype_str}</Text>
+                <Text style={styles.bold1}>{product.p_price}50,000원</Text>
+              </View>
+              <View style={styles.review}>
+                <Text style={styles.tag_soldout}>{p_status_str}</Text>
+                {/* <Text style={styles.tag_reserve}>예약중</Text>
+                <Text style={styles.tag_sell}>판매중</Text> */}
+                <View style={styles.iconBox}>
+                  <Icon name="chat" color="#898989" size={16} />
+                  <Text style={styles.p_price}>{product.p_chat}</Text>
+                  <Icon name="remove-red-eye" color="#898989" size={16} />
+                  <Text style={styles.p_price}>{product.p_view}</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -118,10 +117,10 @@ const styles = StyleSheet.create({
   row: {
     paddingTop: 10,
     // textAlign: 20,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     // paddingBottom: 2,
-    // justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     // paddingVertical: 10,
   },
   iconBox: {
@@ -162,9 +161,11 @@ const styles = StyleSheet.create({
   mgHor: {
     marginHorizontal: 3,
   },
+
   touchFlex: {
     // paddingVertical: 8,
-    flexDirection: 'row',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     // paddingHorizontal: 8,
   },
   flex3: {
@@ -205,12 +206,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   tag_reserve: {
-    color: '#808080',
-    backgroundColor: '#67FF4F',
+    color: '#ffffff',
+    backgroundColor: '#e95945',
     borderRadius: 20,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#67FF4F',
+    borderColor: '#e95945',
     fontSize: 12,
     fontWeight: 'bold',
     height: 24,
@@ -222,12 +223,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   tag_sell: {
-    color: '#006FAF',
-    backgroundColor: '#40BFFF',
+    color: '#ffffff',
+    backgroundColor: '#00bbe6',
     borderRadius: 20,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#40BFFF',
+    borderColor: '#00bbe6',
     fontSize: 12,
     fontWeight: 'bold',
     height: 24,

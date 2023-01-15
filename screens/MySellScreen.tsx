@@ -3,7 +3,6 @@ import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {ScrollView, TouchableOpacity, Image, ActivityIndicator, FlatList, useWindowDimensions, ListRenderItem, RefreshControl, StyleSheet, View} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
-import TopRightButton from '../components/common/TopRightButton';
 import ProductCard from '../components/product/ProductCard';
 import {productProps} from '../utils/products';
 import useProducts from '../hooks/useProducts';
@@ -36,13 +35,6 @@ function MySellScreen() {
       ]);
     }
   }, [productCnt, productCnt_complete, productsReady]);
-
-  /* 우측 상단 이미지 (검색) */
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => <TopRightButton name="more-vert" onPress={() => {}} />,
-    });
-  }, [navigation]);
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} />;
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
