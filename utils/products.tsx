@@ -24,7 +24,7 @@ export interface productProps {
   p_badatype: 'free' | 'money' | 'drink' | 'secret';
   p_price: string;
   p_contents: string;
-  p_status: number; // 1:판매중, 2:예약중, 3:판매완료, 4:판매중지
+  p_status: number; // 1:판매중, 2:예약중, 3:거래완료, 4:판매중지
   p_regdate: string;
   p_like: number;
   p_chat: number;
@@ -36,6 +36,32 @@ export interface productProps {
   p_seller_review: productSellReviewProps;
   p_buy_regdate: string;
 }
+
+export const productPropsDefault: productProps = {
+  p_id: '',
+  u_id: '',
+  p_title: '',
+  p_badatype: 'money', // 'free' | 'money' | 'drink' | 'secret';
+  p_price: '',
+  p_contents: '',
+  p_status: 1, // 1:판매중, 2:예약중, 3:거래완료, 4:판매중지
+  p_regdate: '',
+  p_like: 0,
+  p_chat: 0,
+  p_buyer_id: '',
+  p_category: 1, // 고정값(카테고리 기능 추후 구현)
+  p_view: 0,
+  p_images: [],
+  p_buyer_review: {
+    p_buyer_star: '',
+    p_buyer_note: '',
+  },
+  p_seller_review: {
+    p_seller_star: '',
+    p_seller_note: '',
+  },
+  p_buy_regdate: '',
+};
 
 // 상품 리스트 조회 type
 export interface getProductsProps {
@@ -68,7 +94,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
       query = query.where('u_id', '==', u_id).where('p_status', 'in', [3, 4]);
     }
   } else {
-    query = query.where('p_status', 'in', [1, 2, 3]);
+    query = query.where('p_status', 'in', [1, 2]);
   }
   if (keyword) {
     query = query.startAt(keyword).endAt(keyword + '\uf8ff');
@@ -123,7 +149,35 @@ export async function getProductInfo(p_id: string): Promise<any> {
   const doc = await productCollection.doc(p_id).get();
   return doc.data();
 }
+
 // 상품 삭제
 export function removeProduct(p_id: string) {
   return productCollection.doc(p_id).delete();
+}
+
+// 상품 수정 (전체)
+export function updateProduct(p_id: string, product: productProps) {
+  return productCollection.doc(p_id).update({
+    product,
+  });
+}
+
+// 상품 수정
+export function updateProductField(p_id: string, fieldName: string, fieldValue: any) {
+  console.log(p_id, fieldName, fieldValue);
+  return productCollection.doc(p_id).update({
+    [fieldName]: fieldValue,
+  });
+}
+
+// 숫자 3자리 콤마. ₩ 100,000 형태로 리턴
+export function comma(s: string) {
+  let str = String(s);
+  return '₩ ' + str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+}
+
+// 숫자만 추출
+export function uncomma(s: string) {
+  let str = String(s);
+  return str.replace(/[^\d]+/g, '');
 }

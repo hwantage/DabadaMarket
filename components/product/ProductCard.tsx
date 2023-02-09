@@ -1,22 +1,34 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {productProps} from '../../utils/products';
+import {productProps, productPropsDefault, comma} from '../../utils/products';
 import moment from 'moment';
 import 'moment/locale/ko';
 
 interface ProductCardProps {
   product: productProps;
+  querymode: string | null;
 }
 
-function ProductCard({product}: ProductCardProps) {
+function ProductCard({product: props, querymode}: ProductCardProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const [product, setProduct] = useState<productProps>(productPropsDefault);
 
-  const onPress = (productInfo: productProps) => {
-    navigation.navigate('ProductDetailScreen', productInfo);
+  useEffect(() => {
+    setProduct(props);
+  }, [props]);
+
+  const onPress = () => {
+    const p_viewCnt = product.p_view + 1;
+    setProduct({...product, p_view: p_viewCnt}); // p_view 조회수 카운터 증가
+    navigation.navigate('ProductDetailScreen', {product: {...product, p_view: p_viewCnt}, querymode});
+  };
+
+  const onPressReview = () => {
+    product.p_seller_review.p_seller_star === '' ? navigation.push('ReviewWriteScreen', {product}) : navigation.push('ReviewViewScreen', {product});
   };
 
   let p_badatype_str = ''; // 'free' | 'money' | 'drink' | 'secret';
@@ -40,25 +52,25 @@ function ProductCard({product}: ProductCardProps) {
       break;
   }
 
-  let p_status_str = ''; // 1:판매중, 2:예약중, 3:판매완료, 4:판매중지
+  let p_status_str = ''; // 1:판매중, 2:예약중, 3:거래완료, 4:판매중지
   let p_status_css = {};
 
   switch (product.p_status) {
     case 1:
       p_status_str = '판매중';
-      p_status_css = styles.tag_reserve;
+      p_status_css = styles.tag_sell;
       break;
     case 2:
       p_status_str = '예약중';
       p_status_css = styles.tag_reserve;
       break;
     case 3:
-      p_status_str = '판매완료';
-      p_status_css = styles.tag_reserve;
+      p_status_str = '거래완료';
+      p_status_css = styles.tag_soldout;
       break;
     case 4:
       p_status_str = '판매중지';
-      p_status_css = styles.tag_reserve;
+      p_status_css = styles.tag_soldout;
 
       break;
   }
@@ -66,32 +78,35 @@ function ProductCard({product}: ProductCardProps) {
   return (
     <>
       <View style={styles.block}>
-        <TouchableOpacity style={styles.touchFlex} onPress={() => onPress(product)}>
+        <TouchableOpacity style={styles.touchFlex} onPress={() => onPress()}>
           <View style={styles.review}>
             <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
             <View style={styles.flex3}>
               <View style={styles.review}>
-                <Text style={styles.bold1}>{product.p_title}제목입니다</Text>
+                <Text style={styles.bold1}>{product.p_title}</Text>
                 <Text style={styles.p_regdate}>{moment(product.p_regdate).fromNow()}</Text>
               </View>
               <View style={styles.review}>
-                <Text style={styles.p_badatype}>{p_badatype_str}</Text>
-                <Text style={styles.bold1}>{product.p_price}50,000원</Text>
+                <Text style={p_badatype_css}>{p_badatype_str}</Text>
+                <Text style={styles.p_price}>{product.p_price !== '' && product.p_price !== '0' ? comma(product.p_price) : '무료'}</Text>
               </View>
               <View style={styles.review}>
-                <Text style={styles.tag_soldout}>{p_status_str}</Text>
-                {/* <Text style={styles.tag_reserve}>예약중</Text>
-                <Text style={styles.tag_sell}>판매중</Text> */}
+                <Text style={p_status_css}>{p_status_str}</Text>
                 <View style={styles.iconBox}>
                   <Icon name="chat" color="#898989" size={16} />
-                  <Text style={styles.p_price}>{product.p_chat}</Text>
+                  <Text style={styles.p_num}>{product.p_chat}</Text>
                   <Icon name="remove-red-eye" color="#898989" size={16} />
-                  <Text style={styles.p_price}>{product.p_view}</Text>
+                  <Text style={styles.p_num}>{product.p_view}</Text>
                 </View>
               </View>
             </View>
           </View>
         </TouchableOpacity>
+        {product.p_status === 3 && (
+          <TouchableOpacity onPress={onPressReview}>
+            <View style={styles.reviewBtnFlex}>{product.p_seller_review.p_seller_star === '' ? <Text style={styles.textReview1}>거래 후기 작성</Text> : <Text style={styles.textReview2}>보낸 후기 보기</Text>}</View>
+          </TouchableOpacity>
+        )}
       </View>
     </>
   );
@@ -99,29 +114,12 @@ function ProductCard({product}: ProductCardProps) {
 
 const styles = StyleSheet.create({
   block: {
-    // paddingTop: 10,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#dfdfdf',
     backgroundColor: '#ffffff',
-  },
-  paddingBlock: {
-    paddingHorizontal: 16,
-  },
-  // row: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  // },
-  row: {
-    paddingTop: 10,
-    // textAlign: 20,
-    flexDirection: 'column',
-    alignItems: 'center',
-    // paddingBottom: 2,
-    justifyContent: 'space-between',
-    // paddingVertical: 10,
   },
   iconBox: {
     flexDirection: 'row',
@@ -144,42 +142,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginHorizontal: 3,
-    color: '#898989',
+    color: 'black',
   },
-  image: {
-    backgroundColor: '#bdbdbd',
-    width: 100,
-    aspectRatio: 1,
-    marginBottom: 6,
-    borderRadius: 10,
+  p_num: {
+    lineHeight: 17,
+    fontSize: 16,
+    marginHorizontal: 3,
+    color: '#898989',
   },
   p_regdate: {
     color: '#757575',
     fontSize: 12,
     lineHeight: 18,
   },
-  mgHor: {
-    marginHorizontal: 3,
-  },
-
   touchFlex: {
-    // paddingVertical: 8,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // paddingHorizontal: 8,
   },
   flex3: {
     flex: 1,
   },
   bold1: {marginTop: 4, fontSize: 16, fontWeight: 'bold', color: '#898989'},
-  bold2: {fontSize: 18, fontWeight: 'bold', marginTop: 4},
+  textReview1: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: '#166de0'},
+  textReview2: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: 'black'},
   imageBox: {
     backgroundColor: '#cdcdcd',
     alignItems: 'flex-start',
     width: 100,
     height: 100,
     borderRadius: 6,
-    //backgroundColor: 'transparent',
     color: '#898989',
     marginRight: 12,
   },
@@ -238,6 +229,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     paddingVertical: 4,
+  },
+  reviewBtnFlex: {
+    paddingVertical: 14,
+    flexDirection: 'row',
+    width: '100%',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    shadowColor: '#191919',
+    shadowOpacity: 0.1,
+    shadowRadius: 0,
+    //elevation: 10,
+    shadowOffset: {
+      width: 0,
+      height: 30,
+    },
   },
 });
 

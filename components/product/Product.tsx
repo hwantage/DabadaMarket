@@ -1,13 +1,13 @@
-import React, {useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet, Image, Pressable, ScrollView} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import {default as Text} from '../common/DabadaText';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Pressable, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import Slideshow from 'react-native-image-slider-show';
-import {productProps} from '../../utils/products';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {default as Text} from '../common/DabadaText';
 import DabadaButton from '../common/DabadaButton';
 import Avatar from '../profile/Avatar';
+import ImageSlider from '../ImageSlider';
+import {productProps, comma} from '../../utils/products';
 import {getUserInfo} from '../../utils/auth';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilValue} from 'recoil';
@@ -20,35 +20,17 @@ interface ProductProps {
 }
 
 function Product({product}: ProductProps) {
-  const [user, setUser] = useState<authInfoProps>();
-  const [imageIndex, setImageIndex] = useState<number>(0);
+  const [user, setUser] = useState<authInfoProps>(); // 상품 등록자 정보
+
   const navigation = useNavigation<StackNavigationProp<any>>();
   const chattingStateInfo = useRecoilValue(chattingInfoState);
   const myInfo = useRecoilValue(authInfoState);
 
-  console.log(myInfo);
-  console.log(product.u_id);
   useEffect(() => {
     getUserInfo(product.u_id).then(_user => {
       setUser(_user);
     });
   }, [product]);
-
-  const onPressImage = () => {
-    // 이미지 상세보기
-  };
-
-  const getPrevImage = useCallback((): void => {
-    if (imageIndex > 0) {
-      setImageIndex(imageIndex - 1);
-    }
-  }, [imageIndex]);
-
-  const getNextImage = useCallback(() => {
-    if (imageIndex < product.p_images.length - 1) {
-      setImageIndex(imageIndex + 1);
-    }
-  }, [imageIndex, product.p_images.length]);
 
   const goChattingScreen = () => {
     let c_id = '';
@@ -61,19 +43,56 @@ function Product({product}: ProductProps) {
     navigation.push('ChattingRoomScreen', {u_id: product.u_id, product});
   };
 
+  let p_badatype_str = ''; // 'free' | 'money' | 'drink' | 'secret';
+  let p_badatype_css = {};
+  switch (product.p_badatype) {
+    case 'free':
+      p_badatype_str = '그냥바다';
+      p_badatype_css = styles.p_badatype;
+      break;
+    case 'money':
+      p_badatype_str = '머니바다';
+      p_badatype_css = styles.p_badatype;
+      break;
+    case 'drink':
+      p_badatype_str = '한잔바다';
+      p_badatype_css = styles.p_badatype;
+      break;
+    case 'secret':
+      p_badatype_str = '몰래바다';
+      p_badatype_css = styles.p_badatype;
+      break;
+  }
+
+  let p_status_str = ''; // 1:판매중, 2:예약중, 3:거래완료, 4:판매중지
+  let p_status_css = {};
+  let p_buy_available = true; // 판매중, 예약중 일때만 구매 가능. 거래완료, 판매중지 일 경우 false 로 변경.
+
+  switch (product.p_status) {
+    case 1:
+      p_status_str = '판매중';
+      p_status_css = styles.tag_sell;
+      break;
+    case 2:
+      p_status_str = '예약중';
+      p_status_css = styles.tag_reserve;
+      break;
+    case 3:
+      p_status_str = '거래완료';
+      p_status_css = styles.tag_soldout;
+      p_buy_available = false;
+      break;
+    case 4:
+      p_status_str = '판매중지';
+      p_status_css = styles.tag_soldout;
+      p_buy_available = false;
+      break;
+  }
+
   return (
     <ScrollView>
       <View style={styles.head}>
-        {/* <Pressable onPress={getPrevImage}>
-            <Icon name="circle" size={12} />
-          </Pressable> */}
-        <Pressable style={styles.row} onPress={onPressImage}>
-          <Image source={product.p_images.length > 0 ? {uri: product.p_images[imageIndex].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" />
-        </Pressable>
-        {/* <Pressable onPress={getNextImage}>
-            <Text style={styles.text}>{'>'}</Text>
-          </Pressable> */}
-        {/* <Slideshow dataSource={<Image source={product.p_images.length > 0 ? {uri: product.p_images[imageIndex].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" />} /> */}
+        <ImageSlider images={product.p_images.map(item => item.p_url)} />
       </View>
       <View style={styles.profile2}>
         <Pressable
@@ -81,7 +100,7 @@ function Product({product}: ProductProps) {
           onPress={() => {
             navigation.push('UserHomeScreen', {u_id: product.u_id});
           }}>
-          <Avatar style={styles.avatar} source={user?.u_photoUrl ? {uri: user?.u_photoUrl} : require('../../assets/user.png')} />
+          <Avatar source={user?.u_photoUrl ? {uri: user?.u_photoUrl} : require('../../assets/user.png')} />
           <Text style={styles.nickname}>{user?.u_nickname}</Text>
         </Pressable>
         <Text style={[styles.text, styles.hour]}>
@@ -90,12 +109,12 @@ function Product({product}: ProductProps) {
       </View>
       <View style={styles.paddingBlock}>
         <View style={styles.row}>
-          <Text style={styles.tag_soldout}>거래완료</Text>
-          <Text style={styles.p_title}>{product.p_title}knk 아워홈 식권 20매</Text>
+          <Text style={p_status_css}>{p_status_str}</Text>
+          <Text style={styles.p_title}>{product.p_title}</Text>
         </View>
       </View>
       <View style={styles.row2}>
-        <Text style={styles.p_price}>{product.p_contents}원하시는 장소로 가져가겠습니다.</Text>
+        <Text style={styles.p_price}>{product.p_contents}</Text>
       </View>
       <View style={styles.iconBox}>
         <Icon name="chat" color="#898989" size={16} />
@@ -106,20 +125,16 @@ function Product({product}: ProductProps) {
       <View style={styles.borderTop}>
         <View style={styles.head2}>
           <View style={styles.row}>
-            <Text style={styles.text2}>{product.p_badatype} 바다</Text>
-            <Text style={styles.bold}>{product.p_price}50,000원</Text>
+            <Text style={p_badatype_css}>{p_badatype_str} </Text>
+            <Text style={styles.bold}> {product.p_price !== '' && product.p_price !== '0' ? comma(product.p_price) : '무료'}</Text>
           </View>
-          <View style={styles.buttons}>
-            <DabadaButton theme={'primary'} hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
-          </View>
+          {myInfo.u_id !== product.u_id && p_buy_available && (
+            <View style={styles.buttons}>
+              <DabadaButton theme={'primary'} hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
+            </View>
+          )}
         </View>
       </View>
-
-      {/* {myInfo.u_id !== product.u_id && (
-        <View style={styles.buttons}>
-          <DabadaButton hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
-        </View>
-      )} */}
     </ScrollView>
   );
 }
@@ -129,20 +144,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     flexDirection: 'row',
   },
-  flex1: {
-    // flex: 1,
-    width: '100%',
-    flexDirection: 'row',
-    flex: 1,
-  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'center',
-    // marginHorizontal: 12
-    // flex: 1,
-    // display: 'flex',
-    // textAlign: 'center',
   },
   row2: {
     flexDirection: 'row',
@@ -150,24 +154,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 8,
   },
-  row3: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    // justifyContent: 'center',
-    // marginHorizontal: 12
-    // flex: 1,
-    // display: 'flex',
-    // textAlign: 'center',
-    borderTopColor: '#dfdfdf',
-    borderTopWidth: 1,
-  },
   p_title: {
-    // lineHeight: 26,
     fontSize: 18,
     fontWeight: 'bold',
     color: '#606060',
     marginLeft: 6,
-    // marginBottom: 15,
   },
   p_badatype: {
     lineHeight: 16,
@@ -181,23 +172,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     color: '#898989',
   },
-  image: {
-    backgroundColor: '#bdbdbd',
-    width: '100%',
-    aspectRatio: 1,
-    // marginBottom: 6,
-    borderRadius: 6,
-  },
-  // text: {fontSize: 14, color: '#606060'},
-  text2: {fontSize: 14, color: '#606060', paddingRight: 4},
-  // button: {padding: 10},
   p_regdate: {
     color: '#757575',
     fontSize: 12,
     lineHeight: 18,
   },
   buttons: {
-    // margin: 30,
     marginRight: -16,
     padding: 12,
     width: 100,
@@ -206,7 +186,6 @@ const styles = StyleSheet.create({
   iconBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    // paddingTop: 14,
     marginRight: 16,
     marginBottom: 8,
     justifyContent: 'flex-end',
@@ -222,7 +201,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 16,
-    // marginVertical: 8,
+    height: 60,
   },
   borderTop: {
     borderTopWidth: 1,
@@ -231,13 +210,10 @@ const styles = StyleSheet.create({
   profile2: {
     flexDirection: 'row',
     alignItems: 'center',
-    // marginHorizontal: 8,
-    // marginVertical:
     borderTopColor: '#dfdfdf',
     borderBottomColor: '#dfdfdf',
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    // borderWidth: 1,
     justifyContent: 'space-between',
   },
   profile: {
@@ -245,7 +221,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 16,
     marginVertical: 14,
-    // flex: 1,
   },
   bold: {fontSize: 18, fontWeight: 'bold', color: '#606060'},
   hour: {
@@ -260,7 +235,6 @@ const styles = StyleSheet.create({
   text: {
     color: '#606060',
     fontSize: 12,
-    // lineHeight: 18,
   },
   tag_soldout: {
     color: '#ffffff',
@@ -274,10 +248,6 @@ const styles = StyleSheet.create({
     borderRightColor: '#808080',
     fontSize: 12,
     height: 24,
-    // marginTop: 10,
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
@@ -295,6 +265,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  tag_sell: {
+    color: '#ffffff',
+    backgroundColor: '#00bbe6',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#00bbe6',
+    fontSize: 12,
+    fontWeight: 'bold',
+    height: 24,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
     paddingVertical: 4,
   },
 });

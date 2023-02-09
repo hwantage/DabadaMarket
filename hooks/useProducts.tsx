@@ -7,7 +7,9 @@ import {productProps, getProductsProps} from '../utils/products';
 
 export default function useProducts({u_id, querymode, keyword}: getProductsProps) {
   const [products, setProducts] = useState<productProps[] | undefined>(undefined);
+  //const [productCnt, setProductCnt] = useState<productCntProps[]>([{querymode: '', cnt: 0}]);
   const [productCnt, setProductCnt] = useState<number>(0);
+  const [productCnt_complete, setProductCnt_complete] = useState<number>(0);
   const [noMoreProduct, setNoMoreProduct] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
@@ -20,20 +22,35 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
       }
     });
 
-    // buy | sell | sell_complete 인 경우 갯수 조회
-    if (querymode !== undefined) {
+    // sell | sell_complete 인 경우 갯수 조회
+    if (querymode !== undefined && querymode !== 'buy') {
       getProductCnt({u_id, querymode, keyword}).then(_cnt => {
-        console.log(_cnt);
-        setProductCnt(_cnt);
+        if (querymode === 'sell') {
+          setProductCnt(_cnt);
+        } else if (querymode === 'sell_complete') {
+          setProductCnt_complete(_cnt);
+        }
       });
     }
   }, [keyword, querymode, u_id]);
 
-  const removeProduct = useCallback(
-    (p_id: string) => {
-      setProducts(products?.filter(p => p.p_id !== p_id));
+  const decreaseCount = useCallback(
+    (qmode: string | null) => {
+      if (qmode === 'sell') {
+        setProductCnt(productCnt - 1);
+      } else if (qmode === 'sell_complete') {
+        setProductCnt_complete(productCnt_complete - 1);
+      }
     },
-    [products],
+    [productCnt, productCnt_complete],
+  );
+
+  const removeProduct = useCallback(
+    (p_id: string, qmode: string | null) => {
+      setProducts(products?.filter(p => p.p_id !== p_id));
+      decreaseCount(qmode);
+    },
+    [decreaseCount, products],
   );
 
   const updateProduct = useCallback(
@@ -42,8 +59,8 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
       const nextProducts = products?.map((p: productProps) =>
         p.p_id === p_id
           ? {
-              ...p,
-              productInfo,
+              //...p,
+              ...productInfo,
             }
           : p,
       );
@@ -92,5 +109,6 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
     onLoadMore,
     onRefresh,
     productCnt,
+    productCnt_complete,
   };
 }

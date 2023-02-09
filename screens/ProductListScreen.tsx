@@ -28,7 +28,7 @@ function ProductListScreen() {
   }, [navigation]);
 
   const renderItem: ListRenderItem<productProps> = ({item}) => {
-    return productsReady ? <ProductCard product={item} /> : <></>;
+    return productsReady ? <ProductCard product={item} querymode={null} /> : <></>;
   };
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
   const listRefreshControl: any = <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={['#347deb']} />;

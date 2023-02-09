@@ -65,10 +65,7 @@ function LoginScreen() {
     try {
       const {user} = isJoin ? await join(form.email, form.password) : await login(form.email, form.password);
 
-      console.log('user :: ', user);
-
       const userInfo = await getUserInfo(user.uid);
-      console.log('PROFILE :', userInfo);
 
       if (!userInfo) {
         // 프로필 설정한 적 없으면 프로필 수정 화면으로 이동.
@@ -106,7 +103,7 @@ function LoginScreen() {
       console.log('ChattingData1', value);
       if (value !== null) {
         let allChattingInfoState = JSON.parse(value);
-        let myChattingInfoState = allChattingInfoState.filter(chattingInfo => chattingInfo.u_id === uid);
+        let myChattingInfoState = allChattingInfoState.filter((chattingInfo: {u_id: string}) => chattingInfo.u_id === uid);
 
         console.log('ChattingData2', myChattingInfoState);
         setChattingInfoState(myChattingInfoState);
@@ -121,8 +118,6 @@ function LoginScreen() {
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
-        {/* <Text style={styles.text}>{t('title', '다바다 마켓')}</Text> */}
-        {/* <Image style={styles.circle} source={require('../assets/dabada.png')} /> */}
         <View style={styles.form}>
           <DabadaInput hasMarginBottom={true} placeholder={t('common.email', '이메일')} value={form.email} autoCapitalize="none" autoCorrect={false} autoCompleteType="email" keyboardType="email-address" returnKeyType="next" blurOnSubmit={false} onChangeText={(text: string) => createChangeTextHandler('email', text)} onSubmitEditing={() => ref_password.current?.focus()} />
           <DabadaInput hasMarginBottom={true} placeholder={t('common.password', '비밀번호')} value={form.password} secureTextEntry blurOnSubmit={false} returnKeyType={isJoin ? 'next' : 'done'} onChangeText={(text: string) => createChangeTextHandler('password', text)} onSubmitEditing={() => (isJoin ? ref_confirmPassword.current?.focus() : onSubmit())} ref={ref_password} />
@@ -192,8 +187,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginTop: 40,
-    // justifyContent: 'center',
-    // marginTop: -0,
   },
   text: {
     fontSize: 18,
@@ -201,7 +194,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   form: {
-    // marginTop: 44,
     width: '100%',
     paddingHorizontal: 16,
   },

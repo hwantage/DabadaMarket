@@ -4,7 +4,7 @@ import events from '../utils/events';
 
 interface useProductsEventEffectProps {
   refresh: () => Promise<void>;
-  removeProduct: (p_id: string) => void | Promise<void>;
+  removeProduct: (p_id: string, querymode: string | null) => void | Promise<void>;
   updateProduct: (p_id: string, productInfo: productProps) => void;
   enabled: boolean;
 }

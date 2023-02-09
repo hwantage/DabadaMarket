@@ -5,7 +5,7 @@ export const chattingCollection = firestore().collection('chatting');
 export enum CHAT_PRODUCT_STATE {
   SELL = '판매중',
   RESERVATION = '예약중',
-  COMPLETE = '판매완료',
+  COMPLETE = '거래완료',
 }
 
 export interface chattingProps {

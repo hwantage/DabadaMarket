@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   defaultFont: {
     fontFamily: 'sans-serif-thin',
     fontWeight: '800',
-    fontSize: 40,
+    fontSize: 20,
     color: '#353535',
   },
 });

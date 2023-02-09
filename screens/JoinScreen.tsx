@@ -16,7 +16,7 @@ type ParamList = {
   };
 };
 
-function StartScreen() {
+function JoinScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const {t} = useTranslation();
   const route = useRoute<RouteProp<ParamList, 'params'>>();
@@ -161,4 +161,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default StartScreen;
+export default JoinScreen;

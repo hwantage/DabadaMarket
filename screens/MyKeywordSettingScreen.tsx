@@ -5,7 +5,7 @@ import {ActivityIndicator, Button, FlatList, Image, ListRenderItem, RefreshContr
 import {default as Text} from '../components/common/DabadaText';
 import TopLeftButton from '../components/common/TopLeftButton';
 import ProductCard from '../components/product/ProductCard';
-import {productProps} from '../utils/products';
+import {productProps, productPropsDefault} from '../utils/products';
 import Avatar from '../components/profile/Avatar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import useProducts from '../hooks/useProducts';
@@ -22,22 +22,7 @@ function MyKeywordSettingScreen() {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: authInfo.u_id, querymode: 'buy'});
   const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<productProps>({
-    p_id: uuid.v4().toString(),
-    u_id: authInfo.u_id,
-    p_title: '',
-    p_badatype: 'free',
-    p_price: '',
-    p_contents: '',
-    p_status: 1, // 1:판매중, 2:예약중, 3:판매완료, 4:판매중지
-    p_regdate: '',
-    p_like: 0,
-    p_chat: 0,
-    p_buyer_id: '',
-    p_category: 1, // 고정값(카테고리 기능 추후 구현)
-    p_view: 0,
-    p_images: [],
-  });
+  const [product, setProduct] = useState<productProps>({...productPropsDefault, p_id: uuid.v4().toString(), u_id: authInfo.u_id});
 
   const productsReady = products !== undefined;
 

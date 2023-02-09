@@ -10,7 +10,7 @@
     "nickname": "닉네임",
     "title": "제목",
     "contents": "내용",
-    "price": "가격"
+    "price": "₩ 가격(선택 사항)"
   },
   "button": {
     "save": "저장",

@@ -19,19 +19,16 @@ import ProductAddScreen from './ProductAddScreen';
 import ProductDetailScreen from './ProductDetailScreen';
 import ProductListScreen from './ProductListScreen';
 import ProductModifyScreen from './ProductModifyScreen';
-import ReviewScreen from './ReviewScreen';
+import ReviewWriteScreen from './ReviewWriteScreen';
+import ReviewViewScreen from './ReviewViewScreen';
 import SearchScreen from './SearchScreen';
-import StartScreen from './StartScreen';
 import SettingScreen from './SettingScreen';
 import UserHomeScreen from './UserHomeScreen';
 import UserSellScreen from './UserSellScreen';
-
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {productProps} from '../utils/products';
 import SearchResultScreen from './SearchResultScreen';
-import TopRightButton from '../components/common/TopRightButton';
-import TopLeftButton from '../components/common/TopLeftButton';
 
 export interface u_idProp {
   u_id: string;
@@ -49,13 +46,13 @@ export type RootStackParamList = {
   MySellScreen: undefined;
   NotificationListScreen: undefined;
   ProductAddScreen: undefined;
-  ProductDetailScreen: productProps;
+  ProductDetailScreen: {product: productProps; querymode: string | null};
   ProductListScreen: undefined;
   ProductModifyScreen: undefined;
-  ReviewScreen: undefined;
+  ReviewWriteScreen: {product: productProps};
+  ReviewViewScreen: {product: productProps};
   SearchScreen: undefined;
   SearchResultScreen: {keyword: string};
-  StartScreen: undefined;
   SettingScreen: undefined;
   UserHomeScreen: {u_id: string};
   UserSellScreen: {u_id: string};
@@ -104,10 +101,10 @@ function AppStackRoot() {
           <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{title: '상품 상세'}} />
           <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{title: t('title', '다바다 마켓')}} />
           <Stack.Screen name="ProductModifyScreen" component={ProductModifyScreen} options={{title: '글 수정하기'}} />
-          <Stack.Screen name="ReviewScreen" component={ReviewScreen} options={{title: '거래 후기 보내기'}} />
+          <Stack.Screen name="ReviewWriteScreen" component={ReviewWriteScreen} options={{title: '거래 후기 보내기'}} />
+          <Stack.Screen name="ReviewViewScreen" component={ReviewViewScreen} options={{title: '거래 후기 보기'}} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} options={{title: '상품 검색'}} />
           <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{title: '검색 결과'}} />
-          <Stack.Screen name="StartScreen" component={StartScreen} options={{headerShown: false}} />
           <Stack.Screen name="SettingScreen" component={SettingScreen} options={{title: '설정'}} />
           <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} options={{title: '판매자 정보'}} />
           <Stack.Screen name="UserSellScreen" component={UserSellScreen} options={{title: '판매자 판매 상품'}} />

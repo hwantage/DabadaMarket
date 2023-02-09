@@ -14,32 +14,16 @@ import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {useTranslation} from 'react-i18next';
 import TopLeftButton from '../components/common/TopLeftButton';
 import TopRightButton from '../components/common/TopRightButton';
-import {createProduct, productProps} from '../utils/products';
+import {createProduct, productProps, productPropsDefault} from '../utils/products';
 import uuid from 'react-native-uuid';
 import events from '../utils/events';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 
 function ProductModifyScreen() {
   const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const ref_contents = useRef<TextInput>(null);
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const [product, setProduct] = useState<productProps>({
-    p_id: uuid.v4().toString(),
-    u_id: authInfo.u_id,
-    p_title: '',
-    p_badatype: 'free',
-    p_price: '',
-    p_contents: '',
-    p_status: 1, // 1:판매중, 2:예약중, 3:판매완료, 4:판매중지
-    p_regdate: '',
-    p_like: 0,
-    p_chat: 0,
-    p_buyer_id: '',
-    p_category: 1, // 고정값(카테고리 기능 추후 구현)
-    p_view: 0,
-    p_images: [],
-  });
+  const [product, setProduct] = useState<productProps>({...productPropsDefault, p_id: uuid.v4().toString(), u_id: authInfo.u_id});
   const [images, setImages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -155,9 +139,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
   },
-  flex3: {
-    flex: 1,
-  },
   radioLableFont: {
     fontSize: 12,
   },
@@ -166,22 +147,15 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     paddingVertical: 10,
   },
-  radioLabel: {
-    flex: 2,
-    alignSelf: 'center',
-  },
   radioContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   icon: {
-    // flex: 1,
-    // lineHeight: ,
     flexDirection: 'row',
     alignSelf: 'center',
     lineHeight: 84,
     marginRight: 4,
-    // justifyContent: 'center',
   },
   block: {
     alignItems: 'center',
@@ -196,17 +170,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#b9b9b9',
   },
   imageBox: {
-    //backgroundColor: '#c00',
     alignItems: 'flex-start',
     width: 90,
     height: 90,
-    //paddingVertical: 4,
-    //paddingHorizontal: 4,
-    // backgroundColor: '#ccc',
     borderColor: '#ccc',
     borderWidth: 3,
     borderRadius: 10,
-    //color: '#fff',
   },
   form: {
     marginTop: 16,
@@ -218,7 +187,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 160,
-    // paddingBottom: 160,
     borderWidth: 1,
     borderRadius: 4,
     borderStyle: 'solid',
