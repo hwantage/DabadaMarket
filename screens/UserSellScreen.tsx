@@ -30,7 +30,7 @@ function UserSellScreen({navigation, route}: UserSellScreenProps) {
     });
   }, [navigation]);
 
-  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} />;
+  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode={null} />;
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
   const listRefreshControl: any = <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={['#347deb']} />;
 
