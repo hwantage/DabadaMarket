@@ -6,7 +6,6 @@ import SplashScreen from 'react-native-splash-screen';
 import BottomTab from './BottomTab';
 import ChattingListScreen from './ChattingListScreen';
 import ChattingRoomScreen from './ChattingRoomScreen';
-import JoinScreen from './JoinScreen';
 import LoginScreen from './LoginScreen';
 import MyBuyScreen from './MyBuyScreen';
 import MyHomeScreen from './MyHomeScreen';
@@ -57,7 +56,6 @@ export type RootStackParamList = {
   UserHomeScreen: {u_id: string};
   UserSellScreen: {u_id: string};
   LoginScreen: undefined;
-  JoinScreen: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -108,7 +106,6 @@ function AppStackRoot() {
           <Stack.Screen name="SettingScreen" component={SettingScreen} options={{title: '설정'}} />
           <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} options={{title: '판매자 정보'}} />
           <Stack.Screen name="UserSellScreen" component={UserSellScreen} options={{title: '판매자 판매 상품'}} />
-          <Stack.Screen name="JoinScreen" component={JoinScreen} options={{title: '회원가입'}} />
         </>
       ) : (
         <>

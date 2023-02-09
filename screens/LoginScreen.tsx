@@ -1,11 +1,9 @@
 import React, {useState, useRef} from 'react';
-import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, TouchableOpacity, StyleSheet, View, TextInput} from 'react-native';
-import {default as Text} from '../components/common/DabadaText';
+import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, TextInput} from 'react-native';
 import DabadaInput from '../components/common/DabadaInput';
 import DabadaButton from '../components/common/DabadaButton';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {useSetRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -121,7 +119,7 @@ function LoginScreen() {
         <View style={styles.form}>
           <DabadaInput hasMarginBottom={true} placeholder={t('common.email', '이메일')} value={form.email} autoCapitalize="none" autoCorrect={false} autoCompleteType="email" keyboardType="email-address" returnKeyType="next" blurOnSubmit={false} onChangeText={(text: string) => createChangeTextHandler('email', text)} onSubmitEditing={() => ref_password.current?.focus()} />
           <DabadaInput hasMarginBottom={true} placeholder={t('common.password', '비밀번호')} value={form.password} secureTextEntry blurOnSubmit={false} returnKeyType={isJoin ? 'next' : 'done'} onChangeText={(text: string) => createChangeTextHandler('password', text)} onSubmitEditing={() => (isJoin ? ref_confirmPassword.current?.focus() : onSubmit())} ref={ref_password} />
-          {isJoin && <DabadaInput hasMarginBottom={false} placeholder={t('common.passwordConfirm', '비밀번호 확인')} value={form.confirmPassword} secureTextEntry blurOnSubmit={false} returnKeyType="done" onChangeText={(text: string) => createChangeTextHandler('confirmPassword', text)} onSubmitEditing={onSubmit} ref={ref_confirmPassword} />}
+          {isJoin && <DabadaInput hasMarginBottom={true} placeholder={t('common.passwordConfirm', '비밀번호 확인')} value={form.confirmPassword} secureTextEntry blurOnSubmit={false} returnKeyType="done" onChangeText={(text: string) => createChangeTextHandler('confirmPassword', text)} onSubmitEditing={onSubmit} ref={ref_confirmPassword} />}
           {loading && (
             <View style={styles.spinnerWrapper}>
               <ActivityIndicator size={32} color="#347deb" />
@@ -131,39 +129,32 @@ function LoginScreen() {
             <View style={styles.buttons}>
               {!isJoin && (
                 <>
-                  <DabadaButton title={t('common.login', '로그인')} hasMarginBottom={true} onPress={onSubmit} />
+                  {/*
+                  <View style={styles.container}>
+                    <BouncyCheckbox size={24} fillColor="#039DF4" unfillColor="#FFFFFF" text="자동 로그인" innerIconStyle={{borderRadius: 4}} iconStyle={{borderRadius: 4}} onPress={(isChecked: boolean) => {}} />
+                  </View>
+                  */}
+                  <DabadaButton title={t('common.login', '로그인')} hasMarginBottom={false} onPress={onSubmit} />
                   <DabadaButton
                     title={t('common.join', '회원가입')}
                     theme="secondary"
-                    hasMarginBottom={false}
+                    hasMarginBottom={true}
                     onPress={() => {
                       navigation.push('LoginScreen', {isJoin: true});
                     }}
                   />
-                  <View style={styles.container}>
-                    <BouncyCheckbox
-                      size={24}
-                      fillColor="#039DF4"
-                      unfillColor="#FFFFFF"
-                      text="자동 로그인"
-                      textStyle={{
-                        textDecorationLine: 'none',
-                      }}
-                      innerIconStyle={{borderRadius: 4}}
-                      iconStyle={{borderRadius: 4}}
-                      onPress={(isChecked: boolean) => {}}
-                    />
-                  </View>
+                  {/*
                   <View style={styles.container2}>
                     <TouchableOpacity style={styles.googleBtn}>
                       <Text style={styles.text}>Google 로그인</Text>
                     </TouchableOpacity>
                   </View>
+                  */}
                 </>
               )}
               {isJoin && (
-                <>
-                  <DabadaButton title={t('common.join', '회원가입')} hasMarginBottom={true} onPress={onSubmit} />
+                <View style={styles.buttons}>
+                  <DabadaButton title={t('common.join', '회원가입')} hasMarginBottom={false} onPress={onSubmit} />
                   <DabadaButton
                     title={t('common.login', '로그인')}
                     theme="secondary"
@@ -172,7 +163,7 @@ function LoginScreen() {
                       navigation.goBack();
                     }}
                   />
-                </>
+                </View>
               )}
             </View>
           )}

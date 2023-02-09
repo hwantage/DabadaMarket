@@ -16,6 +16,14 @@ export interface productSellReviewProps {
   p_seller_star: string;
   p_seller_note: string;
 }
+export interface searchProps {
+  keywords: [
+    {
+      k_id: string;
+      k_word: string;
+    },
+  ];
+}
 
 export interface productProps {
   p_id: string;
@@ -35,6 +43,7 @@ export interface productProps {
   p_buyer_review: productBuyReviewProps;
   p_seller_review: productSellReviewProps;
   p_buy_regdate: string;
+  p_keywords: searchProps | undefined;
 }
 
 export const productPropsDefault: productProps = {
@@ -61,6 +70,7 @@ export const productPropsDefault: productProps = {
     p_seller_note: '',
   },
   p_buy_regdate: '',
+  p_keywords: undefined,
 };
 
 // 상품 리스트 조회 type
@@ -96,16 +106,13 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
   } else {
     query = query.where('p_status', 'in', [1, 2]);
   }
-  if (keyword) {
-    query = query.startAt(keyword).endAt(keyword + '\uf8ff');
-  }
 
   if (p_id) {
     const cursorDoc = await productCollection.doc(p_id).get();
     query = cursormode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
   }
 
-  const snapshot = await query.get();
+  const snapshot = keyword ? await query.where('p_keywords', 'array-contains', keyword).get() : await query.get();
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
     p_regdate: moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD hh:mm:ss'),

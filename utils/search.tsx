@@ -7,7 +7,6 @@ export interface searchProps {
   keywords: [
     {
       k_id: string;
-      u_id?: string;
       k_word: string;
     },
   ];
@@ -22,4 +21,8 @@ export async function getSearchRecent(u_id: string): Promise<searchProps> {
   const snapshot = await query.get();
   const searchs: any = snapshot.data();
   return searchs;
+}
+
+export function resetSearchRecent(u_id: string) {
+  return searchCollection.doc(u_id).delete();
 }
