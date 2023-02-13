@@ -12,6 +12,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import firestore from '@react-native-firebase/firestore';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
+import {chattingInfoState, chattingNotificationCntState} from '../recoil/chattingAtom';
 dayjs.locale('ko');
 const chattingCollection = firestore().collection('chatting');
 function ChattingListScreen() {
@@ -49,6 +50,19 @@ function ChattingListScreen() {
         });
         if (isChanged) {
           getChatting(myInfo.u_id).then(_chatting => {
+            let cnt = 0;
+            _chatting.map(chattingInfo => {
+              if (myInfo.u_id === chattingInfo.c_from_id) {
+                cnt += chattingInfo.c_from_not_read_cnt ? chattingInfo.c_from_not_read_cnt : 0;
+              } else {
+                cnt += chattingInfo.c_to_not_read_cnt ? chattingInfo.c_to_not_read_cnt : 0;
+              }
+            });
+            console.log('cnt', cnt);
+            if (cnt > 0) {
+              setChattingNotificationCnt(cnt);
+            }
+            console.log('current_chatting ', _chatting);
             setChatting(_chatting);
           });
         }

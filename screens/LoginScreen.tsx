@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, TextInput} from 'react-native';
 import DabadaInput from '../components/common/DabadaInput';
 import DabadaButton from '../components/common/DabadaButton';
@@ -11,6 +11,7 @@ import {login, join, getUserInfo} from '../utils/auth';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {chattingInfoState} from '../recoil/chattingAtom';
+import messaging from '@react-native-firebase/messaging';
 
 type ParamList = {
   params: {
@@ -27,12 +28,19 @@ function LoginScreen() {
   const isJoin = route.params?.isJoin;
   const [loading, setLoading] = useState(false);
   const setChattingInfoState = useSetRecoilState(chattingInfoState);
+  const [fcmToken, setFcmToken] = useState('');
 
   const [form, setForm] = useState({
     email: 'hwantagexsw2@gmail.com',
     password: 'q9q9q9',
     confirmPassword: '',
   });
+
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    console.log('[FCM Token] ', fcmToken);
+    setFcmToken(fcmToken);
+  };
 
   const setAuthInfo = useSetRecoilState<authInfoProps>(authInfoState);
 
@@ -67,7 +75,7 @@ function LoginScreen() {
 
       if (!userInfo) {
         // 프로필 설정한 적 없으면 프로필 수정 화면으로 이동.
-        setAuthInfo({u_id: user.uid, u_nickname: '', u_group: '소만사', u_photoUrl: '', u_lang: 'ko'});
+        setAuthInfo({u_id: user.uid, u_nickname: '', u_group: '소만사', u_photoUrl: '', u_lang: 'ko', u_fcmToken: fcmToken});
         navigation.navigate('MyProfileModifyScreen');
       } else {
         setAuthInfo(userInfo);

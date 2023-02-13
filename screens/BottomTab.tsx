@@ -1,16 +1,20 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import AppStackProduct from './AppStackProduct';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductAddButton from '../components/common/ProductAddButton';
 import AppStackNotification from './AppStackNotification';
 import AppStackChatting from './AppStackChatting';
 import AppStackMy from './AppStackMy';
+import {chattingNotificationCntState} from '../recoil/chattingAtom';
+import {useRecoilValue} from 'recoil';
 
 const Tab = createBottomTabNavigator();
 
 function BottomTab() {
+  const chattingNotificationCnt = useRecoilValue(chattingNotificationCntState);
+
   return (
     <>
       <View style={styles.block}>
@@ -41,7 +45,24 @@ function BottomTab() {
               tabBarIcon: ({color}) => (
                 <>
                   <Icon name="chat" size={34} color={color} style={styles.mgR} />
-                  <Icon name="circle" size={9} color={'#FF0000'} style={{position: 'absolute', right: 6, top: 15}} />
+                  {chattingNotificationCnt > 0 && (
+                    <View
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: 50,
+                        position: 'absolute',
+                        right: 2,
+                        top: 10,
+                        backgroundColor: 'red',
+                        justifyContent: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={{color: 'white'}}>{chattingNotificationCnt}</Text>
+                    </View>
+                  )}
+                  {/* <Icon name="circle" size={9} color={'#FF0000'} style={{position: 'absolute', right: 6, top: 15}} /> */}
                 </>
               ),
             }}

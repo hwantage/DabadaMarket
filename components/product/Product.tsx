@@ -33,14 +33,14 @@ function Product({product}: ProductProps) {
   }, [product]);
 
   const goChattingScreen = () => {
-    let c_id = '';
-    chattingStateInfo.map(chattingState => {
-      if (chattingState.c_p_id === product.p_id && chattingState.c_to_id === product.u_id) {
-        c_id = chattingState.c_id;
-      }
-    });
+    // let c_id = '';
+    // chattingStateInfo.map(chattingState => {
+    //   if (chattingState.c_p_id === product.p_id && chattingState.c_to_id === product.u_id) {
+    //     c_id = chattingState.c_id;
+    //   }
+    // });
 
-    navigation.push('ChattingRoomScreen', {u_id: product.u_id, product});
+    navigation.push('ChattingRoomScreen', {product});
   };
 
   let p_badatype_str = ''; // 'free' | 'money' | 'drink' | 'secret';

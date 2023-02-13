@@ -7,14 +7,16 @@ import {authInfoState} from '../../recoil/authInfoAtom';
 import Avatar from '../profile/Avatar';
 import {chattingProps} from '../../utils/chatting';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {chattingNotificationCntState} from '../../recoil/chattingAtom';
 interface ChattingCardProps {
   chatInfo: chattingProps;
 }
 function ChattingCard({chatInfo}: ChattingCardProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [myInfo] = useRecoilState(authInfoState);
+  const [chattingNotificationCnt, setChattingNotificationCnt] = useRecoilState(chattingNotificationCntState);
   const readCnt = myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_from_not_read_cnt : chatInfo.c_to_not_read_cnt;
-
+  console.log('chat_card', chatInfo?.c_product?.p_images[0]);
   const onPress = () => {
     navigation.navigate('ChattingRoomScreen', {p_id: chatInfo.c_p_id, u_id: myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_id : chatInfo.c_from_id, c_id: chatInfo.c_id});
   };
@@ -46,7 +48,7 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
           </View>
           <View style={styles.flex3}>
             <Text style={styles.bold4}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
-            <Image style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
+            <Image style={styles.imageBox} resizeMethod="resize" resizeMode="cover" source={chatInfo?.c_product?.p_images.length > 0 ? {uri: chatInfo.c_product.p_images[0].p_url} : require('../../assets/user.png')} />
             {/* <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" /> */}
           </View>
         </View>
