@@ -216,47 +216,43 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
   const sendPushNotification = async (token, title, body) => {
-    //console.log("token==>", token);
-
-    const FIREBASE_API_KEY = 'ya29.a0AVvZVsoOHEZQ7Ob3La66dtmjJ-nkpnt56455TR6gBA0L7H0kUNgGFKaqDyL6mm_ins_CAtDUxsO5u7LIICG3lOh5ZhQLvLmd6ngoSzu92Ox79i2KuTHNhYf6iMJz_gVOkwhS80YzqJ3Wo60DJFClh8-F5rLHaCgYKAfYSARASFQGbdwaICZWd94zcbrQP0lYHB-nsGg0163';
-
-    // const message = {
-    //   registration_ids: [token],
-    //   notification: {
-    //     title: title,
-    //     body: body,
-    //     vibrate: 1,
-    //     sound: 1,
-    //     show_in_foreground: true,
-    //     priority: 'high',
-    //     content_available: true,
-    //   },
-    // };
-
+    //  const FIREBASE_API_KEY = 'ya29.a0AVvZVsoOHEZQ7Ob3La66dtmjJ-nkpnt56455TR6gBA0L7H0kUNgGFKaqDyL6mm_ins_CAtDUxsO5u7LIICG3lOh5ZhQLvLmd6ngoSzu92Ox79i2KuTHNhYf6iMJz_gVOkwhS80YzqJ3Wo60DJFClh8-F5rLHaCgYKAfYSARASFQGbdwaICZWd94zcbrQP0lYHB-nsGg0163';
+    const FIREBASE_API_KEY = 'AAAA6A9nhs0:APA91bFkaFYX0SxeeTnNEzcLD74Ar1G8RlmpMjFAqF1oR-HGi9e-wpLFeAWPkmHkm5M-0GvE_aM8GeeWkuueVg0SSulid4KEkF_Fq7PERJFnKiABm94BBk2_8q13tp6UXZu13k-WAMF6';
     const message = {
-      message: {
-        token,
-        notification: {
-          body,
-          title,
-        },
+      registration_ids: [token],
+      notification: {
+        title: title,
+        body: body,
+        vibrate: 1,
+        sound: 1,
+        show_in_foreground: true,
+        priority: 'high',
+        content_available: true,
       },
     };
+
+    // const message = {
+    //   message: {
+    //     token,
+    //     notification: {
+    //       body,
+    //       title,
+    //     },
+    //   },
+    // };
 
     let headers = new Headers({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + FIREBASE_API_KEY,
     });
 
-    let response = await fetch('https://fcm.googleapis.com/v1/projects/dabadamarket/messages:send', {
+    let response = await fetch('https://fcm.googleapis.com/fcm/send', {
       method: 'POST',
       headers,
       body: JSON.stringify(message),
     });
-    // console.log("=><*", response);
     response = await response.json();
     console.log('fcmTEST', response);
-    //  console.log("=><*", response);
   };
 
   const updateChattingInfo = useCallback(
