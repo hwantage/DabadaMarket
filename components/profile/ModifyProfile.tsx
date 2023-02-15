@@ -37,7 +37,7 @@ function ModifyProfile() {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit: any = useCallback(async () => {
     setLoading(true);
 
     let photoURL = null;
@@ -65,12 +65,13 @@ function ModifyProfile() {
       u_photoUrl: photoURL,
       u_group: 'somansa',
       u_lang: 'ko',
+      u_fcmToken: authInfo.u_fcmToken,
     };
 
     createUser(userInfo); // Firebase 프로필 정보 갱신
     setAuthInfo(userInfo); // 프로필 정보 recoil 저장
     navigation.navigate('BottomTab');
-  }, [authInfo.u_id, authInfo.u_photoUrl, navigation, nickname, response, setAuthInfo]);
+  }, [authInfo.u_fcmToken, authInfo.u_id, authInfo.u_photoUrl, navigation, nickname, response, setAuthInfo]);
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {

@@ -33,7 +33,7 @@ function BottomTab() {
               tabBarIcon: ({color}) => (
                 <>
                   <Icon name="notifications" size={36} color={color} style={styles.mgL} />
-                  <Icon name="circle" size={9} color={'#FF0000'} style={{position: 'absolute', left: 32, top: 18}} />
+                  <Icon name="circle" size={9} color={'#FF0000'} style={styles.circle} />
                 </>
               ),
             }}
@@ -46,20 +46,8 @@ function BottomTab() {
                 <>
                   <Icon name="chat" size={34} color={color} style={styles.mgR} />
                   {chattingNotificationCnt > 0 && (
-                    <View
-                      style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 50,
-                        position: 'absolute',
-                        right: 2,
-                        top: 10,
-                        backgroundColor: 'red',
-                        justifyContent: 'center',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={{color: 'white'}}>{chattingNotificationCnt}</Text>
+                    <View style={styles.notifyView}>
+                      <Text style={styles.colorW}>{chattingNotificationCnt}</Text>
                     </View>
                   )}
                   {/* <Icon name="circle" size={9} color={'#FF0000'} style={{position: 'absolute', right: 6, top: 15}} /> */}
@@ -98,6 +86,20 @@ const styles = StyleSheet.create({
   mgR_sm: {
     marginRight: -10,
   },
+  circle: {position: 'absolute', left: 32, top: 18},
+  notifyView: {
+    width: 20,
+    height: 20,
+    borderRadius: 50,
+    position: 'absolute',
+    right: 2,
+    top: 10,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  colorW: {color: 'white'},
 });
 
 export default BottomTab;

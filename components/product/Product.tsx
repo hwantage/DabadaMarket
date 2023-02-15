@@ -11,7 +11,6 @@ import {productProps, comma} from '../../utils/products';
 import {getUserInfo} from '../../utils/auth';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilValue} from 'recoil';
-import {chattingInfoState} from '../../recoil/chattingAtom';
 import moment from 'moment';
 import 'moment/locale/ko';
 
@@ -23,7 +22,6 @@ function Product({product}: ProductProps) {
   const [user, setUser] = useState<authInfoProps>(); // 상품 등록자 정보
 
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const chattingStateInfo = useRecoilValue(chattingInfoState);
   const myInfo = useRecoilValue(authInfoState);
 
   useEffect(() => {

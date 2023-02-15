@@ -1,14 +1,13 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {ActivityIndicator, Button, FlatList, ListRenderItem, RefreshControl, StyleSheet} from 'react-native';
+import {ActivityIndicator, FlatList, ListRenderItem, RefreshControl, StyleSheet} from 'react-native';
 import TopRightButton from '../components/common/TopRightButton';
 import ProductCard from '../components/product/ProductCard';
 import {productProps} from '../utils/products';
 import SplashScreen from 'react-native-splash-screen';
 import useProducts from '../hooks/useProducts';
-import adminKeyData from '../dabadamarket-firebase-adminkey.json';
-import messaging from '@react-native-firebase/messaging';
+
 function ProductListScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({});
