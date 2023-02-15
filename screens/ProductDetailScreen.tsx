@@ -15,7 +15,6 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const product = route.params.product;
   const querymode = route.params.querymode;
-  console.log('ProductDetailScreen', product);
   const {isSelecting, onPressMore, onClose, actions} = useProductActions(product.p_id, querymode);
 
   const isMyProduct = authInfo.u_id === product.u_id;
