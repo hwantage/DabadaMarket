@@ -45,7 +45,7 @@ function ProductAddScreen() {
         product.p_images.push({pi_id: uuid.v4().toString(), p_url: imageURL});
       }),
     ).then(() => {
-      createProduct({...product, p_price: uncomma(product.p_price)}); // Firebase 상품 등록
+      createProduct({...product, p_price: uncomma(product.p_price), p_keywords: product.p_title.split(' ')}); // Firebase 상품 등록
       navigation.pop();
       events.emit('refresh');
     });

@@ -51,23 +51,15 @@ const styles = StyleSheet.create({
   userInfo: {
     paddingTop: 24,
     paddingBottom: 12,
-    // paddingVertical: 24,
     flexDirection: 'row',
     justifyContent: 'center',
-    // flex: 1,
   },
   userInfo2: {
-    // paddingTop: 10,
-    // paddingTop: -8,
     paddingBottom: 16,
     flexDirection: 'row',
     justifyContent: 'center',
   },
   nickName: {
-    // flex: 1,
-    // flexDirection: 'row',
-    // marginTop: 8,
-    // marginLeft: 16,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#039DF4',

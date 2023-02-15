@@ -7,7 +7,6 @@ import {productProps, getProductsProps} from '../utils/products';
 
 export default function useProducts({u_id, querymode, keyword}: getProductsProps) {
   const [products, setProducts] = useState<productProps[] | undefined>(undefined);
-  //const [productCnt, setProductCnt] = useState<productCntProps[]>([{querymode: '', cnt: 0}]);
   const [productCnt, setProductCnt] = useState<number>(0);
   const [productCnt_complete, setProductCnt_complete] = useState<number>(0);
   const [noMoreProduct, setNoMoreProduct] = useState<boolean>(false);

@@ -16,14 +16,6 @@ export interface productSellReviewProps {
   p_seller_star: string;
   p_seller_note: string;
 }
-export interface searchProps {
-  keywords: [
-    {
-      k_id: string;
-      k_word: string;
-    },
-  ];
-}
 
 export interface productProps {
   p_id: string;
@@ -43,7 +35,7 @@ export interface productProps {
   p_buyer_review: productBuyReviewProps;
   p_seller_review: productSellReviewProps;
   p_buy_regdate: string;
-  p_keywords: searchProps | undefined;
+  p_keywords: string[];
 }
 
 export const productPropsDefault: productProps = {
@@ -70,7 +62,7 @@ export const productPropsDefault: productProps = {
     p_seller_note: '',
   },
   p_buy_regdate: '',
-  p_keywords: undefined,
+  p_keywords: [],
 };
 
 // 상품 리스트 조회 type
@@ -92,7 +84,6 @@ export const getProductsDefault: getProductsProps = {
 export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: getProductsProps = getProductsDefault): Promise<productProps[]> {
   console.log('getProduct :: ', u_id, p_id, cursormode, querymode, keyword);
   let query = productCollection.orderBy('p_regdate', 'desc').limit(PAGE_SIZE);
-
   if (querymode === 'buy') {
     query = query.where('p_buyer_id', '==', u_id);
   } else if (querymode === 'sell') {
@@ -137,7 +128,6 @@ export async function getProductCnt({u_id, querymode}: getProductsProps = getPro
   } else {
     query = productCollection.where('p_status', 'in', [1, 2, 3]);
   }
-
   if (query !== null) {
     const snapshot = await query.get();
     return snapshot.size;
@@ -171,7 +161,6 @@ export function updateProduct(p_id: string, product: productProps) {
 
 // 상품 수정
 export function updateProductField(p_id: string, fieldName: string, fieldValue: any) {
-  console.log(p_id, fieldName, fieldValue);
   return productCollection.doc(p_id).update({
     [fieldName]: fieldValue,
   });

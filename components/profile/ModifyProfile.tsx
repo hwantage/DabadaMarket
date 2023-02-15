@@ -83,7 +83,6 @@ function ModifyProfile() {
     if (res.didCancel || !res) {
       return;
     }
-    console.log(res);
     setResponse(res);
   };
 

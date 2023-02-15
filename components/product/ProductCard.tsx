@@ -1,12 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {productProps, productPropsDefault, comma} from '../../utils/products';
 import moment from 'moment';
 import 'moment/locale/ko';
+import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
+import {useRecoilState} from 'recoil';
 
 interface ProductCardProps {
   product: productProps;
@@ -14,6 +17,7 @@ interface ProductCardProps {
 }
 
 function ProductCard({product: props, querymode}: ProductCardProps) {
+  const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [product, setProduct] = useState<productProps>(productPropsDefault);
 
@@ -102,10 +106,25 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
             </View>
           </View>
         </TouchableOpacity>
-        {product.p_status === 3 && (
+        {product.p_status === 3 && authInfo.u_id === product.u_id && (
           <TouchableOpacity onPress={onPressReview}>
-            <View style={styles.reviewBtnFlex}>{product.p_seller_review.p_seller_star === '' ? <Text style={styles.textReview1}>거래 후기 작성</Text> : <Text style={styles.textReview2}>보낸 후기 보기</Text>}</View>
+            <View style={styles.reviewBtnFlex}>{product.p_seller_review.p_seller_star === '' ? <Text style={styles.textReview1}>거래 후기 남기기</Text> : <Text style={styles.textReview2}>거래 후기 보기</Text>}</View>
           </TouchableOpacity>
+        )}
+        {/* && product.p_buyer_id && product.p_buyer_review.p_buyer_star !== '' */}
+        {product.p_status === 3 && (
+          <View style={styles.review2}>
+            <View style={styles.flex2}>
+              <View style={styles.mgR10}>
+                <Icon2 name="emoticon" color="#039DF4" size={48} />
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.bold2}>hkchoi</Text>
+                <Icon style={styles.dot} name="circle" size={4} color="#898989" />
+                <Text style={styles.text}>3개월 전</Text>
+              </View>
+            </View>
+          </View>
         )}
       </View>
     </>
@@ -113,6 +132,16 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    paddingVertical: 24,
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+  },
+  flex2: {
+    paddingVertical: 10,
+    flexDirection: 'row',
+    paddingHorizontal: 4,
+  },
   block: {
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -162,6 +191,10 @@ const styles = StyleSheet.create({
   flex3: {
     flex: 1,
   },
+  text: {
+    fontSize: 12,
+    color: '#b0b0b0',
+  },
   bold1: {marginTop: 4, fontSize: 16, fontWeight: 'bold', color: '#898989'},
   textReview1: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: '#166de0'},
   textReview2: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: 'black'},
@@ -178,6 +211,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  review2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#efefef',
+    borderRadius: 6,
+    marginTop: 5,
   },
   tag_soldout: {
     color: '#ffffff',
@@ -241,12 +281,20 @@ const styles = StyleSheet.create({
     shadowColor: '#191919',
     shadowOpacity: 0.1,
     shadowRadius: 0,
-    //elevation: 10,
     shadowOffset: {
       width: 0,
       height: 30,
     },
   },
+  bold2: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  dot: {paddingHorizontal: 4, marginTop: 8},
+  row: {
+    flexDirection: 'row',
+  },
+  mgR10: {marginRight: 10},
 });
 
 export default ProductCard;

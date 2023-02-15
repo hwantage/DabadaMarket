@@ -1,7 +1,8 @@
 import React, {useState, useRef} from 'react';
-import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, TextInput} from 'react-native';
+import {ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, TextInput, Image} from 'react-native';
 import DabadaInput from '../components/common/DabadaInput';
 import DabadaButton from '../components/common/DabadaButton';
+import {default as Text} from '../components/common/DabadaText';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
@@ -116,6 +117,8 @@ function LoginScreen() {
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
+        <Text style={styles.text}>{t('title', '다바다 마켓')}</Text>
+        <Image style={styles.circle} source={require('../assets/dabada.png')} />
         <View style={styles.form}>
           <DabadaInput hasMarginBottom={true} placeholder={t('common.email', '이메일')} value={form.email} autoCapitalize="none" autoCorrect={false} autoCompleteType="email" keyboardType="email-address" returnKeyType="next" blurOnSubmit={false} onChangeText={(text: string) => createChangeTextHandler('email', text)} onSubmitEditing={() => ref_password.current?.focus()} />
           <DabadaInput hasMarginBottom={true} placeholder={t('common.password', '비밀번호')} value={form.password} secureTextEntry blurOnSubmit={false} returnKeyType={isJoin ? 'next' : 'done'} onChangeText={(text: string) => createChangeTextHandler('password', text)} onSubmitEditing={() => (isJoin ? ref_confirmPassword.current?.focus() : onSubmit())} ref={ref_password} />
@@ -136,7 +139,7 @@ function LoginScreen() {
                   */}
                   <DabadaButton title={t('common.login', '로그인')} hasMarginBottom={false} onPress={onSubmit} />
                   <DabadaButton
-                    title={t('common.join', '회원가입')}
+                    title={t('common.join', '사용자 등록')}
                     theme="secondary"
                     hasMarginBottom={true}
                     onPress={() => {
@@ -180,9 +183,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   text: {
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#ffffff',
   },
   form: {
     width: '100%',
@@ -247,6 +249,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#898989',
+  },
+  circle: {
+    marginTop: 24,
+    backgroundColor: '#cdcdcd',
+    borderRadius: 44,
+    width: 170,
+    height: 170,
+    marginBottom: 28,
   },
 });
 export default LoginScreen;

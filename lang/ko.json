@@ -5,8 +5,9 @@
     "password": "비밀번호",
     "passwordConfirm": "비밀번호 확인",
     "login": "로그인",
-    "join": "회원가입",
+    "join": "사용자 등록",
     "fail": "실패",
+    "alert": "알림",
     "nickname": "닉네임",
     "title": "제목",
     "contents": "내용",
@@ -26,6 +27,8 @@
     "userNotFound": "존재하지 않는 계정입니다.",
     "invalidEmail": "유효하지 않은 이메일 주소입니다.",
     "weakPassword": "비밀번호는 6자리 이상입니다.",
+    "alreadyRegistered": "이미 등록되어 있습니다.",
+    "registNotification": "알림이 등록되었습니다.",
     "fail": "실패했습니다."
   },
   "badatype": {

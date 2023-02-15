@@ -1,41 +1,33 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {ActivityIndicator, Button, FlatList, Image, ListRenderItem, RefreshControl, StyleSheet, View, SafeAreaView, TouchableOpacity, Pressable, ScrollView, RecyclerViewBackedScrollViewComponent} from 'react-native';
+import {Image, StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
-import TopLeftButton from '../components/common/TopLeftButton';
-import ProductCard from '../components/product/ProductCard';
-import {productProps} from '../utils/products';
-import Avatar from '../components/profile/Avatar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import useProducts from '../hooks/useProducts';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
-import DabadaButton from '../components/common/DabadaButton';
+import {getNotificationKeyword} from '../utils/notifications';
 
 function NotificationListScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: authInfo.u_id, querymode: 'buy'});
-  const [loading, setLoading] = useState(true);
+  const [ncount, setNcount] = useState<number>(0);
+  const isFocused = useIsFocused();
 
-  const productsReady = products !== undefined;
+  const getNotificationCount = useCallback(() => {
+    getNotificationKeyword(authInfo.u_id).then(_response => {
+      if (_response !== undefined) {
+        setNcount(_response.notifications.length);
+      }
+    });
+  }, [authInfo.u_id]);
 
   useEffect(() => {
-    if (productsReady) {
-      setLoading(false);
-    }
-  }, [products, productsReady]);
-
-  /* 좌측 상단 이미지 (뒤로가기) */
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerLeft: () => <TopLeftButton name="arrow-back-ios" />,
-  //   });
-  // }, [navigation]);
+    isFocused && getNotificationCount();
+  }, [getNotificationCount, isFocused]);
 
   const onPressSetting = () => {
-    navigation.navigate('MyKeywordSettingScreen');
+    navigation.navigate('MyKeywordScreen');
   };
 
   return (
@@ -43,7 +35,7 @@ function NotificationListScreen() {
       <View style={styles.between2}>
         <View style={styles.row2}>
           <Icon name="notifications-on" size={24} style={styles.mgR} />
-          <Text style={styles.text}>알림 받는 키워드 3개</Text>
+          <Text style={styles.text}>알림 받는 키워드 {ncount}개</Text>
         </View>
         <TouchableOpacity onPress={onPressSetting}>
           <Text style={styles.text_bl}>설정</Text>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {ActivityIndicator, FlatList, ListRenderItem, RefreshControl, StyleSheet, View} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
@@ -8,28 +8,75 @@ import useProducts from '../hooks/useProducts';
 import {RootStackParamList} from './AppStack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TopRightButton from '../components/common/TopRightButton';
+import {createNotificationKeyword, getNotificationKeyword, notificationKeywordProps} from '../utils/notifications';
+import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
+import {useRecoilState} from 'recoil';
+import uuid from 'react-native-uuid';
 
 type SearchResultScreenProps = StackScreenProps<RootStackParamList, 'SearchResultScreen'>;
 
 function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
   const {keyword} = route.params;
+  const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
+  const [notifications, setNotifications] = useState<notificationKeywordProps>();
   const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({keyword: keyword});
   const [loading, setLoading] = useState(true);
+  const [icon, setIcon] = useState('notifications-none');
 
   const productsReady = products !== undefined;
 
   useEffect(() => {
+    getNotificationKeyword(authInfo.u_id).then(_response => {
+      setNotifications(_response);
+      // 이미 저장된 알림 여부 확인
+      if (_response !== undefined) {
+        const index = _response.notifications.findIndex(item => item.n_word === keyword);
+        if (index >= 0) {
+          setIcon('notifications-on');
+        }
+      }
+    });
     if (productsReady) {
       setLoading(false);
     }
-  }, [keyword, productsReady]);
+  }, [authInfo.u_id, keyword, productsReady]);
 
-  /* 우측 상단 이미지 (검색) */
+  const onPressNotification = useCallback(() => {
+    let newNotification = notifications;
+    if (newNotification !== undefined) {
+      const index = newNotification.notifications.findIndex(item => item.n_word === keyword);
+
+      if (index < 0) {
+        newNotification.notifications.unshift({n_id: uuid.v4().toString(), n_word: keyword});
+        setIcon('notifications-on');
+      } else {
+        newNotification.notifications.splice(index, 1);
+        setIcon('notifications-none');
+      }
+      createNotificationKeyword(authInfo.u_id, newNotification);
+      setNotifications({...newNotification});
+    } else {
+      newNotification = {
+        notifications: [{n_id: uuid.v4().toString(), n_word: keyword}],
+      };
+      createNotificationKeyword(authInfo.u_id, newNotification);
+      setNotifications({...newNotification});
+      setIcon('notifications-on');
+    }
+  }, [authInfo.u_id, keyword, notifications]);
+
+  /* 우측 상단 이미지 (알림, 검색) */
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <TopRightButton name="search" onPress={() => navigation.pop()} />,
+      title: '"' + keyword + '" 검색 결과',
+      headerRight: () => (
+        <>
+          <TopRightButton name={icon} onPress={onPressNotification} />
+          <TopRightButton name="search" onPress={() => navigation.pop()} />
+        </>
+      ),
     });
-  }, [navigation]);
+  }, [icon, keyword, navigation, onPressNotification]);
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode={null} />;
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;

@@ -46,7 +46,6 @@ function ProductModifyScreen() {
         product.p_images.push({pi_id: uuid.v4().toString(), p_url: imageURL});
       }),
     ).then(() => {
-      console.log('product::', product);
       createProduct(product); // Firebase 상품 등록
       navigation.pop();
       events.emit('refresh');
@@ -72,7 +71,6 @@ function ProductModifyScreen() {
         selectedAssets: images,
       });
 
-      console.log('response: ', res);
       setImages(res);
     } catch (e: any) {
       console.log(e.code, e.message);

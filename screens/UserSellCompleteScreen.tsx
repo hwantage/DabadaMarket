@@ -6,19 +6,19 @@ import {productProps} from '../utils/products';
 import useProducts from '../hooks/useProducts';
 import ProductAddButton from '../components/common/ProductAddButton';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
-import {RootStackParamList} from './AppStack';
-import {authInfoDefault, authInfoProps} from '../recoil/authInfoAtom';
-import {getUserInfo} from '../utils/auth';
 import Avatar from '../components/profile/Avatar';
+import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
+import {getUserInfo} from '../utils/auth';
+import {authInfoDefault, authInfoProps} from '../recoil/authInfoAtom';
 
-type UserSellCompleteScreenProps = StackScreenProps<RootStackParamList, 'UserSellScreen'>;
+type UserSellCompleteScreenProps = StackScreenProps<RootStackParamList, 'UserSellCompleteScreen'>;
 
-function UserSellScreen({route}: UserSellCompleteScreenProps) {
+function UserSellCompleteScreen({route}: UserSellCompleteScreenProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const {u_id} = route.params;
   const [user, setUser] = useState<authInfoProps>(authInfoDefault);
-  const products = useProducts({u_id: u_id, querymode: 'sell'});
+  const products = useProducts({u_id: u_id, querymode: 'sell_complete'});
   const [loading, setLoading] = useState(true);
 
   const productsReady = products !== undefined;
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserSellScreen;
+export default UserSellCompleteScreen;
