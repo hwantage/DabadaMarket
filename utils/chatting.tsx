@@ -33,6 +33,7 @@ export interface updateChattingProps {
   c_from_online?: boolean;
   c_from_not_read_cnt?: number;
   c_to_not_read_cnt?: number;
+  c_product?: productProps;
   c_product_state?: CHAT_PRODUCT_STATE;
 }
 

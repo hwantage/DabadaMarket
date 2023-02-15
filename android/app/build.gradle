@@ -255,6 +255,7 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
+     implementation 'com.google.firebase:firebase-messaging' // 여기 내용을 추가해줍니다.
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"

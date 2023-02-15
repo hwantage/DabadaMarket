@@ -23,3 +23,8 @@ export const chattingInfoState = atom<chattingStateProps[]>({
   key: 'chattingInfo',
   default: [],
 });
+
+export const chattingNotificationCntState = atom({
+  key: 'chattingNotificationCntState',
+  default: 0,
+});
