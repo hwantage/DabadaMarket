@@ -71,7 +71,7 @@ export interface getProductsProps {
   p_id?: string;
   cursormode?: 'older' | 'newer' | '';
   querymode?: '' | 'sell' | 'buy' | 'sell_complete';
-  keyword?: string;
+  keyword?: string | string[];
 }
 
 export const getProductsDefault: getProductsProps = {
@@ -79,6 +79,7 @@ export const getProductsDefault: getProductsProps = {
   p_id: '',
   cursormode: '',
   querymode: '',
+  keyword: '',
 };
 
 export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: getProductsProps = getProductsDefault): Promise<productProps[]> {
@@ -95,7 +96,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
       query = query.where('u_id', '==', u_id).where('p_status', 'in', [3, 4]);
     }
   } else {
-    query = query.where('p_status', 'in', [1, 2]);
+    //query = query.where('p_status', 'in', [1, 2, 3, 4]);
   }
 
   if (p_id) {
@@ -103,7 +104,8 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
     query = cursormode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
   }
 
-  const snapshot = keyword ? await query.where('p_keywords', 'array-contains', keyword).get() : await query.get();
+  const snapshot = keyword ? (Array.isArray(keyword) ? await query.where('p_keywords', 'array-contains-any', keyword).get() : await query.where('p_keywords', 'array-contains', keyword).get()) : await query.get();
+
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
     p_regdate: moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD hh:mm:ss'),
@@ -167,7 +169,10 @@ export function updateProductField(p_id: string, fieldName: string, fieldValue: 
 }
 
 // 숫자 3자리 콤마. ₩ 100,000 형태로 리턴
-export function comma(s: string) {
+export function comma(s: string | undefined) {
+  if (s === undefined) {
+    return '';
+  }
   let str = String(s);
   return '₩ ' + str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
 }

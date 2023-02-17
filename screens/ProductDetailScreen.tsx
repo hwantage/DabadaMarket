@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -7,13 +7,14 @@ import Product from '../components/product/Product';
 import {RootStackParamList} from './AppStack';
 import useProductActions from '../hooks/useProductActions';
 import ActionSheetModal from '../components/ActionSheetModal';
-import {updateProductField} from '../utils/products';
+import {getProductInfo, productProps, updateProductField} from '../utils/products';
 
 type ProductDetailScreenProps = StackScreenProps<RootStackParamList, 'ProductDetailScreen'>;
 
 function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const product = route.params.product;
+  const [productInfo, setProductInfo] = useState<productProps>();
   const querymode = route.params.querymode;
   const {isSelecting, onPressMore, onClose, actions} = useProductActions(product.p_id, querymode);
 
@@ -21,7 +22,7 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
 
   useEffect(() => {
     updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
-
+    getProductInfo(product.p_id).then(_response => setProductInfo(_response));
     isMyProduct &&
       navigation.setOptions({
         headerRight: () => <TopRightButton name="more-vert" onPress={onPressMore} />,
@@ -30,7 +31,7 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
 
   return (
     <>
-      <Product product={product} />
+      <Product product={productInfo} />
       <ActionSheetModal visible={isSelecting} actions={actions} onClose={onClose} />
     </>
   );

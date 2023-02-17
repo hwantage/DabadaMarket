@@ -3,7 +3,7 @@ import {View, Image, Text, StyleSheet, ScrollView, Dimensions} from 'react-nativ
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface Props {
-  images: string[];
+  images: string[] | undefined;
   currentIndex: number;
   onModalClose: () => void;
 }
@@ -38,10 +38,10 @@ const ImageSliderFullScreen = (props: Props) => {
             const index = Math.floor(contentOffset.x / viewSize.width);
             setCurrentIndex(index);
           }}>
-          {props.images.length === 0 ? (
+          {props.images?.length === 0 ? (
             <Image style={styles.image} source={require('../assets/user.png')} />
           ) : (
-            props.images.map((image, i) => {
+            props.images?.map((image, i) => {
               return (
                 <View style={styles.imgView} key={i}>
                   <Image style={styles.image} source={{uri: image}} resizeMethod="auto" resizeMode="contain" />
@@ -51,7 +51,7 @@ const ImageSliderFullScreen = (props: Props) => {
           )}
         </ScrollView>
         <View style={styles.dotsContainer}>
-          {props.images.map((_, i) => {
+          {props.images?.map((_, i) => {
             return <Text key={i} style={[styles.dot, i === currentIndex ? styles.dotBlack : styles.dotWhite]} />;
           })}
         </View>

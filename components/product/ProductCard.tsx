@@ -106,13 +106,13 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
             </View>
           </View>
         </TouchableOpacity>
-        {product.p_status === 3 && authInfo.u_id === product.u_id && (
+        {querymode === 'sell_complete' && product.p_status === 3 && authInfo.u_id === product.u_id && (
           <TouchableOpacity onPress={onPressReview}>
             <View style={styles.reviewBtnFlex}>{product.p_seller_review.p_seller_star === '' ? <Text style={styles.textReview1}>거래 후기 남기기</Text> : <Text style={styles.textReview2}>거래 후기 보기</Text>}</View>
           </TouchableOpacity>
         )}
         {/* && product.p_buyer_id && product.p_buyer_review.p_buyer_star !== '' */}
-        {product.p_status === 3 && (
+        {querymode === 'sell_complete' && product.p_status === 3 && (
           <View style={styles.review2}>
             <View style={styles.flex2}>
               <View style={styles.mgR10}>

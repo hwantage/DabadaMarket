@@ -15,7 +15,7 @@ import moment from 'moment';
 import 'moment/locale/ko';
 
 interface ProductProps {
-  product: productProps;
+  product: productProps | undefined;
 }
 
 function Product({product}: ProductProps) {
@@ -25,25 +25,20 @@ function Product({product}: ProductProps) {
   const myInfo = useRecoilValue(authInfoState);
 
   useEffect(() => {
-    getUserInfo(product.u_id).then(_user => {
-      setUser(_user);
-    });
+    if (product?.u_id !== undefined) {
+      getUserInfo(product?.u_id).then(_user => {
+        setUser(_user);
+      });
+    }
   }, [product]);
 
   const goChattingScreen = () => {
-    // let c_id = '';
-    // chattingStateInfo.map(chattingState => {
-    //   if (chattingState.c_p_id === product.p_id && chattingState.c_to_id === product.u_id) {
-    //     c_id = chattingState.c_id;
-    //   }
-    // });
-
     navigation.push('ChattingRoomScreen', {product});
   };
 
   let p_badatype_str = ''; // 'free' | 'money' | 'drink' | 'secret';
   let p_badatype_css = {};
-  switch (product.p_badatype) {
+  switch (product?.p_badatype) {
     case 'free':
       p_badatype_str = '그냥바다';
       p_badatype_css = styles.p_badatype;
@@ -64,16 +59,18 @@ function Product({product}: ProductProps) {
 
   let p_status_str = ''; // 1:판매중, 2:예약중, 3:거래완료, 4:판매중지
   let p_status_css = {};
-  let p_buy_available = true; // 판매중, 예약중 일때만 구매 가능. 거래완료, 판매중지 일 경우 false 로 변경.
+  let p_buy_available = false; // 판매중, 예약중 일때만 구매 가능. 거래완료, 판매중지 일 경우 false 로 변경.
 
-  switch (product.p_status) {
+  switch (product?.p_status) {
     case 1:
       p_status_str = '판매중';
       p_status_css = styles.tag_sell;
+      p_buy_available = true;
       break;
     case 2:
       p_status_str = '예약중';
       p_status_css = styles.tag_reserve;
+      p_buy_available = true;
       break;
     case 3:
       p_status_str = '거래완료';
@@ -90,43 +87,43 @@ function Product({product}: ProductProps) {
   return (
     <ScrollView>
       <View style={styles.head}>
-        <ImageSlider images={product.p_images.map(item => item.p_url)} />
+        <ImageSlider images={product?.p_images.map(item => item.p_url)} />
       </View>
       <View style={styles.profile2}>
         <Pressable
           style={styles.profile}
           onPress={() => {
-            navigation.push('UserHomeScreen', {u_id: product.u_id});
+            navigation.push('UserHomeScreen', {u_id: product?.u_id});
           }}>
           <Avatar source={user?.u_photoUrl ? {uri: user?.u_photoUrl} : require('../../assets/user.png')} />
           <Text style={styles.nickname}>{user?.u_nickname}</Text>
         </Pressable>
         <Text style={[styles.text, styles.hour]}>
-          {moment(product.p_regdate).format('YYYY-MM-DD hh:mm:ss')} ({moment(product.p_regdate).fromNow()})
+          {moment(product?.p_regdate).format('YYYY-MM-DD hh:mm:ss')} ({moment(product?.p_regdate).fromNow()})
         </Text>
       </View>
       <View style={styles.paddingBlock}>
         <View style={styles.row}>
           <Text style={p_status_css}>{p_status_str}</Text>
-          <Text style={styles.p_title}>{product.p_title}</Text>
+          <Text style={styles.p_title}>{product?.p_title}</Text>
         </View>
       </View>
       <View style={styles.row2}>
-        <Text style={styles.p_price}>{product.p_contents}</Text>
+        <Text style={styles.p_price}>{product?.p_contents}</Text>
       </View>
       <View style={styles.iconBox}>
         <Icon name="chat" color="#898989" size={16} />
-        <Text style={styles.p_price}>{product.p_chat}</Text>
+        <Text style={styles.p_price}>{product?.p_chat}</Text>
         <Icon name="remove-red-eye" color="#898989" size={16} />
-        <Text style={styles.p_price}>{product.p_view}</Text>
+        <Text style={styles.p_price}>{product?.p_view}</Text>
       </View>
       <View style={styles.borderTop}>
         <View style={styles.head2}>
           <View style={styles.row}>
             <Text style={p_badatype_css}>{p_badatype_str} </Text>
-            <Text style={styles.bold}> {product.p_price !== '' && product.p_price !== '0' ? comma(product.p_price) : '무료'}</Text>
+            <Text style={styles.bold}> {product?.p_price !== '' && product?.p_price !== '0' ? comma(product?.p_price) : '무료'}</Text>
           </View>
-          {myInfo.u_id !== product.u_id && p_buy_available && (
+          {myInfo.u_id !== product?.u_id && p_buy_available && (
             <View style={styles.buttons}>
               <DabadaButton theme={'primary'} hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
             </View>
