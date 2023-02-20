@@ -19,6 +19,7 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
   const products_complete = useProducts({u_id: u_id, querymode: 'sell_complete'});
 
   useEffect(() => {
+    //console.log('useeffect of UserHomeScreen');
     getUserInfo(u_id).then(_user => {
       setUser(_user);
     });

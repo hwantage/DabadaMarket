@@ -25,6 +25,7 @@ function ChattingListScreen() {
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
+    console.log('useeffect of chattingCollection');
     // let clock = new clockSync({});
     // console.log('current Time', clock.getTime());
     console.log('myInfo', myInfo);

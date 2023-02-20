@@ -16,12 +16,13 @@ function MyBuyScreen() {
   const productsReady = products !== undefined;
 
   useEffect(() => {
+    //console.log('useeffect of MyBuyScreen');
     if (productsReady) {
       setLoading(false);
     }
   }, [productsReady]);
 
-  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="sell" />;
+  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="buy" />;
   const listFooterComponent: any = !products.noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
   const listRefreshControl: any = <RefreshControl onRefresh={products.onRefresh} refreshing={products.refreshing} colors={['#347deb']} />;
 

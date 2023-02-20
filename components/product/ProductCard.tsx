@@ -22,6 +22,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
   const [product, setProduct] = useState<productProps>(productPropsDefault);
 
   useEffect(() => {
+    console.log('useeffect of ProductCardProps');
     setProduct(props);
   }, [props]);
 
@@ -31,8 +32,11 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
     navigation.navigate('ProductDetailScreen', {product: {...product, p_view: p_viewCnt}, querymode});
   };
 
-  const onPressReview = () => {
-    product.p_seller_review.p_seller_star === '' ? navigation.push('ReviewWriteScreen', {product}) : navigation.push('ReviewViewScreen', {product});
+  const onPressReviewWrite = () => {
+    navigation.push('ReviewWriteScreen', {product});
+  };
+  const onPressReviewView = () => {
+    navigation.push('ReviewViewScreen', {product});
   };
 
   let p_badatype_str = ''; // 'free' | 'money' | 'drink' | 'secret';
@@ -88,7 +92,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
             <View style={styles.flex3}>
               <View style={styles.review}>
                 <Text style={styles.bold1}>{product.p_title}</Text>
-                <Text style={styles.p_regdate}>{moment(product.p_regdate).fromNow()}</Text>
+                <Text style={styles.p_regdate}>{product.p_regdate !== null ? moment(product.p_regdate).fromNow() : ''}</Text>
               </View>
               <View style={styles.review}>
                 <Text style={p_badatype_css}>{p_badatype_str}</Text>
@@ -107,21 +111,63 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
           </View>
         </TouchableOpacity>
         {querymode === 'sell_complete' && product.p_status === 3 && authInfo.u_id === product.u_id && (
-          <TouchableOpacity onPress={onPressReview}>
-            <View style={styles.reviewBtnFlex}>{product.p_seller_review.p_seller_star === '' ? <Text style={styles.textReview1}>거래 후기 남기기</Text> : <Text style={styles.textReview2}>거래 후기 보기</Text>}</View>
-          </TouchableOpacity>
+          <>
+            {product.p_seller_review.p_seller_star === '' ? (
+              <TouchableOpacity onPress={onPressReviewWrite}>
+                <View style={styles.reviewBtnFlex}>
+                  <Text style={styles.textReview1}>거래 후기 남기기</Text>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={onPressReviewView}>
+                <View style={styles.reviewBtnFlex}>
+                  <Text style={styles.textReview2}>거래 후기 보기</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </>
         )}
-        {/* && product.p_buyer_id && product.p_buyer_review.p_buyer_star !== '' */}
-        {querymode === 'sell_complete' && product.p_status === 3 && (
+        {querymode === 'sell_complete' && product.p_status === 3 && product.p_buyer_id && product.p_buyer_review.p_buyer_star !== '' && (
           <View style={styles.review2}>
             <View style={styles.flex2}>
               <View style={styles.mgR10}>
                 <Icon2 name="emoticon" color="#039DF4" size={48} />
               </View>
               <View style={styles.row}>
-                <Text style={styles.bold2}>hkchoi</Text>
+                <Text style={styles.bold2}>{product.p_buyer_review.p_buyer_nickname}</Text>
                 <Icon style={styles.dot} name="circle" size={4} color="#898989" />
-                <Text style={styles.text}>3개월 전</Text>
+                <Text style={styles.text}>{moment(product.p_buyer_review.p_buyer_regdate).fromNow()}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+        {querymode === 'buy' && product.p_status === 3 && authInfo.u_id === product.p_buyer_id && (
+          <>
+            {product.p_buyer_review.p_buyer_star === '' ? (
+              <TouchableOpacity onPress={onPressReviewWrite}>
+                <View style={styles.reviewBtnFlex}>
+                  <Text style={styles.textReview1}>거래 후기 남기기</Text>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={onPressReviewView}>
+                <View style={styles.reviewBtnFlex}>
+                  <Text style={styles.textReview2}>거래 후기 보기</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+        {querymode === 'buy' && product.p_status === 3 && authInfo.u_id === product.p_buyer_id && product.p_seller_review.p_seller_star !== '' && (
+          <View style={styles.review2}>
+            <View style={styles.flex2}>
+              <View style={styles.mgR10}>
+                <Icon2 name="emoticon" color="#039DF4" size={48} />
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.bold2}>{product.p_seller_review.p_seller_nickname}</Text>
+                <Icon style={styles.dot} name="circle" size={4} color="#898989" />
+                <Text style={styles.text}>{moment(product.p_seller_review.p_seller_regdate).fromNow()}</Text>
               </View>
             </View>
           </View>

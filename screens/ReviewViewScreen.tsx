@@ -1,63 +1,77 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
-import type {StackScreenProps} from '@react-navigation/stack';
+import {View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, Pressable} from 'react-native';
+import type {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getUserInfo} from '../utils/auth';
-import {authInfoProps} from '../recoil/authInfoAtom';
+import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {RootStackParamList} from './AppStack';
+import {useRecoilState} from 'recoil';
+import Avatar from '../components/profile/Avatar';
+import {useNavigation} from '@react-navigation/native';
 
 type ReviewViewScreenProps = StackScreenProps<RootStackParamList, 'ReviewViewScreen'>;
 
 function ReviewViewScreen({route}: ReviewViewScreenProps) {
-  const [user, setUser] = useState<authInfoProps>(); // 상품 등록자 정보
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
+  const [seller, setSeller] = useState<authInfoProps>(); // 상품 등록자 정보
   const [buyer, setBuyer] = useState<authInfoProps>(); // 상품 구매자 정보
+  const [isSeller, setIsSeller] = useState<boolean>(true);
 
   const {product} = route.params;
+  //console.log('useeffect of ReviewViewScreen');
   useEffect(() => {
+    if (authInfo.u_id === product.u_id) {
+      setIsSeller(true);
+      console.log(true);
+    } else {
+      setIsSeller(false);
+      console.log(false);
+    }
     getUserInfo(product.u_id).then(_user => {
-      setUser(_user);
+      setSeller(_user);
     });
     getUserInfo(product.p_buyer_id).then(_user => {
       setBuyer(_user);
     });
-  }, [product]);
+  }, [authInfo.u_id, product]);
 
   return (
     <>
       <SafeAreaView style={styles.fullscreen}>
         <TouchableOpacity style={styles.touchFlex}>
-          <Image style={styles.imageBox} />
-          <View style={styles.flex3}>
-            <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
-            <View style={styles.row}>
-              <Text style={styles.text}>거래한 이웃</Text>
-              <Text style={styles.bold3}>badasea</Text>
-            </View>
-          </View>
+          <Pressable
+            style={styles.profile}
+            onPress={() => {
+              navigation.push('UserHomeScreen', {u_id: product?.u_id});
+            }}>
+            <Avatar source={isSeller ? (buyer?.u_photoUrl ? {uri: buyer?.u_photoUrl} : require('../assets/user.png')) : seller?.u_photoUrl ? {uri: seller?.u_photoUrl} : require('../assets/user.png')} />
+            <Text style={styles.nickname}>{isSeller ? buyer?.u_nickname : seller?.u_nickname}</Text>
+          </Pressable>
         </TouchableOpacity>
         <ScrollView>
           <View style={styles.touchFlex_noborder}>
             <Text style={styles.bold2}>
-              {user?.u_nickname}님,{'\n'}
-              {buyer?.u_nickname}님에게 보낸 거래 후기 입니다.{'\n'}
+              {isSeller ? seller?.u_nickname : buyer?.u_nickname}님,{'\n'}
+              {isSeller ? buyer?.u_nickname : seller?.u_nickname}님에게 보낸 거래 후기 입니다.{'\n'}
             </Text>
           </View>
           <View style={styles.touchFlex_emoji}>
             <View style={styles.flex4}>
-              <Icon name="emoticon" color={product.p_seller_review.p_seller_star === '5' ? '#039DF4' : '#b9b9b9'} size={70} />
+              <Icon name="emoticon" color={isSeller ? (product.p_seller_review.p_seller_star === '5' ? '#039DF4' : '#b9b9b9') : product.p_buyer_review.p_buyer_star === '5' ? '#039DF4' : '#b9b9b9'} size={70} />
               <Text style={styles.text}>좋아요!</Text>
             </View>
             <View style={styles.flex4}>
-              <Icon name="emoticon-neutral" color={product.p_seller_review.p_seller_star === '3' ? '#d4b031' : '#b9b9b9'} size={70} />
+              <Icon name="emoticon-neutral" color={isSeller ? (product.p_seller_review.p_seller_star === '3' ? '#d4b031' : '#b9b9b9') : product.p_buyer_review.p_buyer_star === '3' ? '#d4b031' : '#b9b9b9'} size={70} />
               <Text style={styles.text}>별로에요!</Text>
             </View>
             <View style={styles.flex4}>
-              <Icon name="emoticon-sad" color={product.p_seller_review.p_seller_star === '1' ? '#c94f26' : '#b9b9b9'} size={70} />
+              <Icon name="emoticon-sad" color={isSeller ? (product.p_seller_review.p_seller_star === '1' ? '#c94f26' : '#b9b9b9') : product.p_buyer_review.p_buyer_star === '1' ? '#c94f26' : '#b9b9b9'} size={70} />
               <Text style={styles.text}>안좋아요!</Text>
             </View>
           </View>
           <View style={styles.flex2}>
-            <Text style={styles.bold1}>{product.p_seller_review.p_seller_note}</Text>
+            <Text style={styles.bold1}>{isSeller ? product.p_seller_review.p_seller_note : product.p_buyer_review.p_buyer_note}</Text>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -150,6 +164,18 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     color: '#898989',
     marginRight: 12,
+  },
+  nickname: {
+    lineHeight: 16,
+    fontSize: 16,
+    marginLeft: 8,
+    fontWeight: 'bold',
+  },
+  profile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginVertical: 14,
   },
 });
 

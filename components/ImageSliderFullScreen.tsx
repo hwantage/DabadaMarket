@@ -13,6 +13,7 @@ const ImageSliderFullScreen = (props: Props) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
+    console.log('useEffect of ImageSliderFullScreen');
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({x: Dimensions.get('window').width * props.currentIndex, y: 0, animated: false});
     }

@@ -8,6 +8,7 @@ export default function useChatting(u_id: string) {
   //const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
   useEffect(() => {
+    console.log('useeffect of useChatting');
     getChatting(u_id).then(_chatting => {
       setChatting(_chatting);
     });

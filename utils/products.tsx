@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-export const productCollection = firestore().collection('product');
+export const productCollection = firestore().collection('products');
 export const PAGE_SIZE = 12;
 import moment from 'moment';
 import 'moment/locale/ko';
@@ -11,10 +11,14 @@ export interface productImageProps {
 export interface productBuyReviewProps {
   p_buyer_star: string;
   p_buyer_note: string;
+  p_buyer_nickname: string;
+  p_buyer_regdate: string;
 }
 export interface productSellReviewProps {
   p_seller_star: string;
   p_seller_note: string;
+  p_seller_nickname: string;
+  p_seller_regdate: string;
 }
 
 export interface productProps {
@@ -56,10 +60,14 @@ export const productPropsDefault: productProps = {
   p_buyer_review: {
     p_buyer_star: '',
     p_buyer_note: '',
+    p_buyer_nickname: '',
+    p_buyer_regdate: '',
   },
   p_seller_review: {
     p_seller_star: '',
     p_seller_note: '',
+    p_seller_nickname: '',
+    p_seller_regdate: '',
   },
   p_buy_regdate: '',
   p_keywords: [],
@@ -103,9 +111,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
     const cursorDoc = await productCollection.doc(p_id).get();
     query = cursormode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
   }
-
   const snapshot = keyword ? (Array.isArray(keyword) ? await query.where('p_keywords', 'array-contains-any', keyword).get() : await query.where('p_keywords', 'array-contains', keyword).get()) : await query.get();
-
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
     p_regdate: moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD hh:mm:ss'),

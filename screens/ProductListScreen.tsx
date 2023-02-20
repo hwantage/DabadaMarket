@@ -10,18 +10,21 @@ import useProducts from '../hooks/useProducts';
 
 function ProductListScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({});
+  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: undefined, querymode: ''});
 
   const productsReady = products !== undefined;
-
+  console.log('리스트', products);
   useEffect(() => {
+    //console.log('useeffect of ProductListScreen');
     if (productsReady) {
       SplashScreen.hide();
+      console.log('제품목록:', products);
     }
   }, [products, productsReady]);
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
+    //console.log('useeffect of ProductListScreen2');
     navigation.setOptions({
       headerRight: () => <TopRightButton name="search" onPress={() => navigation.push('SearchScreen')} />,
     });

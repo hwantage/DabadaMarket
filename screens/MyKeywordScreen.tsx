@@ -20,6 +20,7 @@ function MyKeywordScreen() {
   const [notifications, setNotifications] = useState<notificationKeywordProps>();
 
   useEffect(() => {
+    //console.log('useeffect of MyKeywordScreen');
     getNotificationKeyword(authInfo.u_id).then(_response => {
       setNotifications(_response);
     });

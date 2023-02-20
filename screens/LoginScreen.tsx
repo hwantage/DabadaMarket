@@ -38,6 +38,7 @@ function LoginScreen() {
   });
 
   useEffect(() => {
+    //console.log('useeffect of LoginScreen');
     getFcmToken();
   }, []);
 

@@ -53,6 +53,7 @@ function ProductAddScreen() {
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
+    //console.log('useeffect of ProductAddScreen');
     navigation.setOptions({
       headerLeft: () => (!loading ? <TopLeftButton name="close" onPress={() => navigation.pop()} /> : <ActivityIndicator size={20} color="#347deb" />),
       headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),

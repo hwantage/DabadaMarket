@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import firestore from '@react-native-firebase/firestore';
 import {View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,6 +22,7 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
 
   const {product} = route.params;
   useEffect(() => {
+    //console.log('useeffect of ReviewWriteScreen');
     if (authInfo.u_id === product.u_id) {
       getUserInfo(product.p_buyer_id).then(_user => {
         setTargetUser(_user);
@@ -33,13 +35,15 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   }, [authInfo.u_id, product]);
 
   const onPressWriteReview = () => {
+    const regdate = firestore.FieldValue.serverTimestamp();
+    console.log('ReviewWriteScreen : try updateProductField');
     if (authInfo.u_id === product.u_id) {
-      updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note});
+      updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});
+      events.emit('updateProduct', product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note}});
     } else {
-      updateProductField(product.p_id, 'p_buyer_review', {p_seller_star: star, p_seller_note: note});
+      updateProductField(product.p_id, 'p_buyer_review', {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate});
+      events.emit('updateProduct', product.p_id, {...product, p_buyer_review: {p_seller_star: star, p_seller_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate}});
     }
-
-    events.emit('updateProduct', product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note}});
 
     navigation.pop();
   };

@@ -30,6 +30,7 @@ function MySellScreen() {
   }, [products.productCnt, products_complete.productCnt_complete]);
 
   useEffect(() => {
+    //console.log('useeffect of MySellScreen');
     if (productsReady) {
       setLoading(false);
       updateRoutes();

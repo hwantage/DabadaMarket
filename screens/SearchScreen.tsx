@@ -18,6 +18,7 @@ function SearchScreen() {
   const [keyword, setKeyword] = useState<string>('');
 
   useEffect(() => {
+    //console.log('useeffect of SearchScreen');
     getSearchRecent(authInfo.u_id).then(_response => {
       setRecentSearchs(_response);
     });

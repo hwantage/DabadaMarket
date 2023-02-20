@@ -54,6 +54,7 @@ function ProductModifyScreen() {
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
+    //console.log('useeffect of ProductModifyScreen');
     navigation.setOptions({
       headerLeft: () => (!loading ? <TopLeftButton name="arrow-back-ios" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
       headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),

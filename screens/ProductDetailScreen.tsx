@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -7,32 +7,42 @@ import Product from '../components/product/Product';
 import {RootStackParamList} from './AppStack';
 import useProductActions from '../hooks/useProductActions';
 import ActionSheetModal from '../components/ActionSheetModal';
-import {getProductInfo, productProps, updateProductField} from '../utils/products';
+import {getProductInfo, productProps, productPropsDefault, updateProductField} from '../utils/products';
 
 type ProductDetailScreenProps = StackScreenProps<RootStackParamList, 'ProductDetailScreen'>;
 
 function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const product = route.params.product;
-  const [productInfo, setProductInfo] = useState<productProps>();
+  const [productInfo, setProductInfo] = useState<productProps>(productPropsDefault);
   const querymode = route.params.querymode;
   const {isSelecting, onPressMore, onClose, actions} = useProductActions(product.p_id, querymode);
 
-  const isMyProduct = authInfo.u_id === product.u_id;
+  const initProduct = useCallback(async () => {
+    await getProductInfo(product.p_id).then(_response => setProductInfo(_response));
+  }, [product.p_id]);
 
   useEffect(() => {
-    updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
-    getProductInfo(product.p_id).then(_response => setProductInfo(_response));
-    isMyProduct &&
+    //console.log('useeffect of ProductDetailScreen');
+    if (productInfo.p_id === '') {
+      //console.log('ProductDetailScreen : try updateProductField');
+      updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+      initProduct();
+    }
+    authInfo.u_id === product.u_id &&
       navigation.setOptions({
         headerRight: () => <TopRightButton name="more-vert" onPress={onPressMore} />,
       });
-  }, [navigation, isMyProduct, onPressMore, product.p_id, product.p_view]);
+  }, [authInfo.u_id, initProduct, navigation, onPressMore, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
 
   return (
     <>
-      <Product product={productInfo} />
-      <ActionSheetModal visible={isSelecting} actions={actions} onClose={onClose} />
+      {productInfo.p_id !== '' && (
+        <>
+          <Product product={productInfo} />
+          <ActionSheetModal visible={isSelecting} actions={actions} onClose={onClose} />
+        </>
+      )}
     </>
   );
 }

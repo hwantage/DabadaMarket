@@ -24,12 +24,14 @@ function UserSellCompleteScreen({route}: UserSellCompleteScreenProps) {
   const productsReady = products !== undefined;
 
   useEffect(() => {
+    //console.log('useeffect of UserSellCompleteScreen');
     if (productsReady) {
       setLoading(false);
     }
   }, [productsReady]);
 
   useEffect(() => {
+    //console.log('useeffect of UserSellCompleteScreen2');
     getUserInfo(u_id).then(_user => {
       setUser(_user);
     });

@@ -14,6 +14,7 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
   useEffect(() => {
+    console.log('useeffect of useProducts');
     getProducts({u_id, querymode, keyword}).then(_products => {
       setProducts(_products);
       if (_products.length < PAGE_SIZE) {
