@@ -26,6 +26,9 @@ buildscript {
         classpath("com.google.gms:google-services:4.3.13")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        // Add the dependency for the Performance Monitoring Gradle plugin
+        classpath 'com.google.firebase:perf-plugin:1.4.2'
     }
 }
 
