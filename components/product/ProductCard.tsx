@@ -22,7 +22,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
   const [product, setProduct] = useState<productProps>(productPropsDefault);
 
   useEffect(() => {
-    console.log('useeffect of ProductCardProps');
+    //console.log('useeffect of ProductCardProps');
     setProduct(props);
   }, [props]);
 

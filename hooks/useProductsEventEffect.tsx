@@ -11,7 +11,7 @@ interface useProductsEventEffectProps {
 
 export default function useProductsEventEffect({refresh, removeProduct, updateProduct, enabled}: useProductsEventEffectProps) {
   useEffect(() => {
-    console.log('useeffect of useProductsEventEffect');
+    //console.log('useeffect of useProductsEventEffect');
     if (!enabled) {
       return;
     }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -21,22 +21,21 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   const [note, setNote] = useState<string>('');
 
   const {product} = route.params;
+  //console.log(product);
+  const initTargetUser = useCallback(async () => {
+    await getUserInfo(product.p_buyer_id).then(_user => {
+      console.log(product.p_buyer_id, _user);
+      setTargetUser(_user);
+    });
+  }, [product.p_buyer_id]);
+
   useEffect(() => {
     //console.log('useeffect of ReviewWriteScreen');
-    if (authInfo.u_id === product.u_id) {
-      getUserInfo(product.p_buyer_id).then(_user => {
-        setTargetUser(_user);
-      });
-    } else {
-      getUserInfo(product.p_buyer_id).then(_user => {
-        setTargetUser(_user);
-      });
-    }
-  }, [authInfo.u_id, product]);
+    initTargetUser();
+  }, [initTargetUser]);
 
   const onPressWriteReview = () => {
     const regdate = firestore.FieldValue.serverTimestamp();
-    console.log('ReviewWriteScreen : try updateProductField');
     if (authInfo.u_id === product.u_id) {
       updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});
       events.emit('updateProduct', product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note}});
@@ -55,16 +54,16 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   return (
     <>
       <SafeAreaView style={styles.fullscreen}>
-        <TouchableOpacity style={styles.touchFlex}>
-          <Image style={styles.imageBox} />
+        <View style={styles.touchFlex}>
+          <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../assets/user.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
           <View style={styles.flex3}>
-            <Text style={styles.bold1}>knk 아워홈 식권 20매</Text>
+            <Text style={styles.bold1}>{product.p_title}</Text>
             <View style={styles.row}>
               <Text style={styles.text}>거래한 이웃</Text>
-              <Text style={styles.bold3}>badasea</Text>
+              <Text style={styles.bold3}>{targetUser?.u_nickname}</Text>
             </View>
           </View>
-        </TouchableOpacity>
+        </View>
         <ScrollView>
           <View style={styles.touchFlex_noborder}>
             <Text style={styles.bold2}>

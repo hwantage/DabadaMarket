@@ -13,12 +13,10 @@ function ProductListScreen() {
   const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: undefined, querymode: ''});
 
   const productsReady = products !== undefined;
-  console.log('리스트', products);
   useEffect(() => {
     //console.log('useeffect of ProductListScreen');
     if (productsReady) {
       SplashScreen.hide();
-      console.log('제품목록:', products);
     }
   }, [products, productsReady]);
 

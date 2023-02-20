@@ -75,7 +75,7 @@ function ModifyProfile() {
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
-    console.log('useeffect of ModifyProfile');
+    //console.log('useeffect of ModifyProfile');
     navigation.setOptions({
       headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
     });

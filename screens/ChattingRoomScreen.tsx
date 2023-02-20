@@ -360,13 +360,16 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
-  const onChangeProductState = state => {
+  const onChangeProductState = (state: number) => {
     console.log('채팅 제품', filteredChattingState[0]?.c_product);
 
     const updChattingInfo: updateChattingProps = {c_product: {...filteredChattingState[0]?.c_product, p_status: state}, c_regdate: firestore.Timestamp.now()?.seconds};
     console.log('onChangeStatus', state);
     updateChatting(chattingId, updChattingInfo);
-    updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_status', state); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+    updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_status', state); // 판매 상태 업데이트
+    if (state === 3) {
+      updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_buyer_id', filteredChattingState[0]?.c_product.u_id); // 구매자 정보 업데이트
+    }
 
     setCurrentProductState(state);
   };

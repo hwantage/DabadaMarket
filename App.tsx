@@ -14,7 +14,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 function App() {
   useEffect(() => {
     //getFcmToken();
-    console.log('useEffect of App');
+    //console.log('useEffect of App');
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('[Remote Message] ', JSON.stringify(remoteMessage));
     });

@@ -17,7 +17,7 @@ function Profile({profileUser}: avatarProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
   useEffect(() => {
-    console.log('useeffect of Profile');
+    //console.log('useeffect of Profile');
     setUser(profileUser);
   }, [profileUser]);
 

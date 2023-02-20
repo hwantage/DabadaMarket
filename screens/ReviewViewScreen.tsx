@@ -23,10 +23,8 @@ function ReviewViewScreen({route}: ReviewViewScreenProps) {
   useEffect(() => {
     if (authInfo.u_id === product.u_id) {
       setIsSeller(true);
-      console.log(true);
     } else {
       setIsSeller(false);
-      console.log(false);
     }
     getUserInfo(product.u_id).then(_user => {
       setSeller(_user);
