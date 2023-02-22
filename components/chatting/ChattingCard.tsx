@@ -149,13 +149,15 @@ const styles = StyleSheet.create({
   },
   flex2: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
+    //justifyContent: 'space-between',
+    width: 250,
   },
   flex3: {
     flexDirection: 'row',
     flex: 2,
     alignItems: 'flex-start',
     justifyContent: 'space-between',
+    width: 100,
   },
   between: {
     flexDirection: 'row',

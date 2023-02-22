@@ -14,8 +14,9 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
   useEffect(() => {
-    //console.log('useeffect of useProducts');
+    console.log('useeffect of useProducts');
     getProducts({u_id, querymode, keyword}).then(_products => {
+      console.log('조회 결과', _products);
       setProducts(_products);
       if (_products.length < PAGE_SIZE) {
         setNoMoreProduct(true);
@@ -82,10 +83,12 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
   };
 
   const onRefresh = useCallback(async () => {
+    console.log('리프레시 상품목록', products);
     if (!products || products.length === 0 || refreshing) {
       return;
     }
     const firstProduct = products[0];
+    console.log('첫번째 아이템', firstProduct);
     setRefreshing(true);
     const newerProduct = await getProducts({p_id: firstProduct.p_id, cursormode: 'newer', u_id: u_id, querymode: querymode});
     setRefreshing(false);

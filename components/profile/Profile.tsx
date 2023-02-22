@@ -17,7 +17,7 @@ function Profile({profileUser}: avatarProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
   useEffect(() => {
-    //console.log('useeffect of Profile');
+    console.log('useeffect of Profile', profileUser);
     setUser(profileUser);
   }, [profileUser]);
 
@@ -28,7 +28,7 @@ function Profile({profileUser}: avatarProps) {
   return (
     <>
       <View style={styles.userInfo}>
-        <Avatar source={user?.u_photoUrl && {uri: user?.u_photoUrl}} size={140} />
+        <Avatar source={user?.u_photoUrl !== '' && {uri: user?.u_photoUrl}} size={140} />
         {/* <Text style={styles.groupName}>{user?.u_group}</Text> */}
       </View>
       <View style={styles.userInfo2}>

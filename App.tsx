@@ -7,14 +7,14 @@ import messaging from '@react-native-firebase/messaging';
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('[Background Remote Message]', remoteMessage);
 });
-// const getFcmToken = async () => {
-//   const fcmToken = await messaging().getToken();
-//   console.log('[FCM Token] ', fcmToken);
-// };
+const getFcmToken = async () => {
+  const fcmToken = await messaging().getToken();
+  console.log('[FCM Token] ', fcmToken);
+};
 function App() {
   useEffect(() => {
-    //getFcmToken();
-    //console.log('useEffect of App');
+    getFcmToken();
+    console.log('useEffect of App');
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('[Remote Message] ', JSON.stringify(remoteMessage));
     });

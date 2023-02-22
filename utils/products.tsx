@@ -1,8 +1,8 @@
 import firestore from '@react-native-firebase/firestore';
-export const productCollection = firestore().collection('products');
+export const productCollection = firestore().collection('product');
 export const PAGE_SIZE = 12;
-import moment from 'moment';
 import 'moment/locale/ko';
+import moment from 'moment';
 
 export interface productImageProps {
   pi_id: string;
@@ -104,7 +104,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
       query = query.where('u_id', '==', u_id).where('p_status', 'in', [3, 4]);
     }
   } else {
-    //query = query.where('p_status', 'in', [1, 2, 3, 4]);
+    query = query.where('p_status', 'in', [1, 2, 3, 4]);
   }
 
   if (p_id) {
@@ -112,11 +112,11 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
     query = cursormode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
   }
   const snapshot = keyword ? (Array.isArray(keyword) ? await query.where('p_keywords', 'array-contains-any', keyword).get() : await query.where('p_keywords', 'array-contains', keyword).get()) : await query.get();
+  console.log('스냅샷 docs: ', snapshot.docs);
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
-    p_regdate: moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD hh:mm:ss'),
+    //p_regdate: typeof doc.data().p_regdate === 'string' ? doc.data().p_regdate : moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD hh:mm:ss'),
   }));
-
   return products;
 }
 
@@ -146,7 +146,9 @@ export async function getProductCnt({u_id, querymode}: getProductsProps = getPro
 
 // 상품 등록
 export function createProduct(product: productProps) {
-  return productCollection.doc(product.p_id).set({...product, p_regdate: firestore.FieldValue.serverTimestamp()});
+  console.log('createProduct :: ', product);
+  return productCollection.doc(product.p_id).set(product);
+  //return productCollection.doc(product.p_id).set({...product, p_regdate: firestore.FieldValue.serverTimestamp()});
 }
 
 // 상품 상세 정보
@@ -162,13 +164,13 @@ export function removeProduct(p_id: string) {
 
 // 상품 수정 (전체)
 export function updateProduct(p_id: string, product: productProps) {
-  return productCollection.doc(p_id).update({
-    product,
-  });
+  console.log('updateProduct', p_id, product);
+  return productCollection.doc(p_id).set(product);
 }
 
 // 상품 수정
 export function updateProductField(p_id: string, fieldName: string, fieldValue: any) {
+  console.log('updateProductField', p_id, fieldName, fieldValue);
   return productCollection.doc(p_id).update({
     [fieldName]: fieldValue,
   });

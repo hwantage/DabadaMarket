@@ -20,6 +20,8 @@ function SettingScreen() {
         <Text style={styles.text2}>최형근 : Development</Text>
         <Text style={styles.text2}>신희성 : Research, Document works</Text>
         <Text style={styles.text2}>김바다 : Planning design, Markup</Text>
+        <Text style={styles.text2}>김시윤 : Login screen 케리커처</Text>
+        <Text style={styles.text2}>openAI(DALL·E 2) : Character Design</Text>
         <Text style={styles.text3}>help : ux@somansa.com</Text>
       </View>
     </View>

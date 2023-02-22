@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
     color: '#757575',
     fontSize: 12,
     lineHeight: 18,
+    marginTop: 8,
   },
   touchFlex: {
     flexDirection: 'column',
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#b0b0b0',
   },
-  bold1: {marginTop: 4, fontSize: 16, fontWeight: 'bold', color: '#898989'},
+  bold1: {marginTop: 4, fontSize: 16, fontWeight: 'bold', color: '#898989', width: '75%'},
   textReview1: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: '#166de0'},
   textReview2: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: 'black'},
   imageBox: {
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
   },
   review: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
   review2: {

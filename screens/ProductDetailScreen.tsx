@@ -7,7 +7,7 @@ import Product from '../components/product/Product';
 import {RootStackParamList} from './AppStack';
 import useProductActions from '../hooks/useProductActions';
 import ActionSheetModal from '../components/ActionSheetModal';
-import {getProductInfo, productProps, productPropsDefault, updateProductField} from '../utils/products';
+import {getProductInfo, productProps, productPropsDefault, updateProduct} from '../utils/products';
 
 type ProductDetailScreenProps = StackScreenProps<RootStackParamList, 'ProductDetailScreen'>;
 
@@ -19,21 +19,26 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   const {isSelecting, onPressMore, onClose, actions} = useProductActions(product.p_id, querymode);
 
   const initProduct = useCallback(async () => {
-    await getProductInfo(product.p_id).then(_response => setProductInfo(_response));
+    console.log('initProduct of ProductDetailScreen');
+    await getProductInfo(product.p_id).then(_response => {
+      console.log(_response);
+      setProductInfo(_response);
+    });
   }, [product.p_id]);
 
   useEffect(() => {
-    //console.log('useeffect of ProductDetailScreen');
+    console.log('useeffect of ProductDetailScreen');
     if (productInfo.p_id === '') {
-      //console.log('ProductDetailScreen : try updateProductField');
-      updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+      console.log('ProductDetailScreen : try updateProductField');
+      //updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+      updateProduct(product.p_id, {...product, p_view: product.p_view});
       initProduct();
     }
     authInfo.u_id === product.u_id &&
       navigation.setOptions({
         headerRight: () => <TopRightButton name="more-vert" onPress={onPressMore} />,
       });
-  }, [authInfo.u_id, initProduct, navigation, onPressMore, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
+  }, [authInfo.u_id, initProduct, navigation, onPressMore, product, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
 
   return (
     <>

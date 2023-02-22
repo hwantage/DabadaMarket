@@ -56,7 +56,7 @@ function ModifyProfile() {
 
       photoURL = response ? await reference.getDownloadURL() : null;
     } else {
-      photoURL = authInfo.u_photoUrl || {};
+      photoURL = authInfo.u_photoUrl || '';
     }
 
     const userInfo = {
@@ -75,11 +75,10 @@ function ModifyProfile() {
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
-    //console.log('useeffect of ModifyProfile');
     navigation.setOptions({
       headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
     });
-  }, [loading, navigation, onSubmit]);
+  }, [authInfo, loading, navigation, onSubmit]);
 
   const onPickImage = (res: any) => {
     if (res.didCancel || !res) {
@@ -123,7 +122,7 @@ function ModifyProfile() {
       <View style={styles.fullscreen}>
         <View style={styles.row}>
           <Pressable onPress={onPress}>
-            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
+            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl !== '' ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
             <Icon name="enhance-photo-translate" size={26} style={styles.icon} />
           </Pressable>
         </View>

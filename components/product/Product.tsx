@@ -33,12 +33,12 @@ function Product({product}: ProductProps) {
   }, [product.u_id]);
 
   useEffect(() => {
-    //console.log('useeffect of Product');
+    console.log('useeffect of Product', product);
     setUserAvatar();
     if (product.p_status === 1 || product.p_status === 2) {
       setCanBuy(true);
     }
-  }, [product.p_status, setUserAvatar]);
+  }, [product, product.p_status, setUserAvatar]);
 
   const goChattingScreen = () => {
     navigation.push('ChattingRoomScreen', {product});
@@ -96,7 +96,7 @@ function Product({product}: ProductProps) {
       ) : (
         <ScrollView>
           <View style={styles.head}>
-            <ImageSlider images={product?.p_images.map(item => item.p_url)} />
+            <ImageSlider images={product?.p_images?.map(item => item.p_url)} />
           </View>
           <View style={styles.profile2}>
             <Pressable
@@ -108,7 +108,7 @@ function Product({product}: ProductProps) {
               <Text style={styles.nickname}>{user?.u_nickname}</Text>
             </Pressable>
             <Text style={[styles.text, styles.hour]}>
-              {moment(product?.p_regdate).format('YYYY-MM-DD hh:mm:ss')} ({moment(product?.p_regdate).fromNow()})
+              {product?.p_regdate} ({moment(product?.p_regdate).fromNow()})
             </Text>
           </View>
           <View style={styles.paddingBlock}>
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#606060',
     marginLeft: 6,
+    width: '85%',
   },
   p_badatype: {
     lineHeight: 16,

@@ -13,6 +13,7 @@ export interface notificationKeywordProps {
 }
 
 export function createNotificationKeyword(u_id: string, notifications: notificationKeywordProps) {
+  console.log('createNotificationKeyword :: ', u_id, notifications);
   return notificationCollection.doc(u_id).set(notifications);
 }
 

@@ -8,9 +8,10 @@ import DabadaButton from '../components/common/DabadaButton';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import DabadaInput from '../components/common/DabadaInput';
 import {RootStackParamList} from './AppStack';
-import {updateProductField} from '../utils/products';
+import {updateProduct} from '../utils/products';
 import events from '../utils/events';
 import {useRecoilState} from 'recoil';
+import moment from 'moment';
 
 type ReviewWriteScreenProps = StackScreenProps<RootStackParamList, 'ReviewWriteScreen'>;
 
@@ -35,13 +36,17 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   }, [initTargetUser]);
 
   const onPressWriteReview = () => {
-    const regdate = firestore.FieldValue.serverTimestamp();
+    const current_timestamp = firestore.Timestamp.fromDate(new Date());
+    const regdate = moment(current_timestamp).format('YYYY-MM-DD hh:mm:ss');
+
     if (authInfo.u_id === product.u_id) {
-      updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});
-      events.emit('updateProduct', product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note}});
+      //updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});
+      updateProduct(product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate}});
+      events.emit('updateProduct', product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate}});
     } else {
-      updateProductField(product.p_id, 'p_buyer_review', {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate});
-      events.emit('updateProduct', product.p_id, {...product, p_buyer_review: {p_seller_star: star, p_seller_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate}});
+      //updateProductField(product.p_id, 'p_buyer_review', {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate});
+      updateProduct(product.p_id, {...product, p_buyer_review: {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate}});
+      events.emit('updateProduct', product.p_id, {...product, p_buyer_review: {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate}});
     }
 
     navigation.pop();

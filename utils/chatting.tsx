@@ -80,6 +80,7 @@ export async function getChattingData(c_id: string) {
 }
 // 채팅 룸 생성
 export function createChatting(chatting: chattingProps) {
+  console.log('createChatting :: ', chatting);
   return chattingCollection.doc(chatting.c_id).set({...chatting});
 }
 
