@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import firestore from '@react-native-firebase/firestore';
 import {Alert, Pressable, StyleSheet, View} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -12,7 +11,6 @@ import {getNotificationKeyword, createNotificationKeyword, notificationKeywordPr
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import moment from 'moment';
 
 function MyKeywordScreen() {
   const {t} = useTranslation();
@@ -23,10 +21,6 @@ function MyKeywordScreen() {
 
   useEffect(() => {
     console.log('useeffect of MyKeywordScreen');
-    const timestamp = firestore.Timestamp.now().toDate();
-    //const current_timestamp = firestore.Timestamp.fromDate(new Date());
-    const regdate = moment(timestamp).format('YYYY-MM-DD hh:mm:ss');
-    console.log(regdate);
     getNotificationKeyword(authInfo.u_id).then(_response => {
       setNotifications(_response);
     });

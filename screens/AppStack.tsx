@@ -64,7 +64,7 @@ function AppStackRoot() {
   const {t} = useTranslation();
 
   useEffect(() => {
-    console.log('useeffect of AppStackRoot', authInfo);
+    //console.log('useeffect of AppStackRoot', authInfo);
     SplashScreen.hide();
     // 컴포넌트 첫 로딩 시 로그인 상태를 확인하고 UserContext에 적용
     const unsubscribe = subscribeAuth(async (currentUser: authInfoProps) => {

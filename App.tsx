@@ -4,6 +4,11 @@ import AppStack from './screens/AppStack';
 import './lang/i18n';
 import {RecoilRoot} from 'recoil';
 import messaging from '@react-native-firebase/messaging';
+import moment from 'moment-timezone';
+
+// 타임존 전역설정
+moment.tz.setDefault('Asia/Seoul');
+
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('[Background Remote Message]', remoteMessage);
 });
@@ -14,7 +19,7 @@ const getFcmToken = async () => {
 function App() {
   useEffect(() => {
     getFcmToken();
-    console.log('useEffect of App');
+    //console.log('useEffect of App');
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('[Remote Message] ', JSON.stringify(remoteMessage));
     });

@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import firestore from '@react-native-firebase/firestore';
 import {View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,7 +10,7 @@ import {RootStackParamList} from './AppStack';
 import {updateProduct} from '../utils/products';
 import events from '../utils/events';
 import {useRecoilState} from 'recoil';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 type ReviewWriteScreenProps = StackScreenProps<RootStackParamList, 'ReviewWriteScreen'>;
 
@@ -25,7 +24,6 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   //console.log(product);
   const initTargetUser = useCallback(async () => {
     await getUserInfo(product.p_buyer_id).then(_user => {
-      console.log(product.p_buyer_id, _user);
       setTargetUser(_user);
     });
   }, [product.p_buyer_id]);
@@ -36,8 +34,7 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   }, [initTargetUser]);
 
   const onPressWriteReview = () => {
-    const current_timestamp = firestore.Timestamp.fromDate(new Date());
-    const regdate = moment(current_timestamp).format('YYYY-MM-DD hh:mm:ss');
+    const regdate = moment().format('YYYY-MM-DD HH:mm:ss');
 
     if (authInfo.u_id === product.u_id) {
       //updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});

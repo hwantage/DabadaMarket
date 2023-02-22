@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, View, Platform, Image, ActivityIndicator, ScrollView, TextInput, TouchableOpacity} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
 import {default as Text} from '../components/common/DabadaText';
 import DabadaInputLine from '../components/common/DabadaInputLine';
 import DabadaInput from '../components/common/DabadaInput';
@@ -18,7 +17,7 @@ import TopRightButton from '../components/common/TopRightButton';
 import {createProduct, productProps, productPropsDefault, comma, uncomma} from '../utils/products';
 import uuid from 'react-native-uuid';
 import events from '../utils/events';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 function ProductAddScreen() {
   const {t} = useTranslation();
@@ -47,8 +46,7 @@ function ProductAddScreen() {
         product.p_images.push({pi_id: uuid.v4().toString(), p_url: imageURL});
       }),
     ).then(() => {
-      const current_timestamp = firestore.Timestamp.fromDate(new Date());
-      const regdate = moment(current_timestamp).format('YYYY-MM-DD hh:mm:ss');
+      const regdate = moment().format('YYYY-MM-DD HH:mm:ss');
       createProduct({...product, p_price: uncomma(product.p_price), p_keywords: product.p_title.split(' '), p_regdate: regdate}); // Firebase 상품 등록
       navigation.pop();
       events.emit('refresh');

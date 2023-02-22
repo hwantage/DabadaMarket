@@ -6,7 +6,7 @@ import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {productProps, productPropsDefault, comma} from '../../utils/products';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import 'moment/locale/ko';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
@@ -137,6 +137,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
                 <Text style={styles.bold2}>{product.p_buyer_review.p_buyer_nickname}</Text>
                 <Icon style={styles.dot} name="circle" size={4} color="#898989" />
                 <Text style={styles.text}>{moment(product.p_buyer_review.p_buyer_regdate).fromNow()}</Text>
+                <Text style={styles.bold2}>{product.p_buyer_review.p_buyer_note}</Text>
               </View>
             </View>
           </View>
@@ -168,6 +169,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
                 <Text style={styles.bold2}>{product.p_seller_review.p_seller_nickname}</Text>
                 <Icon style={styles.dot} name="circle" size={4} color="#898989" />
                 <Text style={styles.text}>{moment(product.p_seller_review.p_seller_regdate).fromNow()}</Text>
+                <Text style={styles.bold2}>{product.p_seller_review.p_seller_note}</Text>
               </View>
             </View>
           </View>

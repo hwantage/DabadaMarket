@@ -2,7 +2,6 @@ import firestore from '@react-native-firebase/firestore';
 export const productCollection = firestore().collection('product');
 export const PAGE_SIZE = 12;
 import 'moment/locale/ko';
-import moment from 'moment';
 
 export interface productImageProps {
   pi_id: string;
@@ -104,7 +103,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
       query = query.where('u_id', '==', u_id).where('p_status', 'in', [3, 4]);
     }
   } else {
-    query = query.where('p_status', 'in', [1, 2, 3, 4]);
+    //query = query.where('p_status', 'in', [1, 2, 3, 4]);
   }
 
   if (p_id) {
@@ -112,10 +111,11 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
     query = cursormode === 'older' ? query.startAfter(cursorDoc) : query.endBefore(cursorDoc);
   }
   const snapshot = keyword ? (Array.isArray(keyword) ? await query.where('p_keywords', 'array-contains-any', keyword).get() : await query.where('p_keywords', 'array-contains', keyword).get()) : await query.get();
-  console.log('스냅샷 docs: ', snapshot.docs);
+
+  //console.log('스냅샷 docs: ', snapshot.docs);
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
-    //p_regdate: typeof doc.data().p_regdate === 'string' ? doc.data().p_regdate : moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD hh:mm:ss'),
+    //p_regdate: typeof doc.data().p_regdate === 'string' ? doc.data().p_regdate : moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD HH:mm:ss'),
   }));
   return products;
 }
