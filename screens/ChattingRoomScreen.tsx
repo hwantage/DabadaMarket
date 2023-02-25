@@ -1,24 +1,24 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {GiftedChat, IMessage, SystemMessage} from 'react-native-gifted-chat';
 import db from '@react-native-firebase/database';
-import {View, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Image} from 'react-native';
-// import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
+import {View, StyleSheet, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import uuid from 'react-native-uuid';
 import {CHAT_PRODUCT_STATE, compareDiffChattingDate, createChatting, getChattingData, updateChatting, updateChattingProps} from '../utils/chatting';
 import {getUserInfo} from '../utils/auth';
-import {chattingInfoState, chattingNotificationCntState, chattingStateProps} from '../recoil/chattingAtom';
+import {chattingInfoState, chattingStateProps} from '../recoil/chattingAtom';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
 import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
-import dayjs from 'dayjs';
 import firestore from '@react-native-firebase/firestore';
-import 'dayjs/locale/ko';
 import {Picker} from '@react-native-picker/picker';
 import {default as Text} from '../components/common/DabadaText';
 import {comma, updateProductField} from '../utils/products';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Seoul');
+
 const database = db().ref('chatting');
 type ChattingRoomScreenProps = StackScreenProps<RootStackParamList, 'ChattingRoomScreen'>;
 
@@ -38,7 +38,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const [messages, setMessages] = useState<IMessage[]>(filteredChattingState.length > 0 ? [...filteredChattingState[0].c_messages] : []);
 
   const [currentProductState, setCurrentProductState] = useState(product ? product.p_status : filteredChattingState.length > 0 ? filteredChattingState[0]?.c_product.p_status : '1');
-  console.log('커런트ㄸㄸ ', filteredChattingState[0]?.c_product.p_status);
+
   // const systemMessage = {
   //   _id: 0,
   //   text: '부적절하거나 불쾌감을 줄 수 있는 대화는 삼가 부탁드립니다. 회원제재를 받을 수 있습니다.',
@@ -77,7 +77,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
   const loadMessages = () => {
     database.off(); //Detaches a callback previously attached with on()
-    console.log('load');
     database.orderByChild('createdAt').on('value', snapshot => {
       const messagesByServer: IMessage[] = [];
 
@@ -171,7 +170,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
   /* 채팅 저장 */
   const addNewChattingInfo = useCallback(async (message: IMessage, newChattingId: string) => {
-    const current = new Date(firestore.Timestamp.now()?.seconds);
     const sellerInfo = await getUserInfo(product?.u_id);
 
     if (!sellerInfo) {
@@ -187,7 +185,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
       c_product: product,
       c_lastMessage: message.text,
-      c_regdate: firestore.Timestamp.now()?.seconds,
+      c_regdate: moment().format('YYYY-MM-DD HH:mm:ss'),
       c_product_state: CHAT_PRODUCT_STATE.SELL,
     };
 
@@ -262,7 +260,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
         const convertedChattingInfo = prevChattingInfo.map(chattingInfo => {
           if (chattingInfo.c_id === chattingId) {
             chattingInfo.c_lastMessage = message.text;
-            chattingInfo.c_regdate = firestore.Timestamp.now()?.seconds;
+            chattingInfo.c_regdate = moment().format('YYYY-MM-DD HH:mm:ss');
             chattingInfo.c_messages = [message, ...chattingInfo.c_messages];
           }
 
@@ -313,15 +311,11 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     console.log('보낸 메시지@!?', message);
     console.log('현재 메시지@!?', messages);
     let currentChattingId = chattingId ? chattingId : uuid.v4().toString();
-    let today = new Date();
-    var utc = require('dayjs/plugin/utc');
-    dayjs.extend(utc);
     // let timestamp = today.toISOString();
 
-    const timestamp = firestore.Timestamp.now().toDate().toISOString();
+    const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
     //const t = new clockSync({});
-
-    console.log('timestamp', dayjs.utc().format());
+    console.log('timestamp!!!', timestamp);
     if (messages.length === 0) {
       console.log('!??');
       addNewChattingInfo({...message[0], createdAt: timestamp, c_id: currentChattingId}, currentChattingId);
@@ -363,7 +357,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const onChangeProductState = state => {
     console.log('채팅 제품', filteredChattingState[0]?.c_product);
 
-    const updChattingInfo: updateChattingProps = {c_product: {...filteredChattingState[0]?.c_product, p_status: state}, c_regdate: firestore.Timestamp.now()?.seconds};
+    const updChattingInfo: updateChattingProps = {c_product: {...filteredChattingState[0]?.c_product, p_status: state}, c_regdate: moment().format('YYYY-MM-DD HH:mm:ss')};
     console.log('onChangeStatus', state);
     updateChatting(chattingId, updChattingInfo);
     updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_status', state); // p_view 조회수 카운터 증가 내역을 Firestore에 반영

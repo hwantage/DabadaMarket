@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Pressable, TouchableOpacity, Image} from 'react-native';
+import {View, StyleSheet, Pressable, Image} from 'react-native';
 import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import {useRecoilState} from 'recoil';
@@ -14,7 +14,6 @@ interface ChattingCardProps {
 function ChattingCard({chatInfo}: ChattingCardProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [myInfo] = useRecoilState(authInfoState);
-  const [chattingNotificationCnt, setChattingNotificationCnt] = useRecoilState(chattingNotificationCntState);
   const readCnt = myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_from_not_read_cnt : chatInfo.c_to_not_read_cnt;
   console.log('chat_card', chatInfo?.c_product?.p_images[0]);
   const onPress = () => {
@@ -47,7 +46,7 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
             </View>
           </View>
           <View style={styles.flex3}>
-            <Text style={styles.bold4}>{getFormatDateString(chatInfo?.c_regdate)}</Text>
+            <Text style={styles.bold4}>{chatInfo?.c_regdate}</Text>
             <Image style={styles.imageBox} resizeMethod="resize" resizeMode="cover" source={chatInfo?.c_product?.p_images.length > 0 ? {uri: chatInfo.c_product.p_images[0].p_url} : require('../../assets/user.png')} />
             {/* <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.image} resizeMethod="resize" resizeMode="cover" /> */}
           </View>
