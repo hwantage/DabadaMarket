@@ -22,7 +22,6 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
   const [product, setProduct] = useState<productProps>(productPropsDefault);
 
   useEffect(() => {
-    //console.log('useeffect of ProductCardProps');
     setProduct(props);
   }, [props]);
 
@@ -79,7 +78,6 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
     case 4:
       p_status_str = '판매중지';
       p_status_css = styles.tag_soldout;
-
       break;
   }
 

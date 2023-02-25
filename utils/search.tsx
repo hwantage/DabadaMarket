@@ -13,7 +13,6 @@ export interface searchProps {
 }
 
 export function createSearchRecent(u_id: string, recentSearchs: searchProps) {
-  //console.log('createSearchRecent :: ', u_id, recentSearchs);
   return searchCollection.doc(u_id).set(recentSearchs);
 }
 

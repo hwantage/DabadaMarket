@@ -46,7 +46,7 @@ export type RootStackParamList = {
   ProductAddScreen: undefined;
   ProductDetailScreen: {product: productProps; querymode: string | null};
   ProductListScreen: undefined;
-  ProductModifyScreen: undefined;
+  ProductModifyScreen: {p_id: string};
   ReviewWriteScreen: {product: productProps};
   ReviewViewScreen: {product: productProps};
   SearchScreen: undefined;

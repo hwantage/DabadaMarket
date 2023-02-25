@@ -19,7 +19,6 @@ export interface productSellReviewProps {
   p_seller_nickname: string;
   p_seller_regdate: string;
 }
-
 export interface productProps {
   p_id: string;
   u_id: string;
@@ -40,7 +39,6 @@ export interface productProps {
   p_buy_regdate: string;
   p_keywords: string[];
 }
-
 export const productPropsDefault: productProps = {
   p_id: '',
   u_id: '',
@@ -89,6 +87,7 @@ export const getProductsDefault: getProductsProps = {
   keyword: '',
 };
 
+// 상품 리스트 조회
 export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: getProductsProps = getProductsDefault): Promise<productProps[]> {
   console.log('getProduct :: ', u_id, p_id, cursormode, querymode, keyword);
   let query = productCollection.orderBy('p_regdate', 'desc').limit(PAGE_SIZE);
@@ -112,14 +111,13 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
   }
   const snapshot = keyword ? (Array.isArray(keyword) ? await query.where('p_keywords', 'array-contains-any', keyword).get() : await query.where('p_keywords', 'array-contains', keyword).get()) : await query.get();
 
-  //console.log('스냅샷 docs: ', snapshot.docs);
   const products: any = snapshot.docs.map(doc => ({
     ...doc.data(),
-    //p_regdate: typeof doc.data().p_regdate === 'string' ? doc.data().p_regdate : moment(doc.data().p_regdate.toDate()).format('YYYY-MM-DD HH:mm:ss'),
   }));
   return products;
 }
 
+// 상품 개수 조회
 export async function getProductCnt({u_id, querymode}: getProductsProps = getProductsDefault): Promise<number> {
   let query = null;
 
@@ -151,7 +149,7 @@ export function createProduct(product: productProps) {
   //return productCollection.doc(product.p_id).set({...product, p_regdate: firestore.FieldValue.serverTimestamp()});
 }
 
-// 상품 상세 정보
+// 상품 상세 정보 (p_id 로 개별 조회)
 export async function getProductInfo(p_id: string): Promise<any> {
   const doc = await productCollection.doc(p_id).get();
   return doc.data();
@@ -168,7 +166,7 @@ export function updateProduct(p_id: string, product: productProps) {
   return productCollection.doc(p_id).set(product);
 }
 
-// 상품 수정
+// 상품 수정 (특정 필드)
 export function updateProductField(p_id: string, fieldName: string, fieldValue: any) {
   console.log('updateProductField', p_id, fieldName, fieldValue);
   return productCollection.doc(p_id).update({
@@ -185,7 +183,7 @@ export function comma(s: string | undefined) {
   return '₩ ' + str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
 }
 
-// 숫자만 추출
+// 숫자만 추출. ₩ 100,000 를 100000 로 변환
 export function uncomma(s: string) {
   let str = String(s);
   return str.replace(/[^\d]+/g, '');

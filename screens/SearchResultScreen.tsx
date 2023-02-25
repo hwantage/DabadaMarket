@@ -39,7 +39,6 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
   }, [authInfo.u_id, keyword]);
 
   useEffect(() => {
-    //console.log('useeffect of SearchResultScreen');
     initNotification();
     if (productsReady) {
       setLoading(false);
@@ -72,7 +71,6 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
 
   /* 우측 상단 이미지 (알림, 검색) */
   useEffect(() => {
-    //console.log('useeffect of SearchResultScreen2');
     navigation.setOptions({
       title: '"' + keyword + '" 검색 결과',
       headerRight: () => (

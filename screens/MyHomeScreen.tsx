@@ -14,7 +14,6 @@ function MyHomeScreen() {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
 
   useEffect(() => {
-    //console.log('useeffect of MyHomeScreen');
     navigation.setOptions({
       headerRight: () => <TopRightButton name="settings" onPress={() => navigation.push('SettingScreen')} />,
     });

@@ -33,7 +33,6 @@ function Product({product}: ProductProps) {
   }, [product.u_id]);
 
   useEffect(() => {
-    //console.log('useeffect of Product', product);
     setUserAvatar();
     if (product.p_status === 1 || product.p_status === 2) {
       setCanBuy(true);

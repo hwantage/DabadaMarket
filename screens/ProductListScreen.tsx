@@ -14,7 +14,6 @@ function ProductListScreen() {
 
   const productsReady = products !== undefined;
   useEffect(() => {
-    //console.log('useeffect of ProductListScreen');
     if (productsReady) {
       SplashScreen.hide();
     }
@@ -22,7 +21,6 @@ function ProductListScreen() {
 
   /* 우측 상단 이미지 (검색) */
   useEffect(() => {
-    //console.log('useeffect of ProductListScreen2');
     navigation.setOptions({
       headerRight: () => <TopRightButton name="search" onPress={() => navigation.push('SearchScreen')} />,
     });

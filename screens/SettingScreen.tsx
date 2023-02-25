@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttons: {
-    // margin: 24,
     padding: 24,
     flex: 1,
     backgroundColor: '#ffffff',

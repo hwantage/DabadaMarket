@@ -31,16 +31,11 @@ CustomButton.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  overflow: {
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
   wrapper: {
     borderRadius: 4,
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor 제거
   },
   primaryWrapper: {
     backgroundColor: '#039DF4',

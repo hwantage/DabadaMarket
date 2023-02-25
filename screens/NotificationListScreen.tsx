@@ -23,7 +23,6 @@ function NotificationListScreen() {
   const productsReady = products !== undefined;
 
   useEffect(() => {
-    //console.log('useeffect of NotificationListScreen');
     if (productsReady) {
       setLoading(false);
     }
@@ -38,7 +37,6 @@ function NotificationListScreen() {
   }, [authInfo.u_id]);
 
   useEffect(() => {
-    //console.log('useeffect of NotificationListScreen2');
     isFocused && getNotificationCount();
   }, [getNotificationCount, isFocused]);
 

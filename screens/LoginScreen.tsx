@@ -38,7 +38,6 @@ function LoginScreen() {
   });
 
   useEffect(() => {
-    //console.log('useeffect of LoginScreen');
     getFcmToken();
   }, []);
 
@@ -118,11 +117,10 @@ function LoginScreen() {
 
         console.log('ChattingData2', myChattingInfoState);
         setChattingInfoState(myChattingInfoState);
-
-        // value previously stored
       }
-    } catch (e) {
+    } catch (e: any) {
       // error reading value
+      console.log(e.code, e.message);
     }
   };
 

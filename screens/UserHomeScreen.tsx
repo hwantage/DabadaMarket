@@ -19,19 +19,10 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
   const products_complete = useProducts({u_id: u_id, querymode: 'sell_complete'});
 
   useEffect(() => {
-    //console.log('useeffect of UserHomeScreen');
     getUserInfo(u_id).then(_user => {
       setUser(_user);
     });
   }, [u_id]);
-
-  /* 우측 상단 이미지 (저장)
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (!loading ? <TopLeftButton name="arrow-back-ios" /> : <ActivityIndicator size={20} color="#347deb" />),
-      headerRight: () => (!loading ? <TopRightButton name="more-vert" /> : <ActivityIndicator size={20} color="#347deb" />),
-    });
-  }, [loading, navigation]); */
 
   const onPressSell = () => {
     navigation.push('UserSellScreen', user);

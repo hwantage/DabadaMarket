@@ -178,15 +178,6 @@ const styles = StyleSheet.create({
     height: 128,
     marginVertical: 36,
   },
-  form: {
-    flexDirection: 'row',
-  },
-  input: {
-    // flex: 1,
-  },
-  buttons: {
-    marginTop: 48,
-  },
   spinner: {
     marginTop: 48,
     height: 104,

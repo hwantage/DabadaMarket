@@ -16,7 +16,6 @@ function MyBuyScreen() {
   const productsReady = products !== undefined;
 
   useEffect(() => {
-    //console.log('useeffect of MyBuyScreen');
     if (productsReady) {
       setLoading(false);
     }

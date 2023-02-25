@@ -7,7 +7,7 @@ import DabadaButton from '../components/common/DabadaButton';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import DabadaInput from '../components/common/DabadaInput';
 import {RootStackParamList} from './AppStack';
-import {updateProduct} from '../utils/products';
+import {updateProductField} from '../utils/products';
 import events from '../utils/events';
 import {useRecoilState} from 'recoil';
 import moment from 'moment-timezone';
@@ -21,7 +21,6 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   const [note, setNote] = useState<string>('');
 
   const {product} = route.params;
-  //console.log(product);
   const initTargetUser = useCallback(async () => {
     await getUserInfo(product.p_buyer_id).then(_user => {
       setTargetUser(_user);
@@ -29,7 +28,6 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
   }, [product.p_buyer_id]);
 
   useEffect(() => {
-    //console.log('useeffect of ReviewWriteScreen');
     initTargetUser();
   }, [initTargetUser]);
 
@@ -37,20 +35,14 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
     const regdate = moment().format('YYYY-MM-DD HH:mm:ss');
 
     if (authInfo.u_id === product.u_id) {
-      //updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});
-      updateProduct(product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate}});
+      updateProductField(product.p_id, 'p_seller_review', {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate});
       events.emit('updateProduct', product.p_id, {...product, p_seller_review: {p_seller_star: star, p_seller_note: note, p_seller_nickname: authInfo.u_nickname, p_seller_regdate: regdate}});
     } else {
-      //updateProductField(product.p_id, 'p_buyer_review', {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate});
-      updateProduct(product.p_id, {...product, p_buyer_review: {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate}});
+      updateProductField(product.p_id, 'p_buyer_review', {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate});
       events.emit('updateProduct', product.p_id, {...product, p_buyer_review: {p_buyer_star: star, p_buyer_note: note, p_buyer_nickname: authInfo.u_nickname, p_buyer_regdate: regdate}});
     }
 
     navigation.pop();
-  };
-
-  const updateStar = (_star: string) => {
-    setStar(_star);
   };
 
   return (
@@ -75,15 +67,15 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
             </Text>
           </View>
           <View style={styles.touchFlex_emoji}>
-            <TouchableOpacity style={styles.flex4} onPress={() => updateStar('5')}>
+            <TouchableOpacity style={styles.flex4} onPress={() => setStar('5')}>
               <Icon name="emoticon" color={star === '5' ? '#039DF4' : '#b9b9b9'} size={70} />
               <Text style={styles.text}>좋아요!</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.flex4} onPress={() => updateStar('3')}>
+            <TouchableOpacity style={styles.flex4} onPress={() => setStar('3')}>
               <Icon name="emoticon-neutral" color={star === '3' ? '#d4b031' : '#b9b9b9'} size={70} />
               <Text style={styles.text}>별로에요!</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.flex4} onPress={() => updateStar('1')}>
+            <TouchableOpacity style={styles.flex4} onPress={() => setStar('1')}>
               <Icon name="emoticon-sad" color={star === '1' ? '#c94f26' : '#b9b9b9'} size={70} />
               <Text style={styles.text}>안좋아요!</Text>
             </TouchableOpacity>

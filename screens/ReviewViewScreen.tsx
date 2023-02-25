@@ -14,12 +14,11 @@ type ReviewViewScreenProps = StackScreenProps<RootStackParamList, 'ReviewViewScr
 function ReviewViewScreen({route}: ReviewViewScreenProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const [seller, setSeller] = useState<authInfoProps>(); // 상품 등록자 정보
+  const [seller, setSeller] = useState<authInfoProps>(); // 상품 판매자 정보
   const [buyer, setBuyer] = useState<authInfoProps>(); // 상품 구매자 정보
   const [isSeller, setIsSeller] = useState<boolean>(true);
 
   const {product} = route.params;
-  //console.log('useeffect of ReviewViewScreen');
   useEffect(() => {
     if (authInfo.u_id === product.u_id) {
       setIsSeller(true);
