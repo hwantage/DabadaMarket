@@ -61,7 +61,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppStackRoot() {
   const [authInfo, setAuthInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
 
   useEffect(() => {
     //console.log('useeffect of AppStackRoot', authInfo);
@@ -77,35 +77,36 @@ function AppStackRoot() {
           return;
         }
         setAuthInfo(profile);
+        i18n.changeLanguage(profile.u_lang);
       }
     });
-  }, [authInfo, setAuthInfo]);
+  }, [authInfo, i18n, setAuthInfo]);
 
   return (
     <Stack.Navigator>
       {authInfo.u_id ? (
         <>
           <Stack.Screen name="BottomTab" component={BottomTab} options={{headerShown: false}} />
-          <Stack.Screen name="ChattingListScreen" component={ChattingListScreen} options={{title: '채팅'}} />
+          <Stack.Screen name="ChattingListScreen" component={ChattingListScreen} options={{title: t('title.chatting', '채팅')}} />
           <Stack.Screen name="ChattingRoomScreen" component={ChattingRoomScreen} options={{title: 'badasea(상대방ID)'}} />
-          <Stack.Screen name="MyBuyScreen" component={MyBuyScreen} options={{title: '내 구매 상품'}} />
-          <Stack.Screen name="MyHomeScreen" component={MyHomeScreen} options={{title: '내 정보'}} />
-          <Stack.Screen name="MyKeywordScreen" component={MyKeywordScreen} options={{title: '키워드 알림'}} />
-          <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{title: '프로필 수정'}} />
-          <Stack.Screen name="MySellScreen" component={MySellScreen} options={{title: '내 판매 상품'}} />
-          <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: '키워드 알림'}} />
-          <Stack.Screen name="ProductAddScreen" component={ProductAddScreen} options={{title: '거래 글쓰기'}} />
-          <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{title: '상품 상세'}} />
-          <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{title: t('title', '다바다 마켓')}} />
-          <Stack.Screen name="ProductModifyScreen" component={ProductModifyScreen} options={{title: '글 수정하기'}} />
-          <Stack.Screen name="ReviewWriteScreen" component={ReviewWriteScreen} options={{title: '거래 후기 보내기'}} />
-          <Stack.Screen name="ReviewViewScreen" component={ReviewViewScreen} options={{title: '거래 후기 보기'}} />
-          <Stack.Screen name="SearchScreen" component={SearchScreen} options={{title: '상품 검색'}} />
-          <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{title: '검색 결과'}} />
-          <Stack.Screen name="SettingScreen" component={SettingScreen} options={{title: '설정'}} />
-          <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} options={{title: '판매자 정보'}} />
-          <Stack.Screen name="UserSellScreen" component={UserSellScreen} options={{title: '판매자의 판매 중인 상품'}} />
-          <Stack.Screen name="UserSellCompleteScreen" component={UserSellCompleteScreen} options={{title: '판매자의 판매 완료 상품'}} />
+          <Stack.Screen name="MyBuyScreen" component={MyBuyScreen} options={{title: t('title.myBuyProduct', '내 구매 상품')}} />
+          <Stack.Screen name="MyHomeScreen" component={MyHomeScreen} options={{title: t('title.myInfo', '내 정보')}} />
+          <Stack.Screen name="MyKeywordScreen" component={MyKeywordScreen} options={{title: t('title.myKeywordNoti', '나의 키워드 알림')}} />
+          <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{title: t('title.modifyProfile', '프로필 수정')}} />
+          <Stack.Screen name="MySellScreen" component={MySellScreen} options={{title: t('title.mySellProduct', '내 판매 상품')}} />
+          <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: t('title.keywordNoti', '키워드 알림')}} />
+          <Stack.Screen name="ProductAddScreen" component={ProductAddScreen} options={{title: t('title.writeProduct', '상품 등록')}} />
+          <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{title: t('title.productDetail', '상품 상세')}} />
+          <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{title: t('title.dabadamarket', '다바다 마켓')}} />
+          <Stack.Screen name="ProductModifyScreen" component={ProductModifyScreen} options={{title: t('title.modifyProduct', '상품 수정하기')}} />
+          <Stack.Screen name="ReviewWriteScreen" component={ReviewWriteScreen} options={{title: t('title.writeReview', '거래 후기 보내기')}} />
+          <Stack.Screen name="ReviewViewScreen" component={ReviewViewScreen} options={{title: t('title.viewReview', '거래 후기 보기')}} />
+          <Stack.Screen name="SearchScreen" component={SearchScreen} options={{title: t('title.searchProduct', '상품 검색')}} />
+          <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{title: t('title.searchResult', '검색 결과')}} />
+          <Stack.Screen name="SettingScreen" component={SettingScreen} options={{title: t('title.setting', '설정')}} />
+          <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} options={{title: t('title.sellerHome', '판매자 정보')}} />
+          <Stack.Screen name="UserSellScreen" component={UserSellScreen} options={{title: t('title.userSellProduct', '판매자의 판매 중인 상품')}} />
+          <Stack.Screen name="UserSellCompleteScreen" component={UserSellCompleteScreen} options={{title: t('title.userSellcompleteProduct', '판매자의 판매 완료 상품')}} />
         </>
       ) : (
         <>

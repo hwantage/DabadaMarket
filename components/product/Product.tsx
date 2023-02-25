@@ -13,12 +13,14 @@ import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilValue} from 'recoil';
 import moment from 'moment-timezone';
 import 'moment/locale/ko';
+import {useTranslation} from 'react-i18next';
 
 interface ProductProps {
   product: productProps;
 }
 
 function Product({product}: ProductProps) {
+  const {t} = useTranslation();
   const [user, setUser] = useState<authInfoProps>(); // 상품 등록자 정보
   const [loading, setLoading] = useState(true);
   const [canBuy, setCanBuy] = useState(false);
@@ -47,19 +49,19 @@ function Product({product}: ProductProps) {
   let p_badatype_css = {};
   switch (product?.p_badatype) {
     case 'free':
-      p_badatype_str = '그냥바다';
+      p_badatype_str = t('badatype.free', '그냥바다');
       p_badatype_css = styles.p_badatype;
       break;
     case 'money':
-      p_badatype_str = '머니바다';
+      p_badatype_str = t('badatype.money', '머니바다');
       p_badatype_css = styles.p_badatype;
       break;
     case 'drink':
-      p_badatype_str = '한잔바다';
+      p_badatype_str = t('badatype.drink', '한잔바다');
       p_badatype_css = styles.p_badatype;
       break;
     case 'secret':
-      p_badatype_str = '몰래바다';
+      p_badatype_str = t('badatype.secret', '몰래바다');
       p_badatype_css = styles.p_badatype;
       break;
   }
@@ -69,19 +71,19 @@ function Product({product}: ProductProps) {
 
   switch (product?.p_status) {
     case 1:
-      p_status_str = '판매중';
+      p_status_str = t('ptype.t1', '판매중');
       p_status_css = styles.tag_sell;
       break;
     case 2:
-      p_status_str = '예약중';
+      p_status_str = t('ptype.t2', '예약중');
       p_status_css = styles.tag_reserve;
       break;
     case 3:
-      p_status_str = '거래완료';
+      p_status_str = t('ptype.t3', '거래완료');
       p_status_css = styles.tag_soldout;
       break;
     case 4:
-      p_status_str = '판매중지';
+      p_status_str = t('ptype.t4', '판매중지');
       p_status_css = styles.tag_soldout;
       break;
   }
@@ -129,11 +131,11 @@ function Product({product}: ProductProps) {
             <View style={styles.head2}>
               <View style={styles.row}>
                 <Text style={p_badatype_css}>{p_badatype_str} </Text>
-                <Text style={styles.bold}> {product?.p_price !== '' && product?.p_price !== '0' ? comma(product?.p_price) : '무료'}</Text>
+                <Text style={styles.bold}> {product?.p_price !== '' && product?.p_price !== '0' ? comma(product?.p_price) : t('common.free', '무료')}</Text>
               </View>
               {!loading && myInfo.u_id !== product?.u_id && canBuy && (
                 <View style={styles.buttons}>
-                  <DabadaButton theme={'primary'} hasMarginBottom={false} title="채팅하기" onPress={goChattingScreen} />
+                  <DabadaButton theme={'primary'} hasMarginBottom={false} title={t('button.chatting', '채팅하기')} onPress={goChattingScreen} />
                 </View>
               )}
             </View>
@@ -248,22 +250,18 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: '#808080',
-    borderTopColor: '#808080',
-    borderLeftColor: '#808080',
-    borderRightColor: '#808080',
+    borderColor: '#808080',
     fontSize: 12,
     height: 24,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
   tag_reserve: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#e95945',
     borderRadius: 20,
     borderWidth: 1.5,
     borderStyle: 'solid',
-    borderBottomColor: '#000',
-    borderTopColor: '#000',
+    borderColor: '#e95945',
     fontSize: 12,
     height: 26,
     marginTop: 10,

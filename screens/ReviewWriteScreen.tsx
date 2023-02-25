@@ -11,10 +11,12 @@ import {updateProductField} from '../utils/products';
 import events from '../utils/events';
 import {useRecoilState} from 'recoil';
 import moment from 'moment-timezone';
+import {useTranslation} from 'react-i18next';
 
 type ReviewWriteScreenProps = StackScreenProps<RootStackParamList, 'ReviewWriteScreen'>;
 
 function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
+  const {t} = useTranslation();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [targetUser, setTargetUser] = useState<authInfoProps>(); // 상품 구매자 정보
   const [star, setStar] = useState<string>('5');
@@ -53,7 +55,7 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
           <View style={styles.flex3}>
             <Text style={styles.bold1}>{product.p_title}</Text>
             <View style={styles.row}>
-              <Text style={styles.text}>거래한 이웃</Text>
+              <Text style={styles.text}>{t('common.tradeNeighbors', '거래한 이웃')}</Text>
               <Text style={styles.bold3}>{targetUser?.u_nickname}</Text>
             </View>
           </View>
@@ -61,29 +63,32 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
         <ScrollView>
           <View style={styles.touchFlex_noborder}>
             <Text style={styles.bold2}>
-              {authInfo.u_nickname}님,{'\n'}
-              {targetUser?.u_nickname}님과 거래가 어떠셨나요?{'\n'}
-              <Text style={styles.text}>거래 선호도는 나만 볼 수 있어요.</Text>
+              {authInfo.u_nickname}
+              {t('common.dear', '님')},{'\n'}
+              {targetUser?.u_nickname}
+              {t('msg.howAboutTrade', '님과 거래가 어떠셨나요?')}
+              {'\n'}
+              <Text style={styles.text}>{t('msg.onlyCanSeeMe', '거래 선호도는 나만 볼 수 있어요.')}</Text>
             </Text>
           </View>
           <View style={styles.touchFlex_emoji}>
             <TouchableOpacity style={styles.flex4} onPress={() => setStar('5')}>
               <Icon name="emoticon" color={star === '5' ? '#039DF4' : '#b9b9b9'} size={70} />
-              <Text style={styles.text}>좋아요!</Text>
+              <Text style={styles.text}>{t('common.star5', '좋아요!')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.flex4} onPress={() => setStar('3')}>
               <Icon name="emoticon-neutral" color={star === '3' ? '#d4b031' : '#b9b9b9'} size={70} />
-              <Text style={styles.text}>별로에요!</Text>
+              <Text style={styles.text}>{t('common.star3', '별로에요!')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.flex4} onPress={() => setStar('1')}>
               <Icon name="emoticon-sad" color={star === '1' ? '#c94f26' : '#b9b9b9'} size={70} />
-              <Text style={styles.text}>안좋아요!</Text>
+              <Text style={styles.text}>{t('common.star1', '안좋아요!')}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.flex2}>
-            <Text style={styles.bold1}>따뜻한 거래 경험을 알려주세요!</Text>
-            <DabadaInput style={styles.border} placeholder={'여기에 적어주세요. (선택사항)'} onChangeText={(text: string) => setNote(text)} returnKeyType="default" multiline={true} numberOfLines={3} hasMarginBottom={false} />
-            <DabadaButton hasMarginBottom={true} title="후기 보내기" onPress={onPressWriteReview} />
+            <Text style={styles.bold1}>{t('msg.pleaseYourExperience', '따뜻한 거래 경험을 알려주세요!')}</Text>
+            <DabadaInput style={styles.border} placeholder={t('common.inputHere', '여기에 적어주세요. (선택사항)')} onChangeText={(text: string) => setNote(text)} returnKeyType="default" multiline={true} numberOfLines={3} hasMarginBottom={false} />
+            <DabadaButton hasMarginBottom={true} title={t('button.writeReview', '후기 보내기')} onPress={onPressWriteReview} />
           </View>
         </ScrollView>
       </SafeAreaView>

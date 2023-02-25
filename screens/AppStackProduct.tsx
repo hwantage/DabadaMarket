@@ -14,7 +14,7 @@ function AppStackProduct() {
         name="ProductListScreen"
         component={ProductListScreen}
         options={{
-          title: t('title', '다바다 마켓'),
+          title: t('title.dabadamarket', '다바다 마켓'),
         }}
       />
     </Stack.Navigator>

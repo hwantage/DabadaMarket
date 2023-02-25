@@ -20,7 +20,6 @@ function MyKeywordScreen() {
   const [notifications, setNotifications] = useState<notificationKeywordProps>();
 
   useEffect(() => {
-    console.log('useeffect of MyKeywordScreen');
     getNotificationKeyword(authInfo.u_id).then(_response => {
       setNotifications(_response);
     });
@@ -73,14 +72,14 @@ function MyKeywordScreen() {
     <View style={styles.fullscreen}>
       <View style={styles.flex}>
         <View style={styles.row2}>
-          <DabadaInput placeholder={'키워드를 입력해주세요. (예: 자전거)'} value={keyword} onChangeText={(text: string) => setKeyword(text)} onSubmitEditing={onPressNotification} hasMarginBottom={false} />
-          <DabadaButton theme={'secondary'} hasMarginBottom={false} title="키워드 알림으로 등록하기" onPress={onPressNotification} />
+          <DabadaInput placeholder={t('common.pleaseInputKeyword', '키워드를 입력해주세요. (예: 자전거)')} value={keyword} onChangeText={(text: string) => setKeyword(text)} onSubmitEditing={onPressNotification} hasMarginBottom={false} />
+          <DabadaButton theme={'secondary'} hasMarginBottom={false} title={t('common.registKeywordNoti', '키워드 알림으로 등록하기')} onPress={onPressNotification} />
         </View>
       </View>
       {notifications !== undefined && (
         <View style={styles.listTitle}>
-          <Text style={styles.bold}>등록 키워드</Text>
-          <DabadaButton theme={'secondary'} hasMarginBottom={false} title="모두 지우기" onPress={onPressReset} />
+          <Text style={styles.bold}>{t('common.registeredKeyword', '등록 키워드')}</Text>
+          <DabadaButton theme={'secondary'} hasMarginBottom={false} title={t('common.deleteAll', '모두 지우기')} onPress={onPressReset} />
         </View>
       )}
       <>
@@ -106,7 +105,7 @@ function MyKeywordScreen() {
             ))}
           </View>
         ) : (
-          <Text style={styles.textEmpty}>알림을 등록할 키워드를 입력하십시오.</Text>
+          <Text style={styles.textEmpty}>{t('msg.enterSearchKeyword', '알림을 등록할 키워드를 입력하십시오.')}</Text>
         )}
       </>
     </View>

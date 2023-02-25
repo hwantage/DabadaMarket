@@ -12,10 +12,12 @@ import {createNotificationKeyword, getNotificationKeyword, notificationKeywordPr
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
 import uuid from 'react-native-uuid';
+import {useTranslation} from 'react-i18next';
 
 type SearchResultScreenProps = StackScreenProps<RootStackParamList, 'SearchResultScreen'>;
 
 function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
+  const {t} = useTranslation();
   const {keyword} = route.params;
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [notifications, setNotifications] = useState<notificationKeywordProps>();
@@ -72,7 +74,7 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
   /* 우측 상단 이미지 (알림, 검색) */
   useEffect(() => {
     navigation.setOptions({
-      title: '"' + keyword + '" 검색 결과',
+      title: '"' + keyword + '" ' + t('common.searchResult', '검색 결과'),
       headerRight: () => (
         <>
           <TopRightButton name={icon} onPress={onPressNotification} />
@@ -80,7 +82,7 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
         </>
       ),
     });
-  }, [icon, keyword, navigation, onPressNotification]);
+  }, [icon, keyword, navigation, onPressNotification, t]);
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode={null} />;
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
@@ -92,7 +94,7 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
         <>
           <View style={styles.row}>
             <Icon name="search-off" size={60} color="#898989" />
-            <Text style={styles.bold}>검색 결과가 존재하지 않습니다.</Text>
+            <Text style={styles.bold}>{t('msg.notExistSearchResult', '검색 결과가 존재하지 않습니다.')}</Text>
           </View>
         </>
       ) : (

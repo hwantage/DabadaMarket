@@ -20,9 +20,8 @@ export function logout() {
 
 /* 사용자 정보 */
 import firestore from '@react-native-firebase/firestore';
-
 export const usersCollection = firestore().collection('users');
-// 사용자 정보 생성
+// 사용자 정보 생성 / 업데이트
 export function createUser({u_id, u_nickname, u_photoUrl, u_group, u_lang}: authInfoProps) {
   return usersCollection.doc(u_id).set({
     u_id,

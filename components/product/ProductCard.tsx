@@ -10,6 +10,7 @@ import moment from 'moment-timezone';
 import 'moment/locale/ko';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
+import {useTranslation} from 'react-i18next';
 
 interface ProductCardProps {
   product: productProps;
@@ -17,6 +18,7 @@ interface ProductCardProps {
 }
 
 function ProductCard({product: props, querymode}: ProductCardProps) {
+  const {t} = useTranslation();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [product, setProduct] = useState<productProps>(productPropsDefault);
@@ -42,19 +44,19 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
   let p_badatype_css = {};
   switch (product.p_badatype) {
     case 'free':
-      p_badatype_str = '그냥바다';
+      p_badatype_str = t('badatype.free', '그냥바다');
       p_badatype_css = styles.p_badatype;
       break;
     case 'money':
-      p_badatype_str = '머니바다';
+      p_badatype_str = t('badatype.money', '머니바다');
       p_badatype_css = styles.p_badatype;
       break;
     case 'drink':
-      p_badatype_str = '한잔바다';
+      p_badatype_str = t('badatype.drink', '한잔바다');
       p_badatype_css = styles.p_badatype;
       break;
     case 'secret':
-      p_badatype_str = '몰래바다';
+      p_badatype_str = t('badatype.secret', '몰래바다');
       p_badatype_css = styles.p_badatype;
       break;
   }
@@ -64,19 +66,19 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
 
   switch (product.p_status) {
     case 1:
-      p_status_str = '판매중';
+      p_status_str = t('ptype.t1', '판매중');
       p_status_css = styles.tag_sell;
       break;
     case 2:
-      p_status_str = '예약중';
+      p_status_str = t('ptype.t2', '예약중');
       p_status_css = styles.tag_reserve;
       break;
     case 3:
-      p_status_str = '거래완료';
+      p_status_str = t('ptype.t3', '거래완료');
       p_status_css = styles.tag_soldout;
       break;
     case 4:
-      p_status_str = '판매중지';
+      p_status_str = t('ptype.t4', '판매중지');
       p_status_css = styles.tag_soldout;
       break;
   }
@@ -94,7 +96,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
               </View>
               <View style={styles.review}>
                 <Text style={p_badatype_css}>{p_badatype_str}</Text>
-                <Text style={styles.p_price}>{product.p_price !== '' && product.p_price !== '0' ? comma(product.p_price) : '무료'}</Text>
+                <Text style={styles.p_price}>{product.p_price !== '' && product.p_price !== '0' ? comma(product.p_price) : t('common.free', '무료')}</Text>
               </View>
               <View style={styles.review}>
                 <Text style={p_status_css}>{p_status_str}</Text>
@@ -113,13 +115,13 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
             {product.p_seller_review.p_seller_star === '' ? (
               <TouchableOpacity onPress={onPressReviewWrite}>
                 <View style={styles.reviewBtnFlex}>
-                  <Text style={styles.textReview1}>거래 후기 남기기</Text>
+                  <Text style={styles.textReview1}>{t('common.writeReview', '거래 후기 남기기')}</Text>
                 </View>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={onPressReviewView}>
                 <View style={styles.reviewBtnFlex}>
-                  <Text style={styles.textReview2}>거래 후기 보기</Text>
+                  <Text style={styles.textReview2}>{t('common.viewMyReview', '보낸 후기 보기')}</Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -145,13 +147,13 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
             {product.p_buyer_review.p_buyer_star === '' ? (
               <TouchableOpacity onPress={onPressReviewWrite}>
                 <View style={styles.reviewBtnFlex}>
-                  <Text style={styles.textReview1}>거래 후기 남기기</Text>
+                  <Text style={styles.textReview1}>{t('common.writeReview', '거래 후기 남기기')}</Text>
                 </View>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={onPressReviewView}>
                 <View style={styles.reviewBtnFlex}>
-                  <Text style={styles.textReview2}>거래 후기 보기</Text>
+                  <Text style={styles.textReview2}>{t('common.viewMyReview', '보낸 후기 보기')}</Text>
                 </View>
               </TouchableOpacity>
             )}

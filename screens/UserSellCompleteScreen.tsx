@@ -11,10 +11,12 @@ import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
 import {getUserInfo} from '../utils/auth';
 import {authInfoDefault, authInfoProps} from '../recoil/authInfoAtom';
+import {useTranslation} from 'react-i18next';
 
 type UserSellCompleteScreenProps = StackScreenProps<RootStackParamList, 'UserSellCompleteScreen'>;
 
 function UserSellCompleteScreen({route}: UserSellCompleteScreenProps) {
+  const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const {u_id} = route.params;
   const [user, setUser] = useState<authInfoProps>(authInfoDefault);
@@ -54,7 +56,7 @@ function UserSellCompleteScreen({route}: UserSellCompleteScreenProps) {
       <View style={styles.flex1}>
         {!loading && products !== undefined && products.products?.length === 0 ? (
           <>
-            <Text style={styles.text}>판매중인 상품이 존재하지 않습니다.</Text>
+            <Text style={styles.text}>{t('notExistSellProduct', '판매중인 상품이 존재하지 않습니다.')}</Text>
             <ProductAddButton />
           </>
         ) : (

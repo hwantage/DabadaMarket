@@ -103,8 +103,8 @@ function ModifyProfile() {
 
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        title: '사진 업로드',
-        options: ['카메라로 촬영하기', '사진 선택하기', '취소'],
+        title: t('common.uploadPhoto', '사진 업로드'),
+        options: [t('common.takePicture', '카메라로 촬영하기'), t('common.chooseAlbum', '사진 선택하기'), t('common.cancel', '취소')],
         cancelButtonIndex: 2,
       },
       buttonIndex => {
@@ -127,7 +127,7 @@ function ModifyProfile() {
           </Pressable>
         </View>
         <View style={styles.fullscreen}>
-          <Text style={styles.bold2}>닉네임</Text>
+          <Text style={styles.bold2}>{t('common.nickname', '닉네임')}</Text>
           <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={true} />
           {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
           <ActionSheetModal
@@ -136,12 +136,12 @@ function ModifyProfile() {
             actions={[
               {
                 icon: 'camera-alt',
-                text: '카메라로 촬영하기',
+                text: t('common.takePicture', '카메라로 촬영하기'),
                 onPress: onLaunchCamera,
               },
               {
                 icon: 'photo',
-                text: '사진 선택하기',
+                text: t('common.chooseAlbum', '사진 선택하기'),
                 onPress: onLaunchImageLibrary,
               },
             ]}

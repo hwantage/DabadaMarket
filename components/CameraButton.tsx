@@ -7,6 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import type {StackNavigationProp} from '@react-navigation/stack';
 import ActionSheetModal from './ActionSheetModal';
+import {useTranslation} from 'react-i18next';
 
 interface type_imagePickerOption {
   mediaType: 'photo' | 'video' | 'mixed';
@@ -24,6 +25,7 @@ const imagePickerOption: type_imagePickerOption = {
 };
 
 function CameraButton() {
+  const {t} = useTranslation();
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<StackNavigationProp<any>>();
@@ -56,8 +58,8 @@ function CameraButton() {
 
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        title: '사진 업로드',
-        options: ['카메라로 촬영하기', '사진 선택하기', '취소'],
+        title: t('common.uploadPhoto', '사진 업로드'),
+        options: [t('common.takePicture', '카메라로 촬영하기'), t('common.chooseAlbum', '사진 선택하기'), t('common.cancel', '취소')],
         cancelButtonIndex: 2,
       },
       buttonIndex => {
@@ -88,12 +90,12 @@ function CameraButton() {
         actions={[
           {
             icon: 'camera-alt',
-            text: '카메라로 촬영하기',
+            text: t('common.takePicture', '카메라로 촬영하기'),
             onPress: onLaunchCamera,
           },
           {
             icon: 'photo',
-            text: '사진 선택하기',
+            text: t('common.chooseAlbum', '사진 선택하기'),
             onPress: onLaunchImageLibrary,
           },
         ]}

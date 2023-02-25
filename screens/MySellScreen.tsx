@@ -8,26 +8,28 @@ import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import ProductAddButton from '../components/common/ProductAddButton';
+import {useTranslation} from 'react-i18next';
 
 function MySellScreen() {
+  const {t} = useTranslation();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [index, setIndex] = React.useState(0);
   const products = useProducts({u_id: authInfo.u_id, querymode: 'sell'});
   const products_complete = useProducts({u_id: authInfo.u_id, querymode: 'sell_complete'});
   const [loading, setLoading] = useState(true);
   const [routes, setRoutes] = React.useState([
-    {key: 'first', title: '판매중(0)'},
-    {key: 'second', title: '거래완료(0)'},
+    {key: 'first', title: t('common.onSale', '판매중') + '(0)'},
+    {key: 'second', title: t('common.completeTrade', '거래완료') + '(0)'},
   ]);
 
   const productsReady = products !== undefined && products_complete !== undefined;
 
   const updateRoutes = useCallback(() => {
     setRoutes([
-      {key: 'first', title: '판매중(' + products.productCnt + ')'},
-      {key: 'second', title: '거래완료(' + products_complete.productCnt_complete + ')'},
+      {key: 'first', title: t('common.onSale', '판매중') + '(' + products.productCnt + ')'},
+      {key: 'second', title: t('common.completeTrade', '거래완료') + '(' + products_complete.productCnt_complete + ')'},
     ]);
-  }, [products.productCnt, products_complete.productCnt_complete]);
+  }, [products.productCnt, products_complete.productCnt_complete, t]);
 
   useEffect(() => {
     if (productsReady) {
@@ -50,7 +52,7 @@ function MySellScreen() {
     <View style={styles.flex1}>
       {!loading && products !== undefined && products.products?.length === 0 ? (
         <>
-          <Text style={styles.text}>판매하신 상품이 존재하지 않습니다. 하단의 상품 등록 버튼을 눌러 바로 상품을 등록해 보세요.</Text>
+          <Text style={styles.text}>{t('msg.tradeProductNotExist', '판매하신 상품이 존재하지 않습니다. 하단의 상품 등록 버튼을 눌러 바로 상품을 등록해 보세요.')}</Text>
           <ProductAddButton />
         </>
       ) : (
@@ -63,7 +65,7 @@ function MySellScreen() {
     <View style={styles.flex1}>
       {!loading && products_complete !== undefined && products_complete.products?.length === 0 ? (
         <>
-          <Text style={styles.text}>거래완료 상품이 존재하지 않습니다.</Text>
+          <Text style={styles.text}>{t('msg.completeProductNotExitst', '거래완료 상품이 존재하지 않습니다.')}</Text>
         </>
       ) : (
         <FlatList<productProps> data={products_complete.products} renderItem={renderItem_complete} keyExtractor={item => item.p_id} contentContainerStyle={styles.container} onEndReached={products_complete.onLoadMore} onEndReachedThreshold={0.75} refreshControl={listRefreshControl_complete} ListFooterComponent={listFooterComponent_complete} />

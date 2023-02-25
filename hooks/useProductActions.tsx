@@ -4,8 +4,10 @@ import {removeProduct} from '../utils/products';
 import {useNavigation} from '@react-navigation/native';
 import events from '../utils/events';
 import type {StackNavigationProp} from '@react-navigation/stack';
+import {useTranslation} from 'react-i18next';
 
 export default function useProductActions(p_id: string, querymode: string | null) {
+  const {t} = useTranslation();
   const [isSelecting, setIsSelecting] = useState(false);
   const navigation = useNavigation<StackNavigationProp<any>>();
 
@@ -17,16 +19,16 @@ export default function useProductActions(p_id: string, querymode: string | null
 
   const remove = async () => {
     Alert.alert(
-      '삭제',
-      '정말로 삭제하시겠어요?',
+      t('common.delete', '삭제'),
+      t('msg.deleteSure', '정말로 삭제하시겠어요?'),
       [
         {
-          text: '취소',
+          text: t('common.cancel', '취소'),
           onPress: () => console.log('Delete Pressed'),
           style: 'cancel',
         },
         {
-          text: '삭제',
+          text: t('common.delete', '삭제'),
           onPress: async () => {
             await removeProduct(p_id);
             navigation.pop();
@@ -45,7 +47,7 @@ export default function useProductActions(p_id: string, querymode: string | null
     } else {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: ['수정', '삭제', '취소'],
+          options: [t('common.edit', '수정'), t('common.delete', '삭제'), t('common.cancel', '취소')],
           destructiveButtonIndex: 1,
           cancelButtonIndex: 2,
         },
@@ -63,12 +65,12 @@ export default function useProductActions(p_id: string, querymode: string | null
   const actions = [
     {
       icon: 'edit',
-      text: '수정',
+      text: t('common.edit', '수정'),
       onPress: edit,
     },
     {
       icon: 'delete',
-      text: '삭제',
+      text: t('common.delete', '삭제'),
       onPress: remove,
     },
   ];

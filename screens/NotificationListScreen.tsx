@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {StyleSheet, View, TouchableOpacity, FlatList, ListRenderItem, ActivityIndicator, RefreshControl} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
@@ -11,8 +10,10 @@ import {getNotificationKeyword} from '../utils/notifications';
 import useProducts from '../hooks/useProducts';
 import {productProps} from '../utils/products';
 import ProductCard from '../components/product/ProductCard';
+import {useTranslation} from 'react-i18next';
 
 function NotificationListScreen() {
+  const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const products = useProducts({u_id: authInfo.u_id, keyword: '구현중'}); // keyword 에 배열 입력시 무한루프 => 추후 확인 및 보완 필요.
@@ -53,10 +54,10 @@ function NotificationListScreen() {
       <View style={styles.between2}>
         <View style={styles.row2}>
           <Icon name="notifications-on" size={24} style={styles.mgR} />
-          <Text style={styles.text}>알림 받는 키워드 {ncount}개</Text>
+          <Text style={styles.text}>{t('common.notiKeywordCnt', '알림 받는 키워드 ' + {ncount} + '개', {cnt: ncount})}</Text>
         </View>
         <TouchableOpacity onPress={onPressSetting}>
-          <Text style={styles.text_bl}>설정</Text>
+          <Text style={styles.text_bl}>{t('common.setting', '설정')}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.flex1}>

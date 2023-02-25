@@ -8,10 +8,12 @@ import {RootStackParamList} from './AppStack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import useProducts from '../hooks/useProducts';
 import {useNavigation} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 
 type UserHomeScreenProps = StackScreenProps<RootStackParamList, 'UserHomeScreen'>;
 
 function UserHomeScreen({route}: UserHomeScreenProps) {
+  const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [user, setUser] = useState<authInfoProps>(authInfoDefault);
   const {u_id} = route.params;
@@ -42,7 +44,7 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
         <TouchableOpacity onPress={onPressSell}>
           <View style={styles.sellProduct}>
             <View style={styles.flex}>
-              <Text style={styles.bold2}>판매중인 상품</Text>
+              <Text style={styles.bold2}>{t('common.productOnSale', '판매중인 상품')}</Text>
               <Text style={styles.bold3}>{products.productCnt}개</Text>
             </View>
             <Icon name="chevron-right" size={30} color="#898989" />
@@ -51,7 +53,7 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
         <TouchableOpacity onPress={onPressComplete}>
           <View style={styles.review}>
             <View style={styles.flex}>
-              <Text style={styles.bold2}>거래 완료 상품</Text>
+              <Text style={styles.bold2}>{t('common.productOnComplete', '거래 완료 상품')}</Text>
               <Text style={styles.bold3}>{products_complete.productCnt_complete}개</Text>
             </View>
             <Icon name="chevron-right" size={30} color="#898989" />

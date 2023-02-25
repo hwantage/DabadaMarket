@@ -22,7 +22,7 @@ type ParamList = {
 
 function LoginScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const route = useRoute<RouteProp<ParamList, 'params'>>();
   const ref_password = useRef<TextInput>(null);
   const ref_confirmPassword = useRef<TextInput>(null);
@@ -83,6 +83,7 @@ function LoginScreen() {
         navigation.navigate('MyProfileModifyScreen');
       } else {
         setAuthInfo(userInfo);
+        i18n.changeLanguage(userInfo.u_lang);
         getChattingData(user.uid);
       }
     } catch (e: any) {
@@ -127,7 +128,7 @@ function LoginScreen() {
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
-        <Text style={styles.text}>{t('title', '다바다 마켓')}</Text>
+        <Text style={styles.text}>{t('title.dabadamarket', '다바다 마켓')}</Text>
         <Image style={styles.circle} source={require('../assets/dabada.png')} />
         <View style={styles.form}>
           <DabadaInput hasMarginBottom={true} placeholder={t('common.email', '이메일')} value={form.email} autoCapitalize="none" autoCorrect={false} autoCompleteType="email" keyboardType="email-address" returnKeyType="next" blurOnSubmit={false} onChangeText={(text: string) => createChangeTextHandler('email', text)} onSubmitEditing={() => ref_password.current?.focus()} />

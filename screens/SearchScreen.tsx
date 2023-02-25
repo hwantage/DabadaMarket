@@ -10,8 +10,10 @@ import DabadaInputLine from '../components/common/DabadaInputLine';
 import {createSearchRecent, getSearchRecent, resetSearchRecent, searchProps} from '../utils/search';
 import uuid from 'react-native-uuid';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useTranslation} from 'react-i18next';
 
 function SearchScreen() {
+  const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [recentSearchs, setRecentSearchs] = useState<searchProps>();
@@ -68,13 +70,13 @@ function SearchScreen() {
     <ScrollView style={styles.fullscreen}>
       <View style={styles.flex}>
         <View style={styles.row2}>
-          <DabadaInputLine placeholder={'검색어를 입력하세요.'} hasMarginBottom={false} value={keyword} returnKeyType="done" onSubmitEditing={onPressSearch} onChangeText={(text: string) => setKeyword(text)} />
+          <DabadaInputLine placeholder={t('msg.inputSearchKeyword', '검색어를 입력하세요.')} hasMarginBottom={false} value={keyword} returnKeyType="done" onSubmitEditing={onPressSearch} onChangeText={(text: string) => setKeyword(text)} />
         </View>
       </View>
       {recentSearchs !== undefined && (
         <View style={styles.between}>
-          <Text style={styles.bold}>최근 검색어</Text>
-          <DabadaButton theme={'secondary'} hasMarginBottom={false} title="모두 지우기" onPress={onPressReset} />
+          <Text style={styles.bold}>{t('common.recentSearchList', '최근 검색어')}</Text>
+          <DabadaButton theme={'secondary'} hasMarginBottom={false} title={t('button.deleteAll', '모두 지우기')} onPress={onPressReset} />
         </View>
       )}
 
@@ -100,7 +102,7 @@ function SearchScreen() {
             </View>
           ))
         ) : (
-          <Text style={styles.textEmpty}>검색어 창에 검색어를 입력하십시오.</Text>
+          <Text style={styles.textEmpty}>{t('msg.inputSearchKeywordOnTheForm', '검색어 창에 검색어를 입력하십시오.')}</Text>
         )}
       </>
     </ScrollView>

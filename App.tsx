@@ -1,10 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppStack from './screens/AppStack';
 import './lang/i18n';
 import {RecoilRoot} from 'recoil';
 import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
+import {useTranslation} from 'react-i18next';
 
 // 타임존 전역설정
 moment.tz.setDefault('Asia/Seoul');
@@ -16,14 +18,27 @@ const getFcmToken = async () => {
   const fcmToken = await messaging().getToken();
   console.log('[FCM Token] ', fcmToken);
 };
+
 function App() {
+  // 언어 설정 정보 확인
+  const {i18n} = useTranslation();
+  const getLanguage = useCallback(async () => {
+    let lang = await AsyncStorage.getItem('@language');
+    if (lang) {
+      // 스토리지에 저장된 언어 설정 적용(설정 화면에서 변경한 언어 반영)
+      i18n.changeLanguage(lang);
+    }
+  }, [i18n]);
+
   useEffect(() => {
     getFcmToken();
+    getLanguage();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('[Remote Message] ', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
-  }, []);
+  }, [getLanguage]);
+
   return (
     <RecoilRoot>
       <NavigationContainer>

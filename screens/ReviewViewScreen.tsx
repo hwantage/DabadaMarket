@@ -8,10 +8,12 @@ import {RootStackParamList} from './AppStack';
 import {useRecoilState} from 'recoil';
 import Avatar from '../components/profile/Avatar';
 import {useNavigation} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 
 type ReviewViewScreenProps = StackScreenProps<RootStackParamList, 'ReviewViewScreen'>;
 
 function ReviewViewScreen({route}: ReviewViewScreenProps) {
+  const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [seller, setSeller] = useState<authInfoProps>(); // 상품 판매자 정보
@@ -49,22 +51,25 @@ function ReviewViewScreen({route}: ReviewViewScreenProps) {
         <ScrollView>
           <View style={styles.touchFlex_noborder}>
             <Text style={styles.bold2}>
-              {isSeller ? seller?.u_nickname : buyer?.u_nickname}님,{'\n'}
-              {isSeller ? buyer?.u_nickname : seller?.u_nickname}님에게 보낸 거래 후기 입니다.{'\n'}
+              {isSeller ? seller?.u_nickname : buyer?.u_nickname}
+              {t('msg.dear', '님')},{'\n'}
+              {isSeller ? buyer?.u_nickname : seller?.u_nickname}
+              {t('msg.reviewTo', '님에게 보낸 거래 후기 입니다.')}
+              {'\n'}
             </Text>
           </View>
           <View style={styles.touchFlex_emoji}>
             <View style={styles.flex4}>
               <Icon name="emoticon" color={isSeller ? (product.p_seller_review.p_seller_star === '5' ? '#039DF4' : '#b9b9b9') : product.p_buyer_review.p_buyer_star === '5' ? '#039DF4' : '#b9b9b9'} size={70} />
-              <Text style={styles.text}>좋아요!</Text>
+              <Text style={styles.text}>{t('common.star5', '좋아요!')}</Text>
             </View>
             <View style={styles.flex4}>
               <Icon name="emoticon-neutral" color={isSeller ? (product.p_seller_review.p_seller_star === '3' ? '#d4b031' : '#b9b9b9') : product.p_buyer_review.p_buyer_star === '3' ? '#d4b031' : '#b9b9b9'} size={70} />
-              <Text style={styles.text}>별로에요!</Text>
+              <Text style={styles.text}>{t('common.star3', '별로에요!')}</Text>
             </View>
             <View style={styles.flex4}>
               <Icon name="emoticon-sad" color={isSeller ? (product.p_seller_review.p_seller_star === '1' ? '#c94f26' : '#b9b9b9') : product.p_buyer_review.p_buyer_star === '1' ? '#c94f26' : '#b9b9b9'} size={70} />
-              <Text style={styles.text}>안좋아요!</Text>
+              <Text style={styles.text}>{t('common.star1', '안좋아요!')}</Text>
             </View>
           </View>
           <View style={styles.flex2}>

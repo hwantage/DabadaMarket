@@ -6,12 +6,14 @@ import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
+import {useTranslation} from 'react-i18next';
 
 export interface avatarProps {
   profileUser: authInfoProps;
 }
 
 function Profile({profileUser}: avatarProps) {
+  const {t} = useTranslation();
   const [user, setUser] = useState<authInfoProps>();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
@@ -36,7 +38,7 @@ function Profile({profileUser}: avatarProps) {
       <View style={styles.block}>
         {authInfo.u_id === user?.u_id && (
           <Pressable onPress={onPress} style={styles.button}>
-            <Text style={styles.text}>프로필 수정</Text>
+            <Text style={styles.text}>{t('common.modifyProfile', '프로필 수정')}</Text>
           </Pressable>
         )}
       </View>

@@ -8,11 +8,12 @@ import type {StackNavigationProp} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useTranslation} from 'react-i18next';
 
 function MyHomeScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-
+  const {t} = useTranslation();
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => <TopRightButton name="settings" onPress={() => navigation.push('SettingScreen')} />,
@@ -38,18 +39,18 @@ function MyHomeScreen() {
           <Profile profileUser={authInfo} />
         </View>
         <View style={styles.flex}>
-          <Text style={styles.bold2}>나의 거래</Text>
+          <Text style={styles.bold2}>{t('common.myTrading', '나의 거래')}</Text>
           <TouchableOpacity onPress={onPressSell} style={styles.row}>
             <Icon name="list-alt" size={30} color="#898989" />
-            <Text style={styles.bold3}>판매내역</Text>
+            <Text style={styles.bold3}>{t('common.myTrading', '판매내역')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPressBuy} style={styles.row}>
             <Icon name="shopping-cart" size={30} color="#898989" />
-            <Text style={styles.bold3}>구매내역</Text>
+            <Text style={styles.bold3}>{t('common.myBuy', '구매내역')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPressKeyword} style={styles.row}>
             <Icon name="notifications" size={30} color="#898989" />
-            <Text style={styles.bold3}>키워드 알림</Text>
+            <Text style={styles.bold3}>{t('common.keywordNoti', '키워드 알림')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

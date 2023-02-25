@@ -7,12 +7,13 @@ import useProducts from '../hooks/useProducts';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import ProductAddButton from '../components/common/ProductAddButton';
+import {useTranslation} from 'react-i18next';
 
 function MyBuyScreen() {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const products = useProducts({u_id: authInfo.u_id, querymode: 'buy'});
   const [loading, setLoading] = useState(true);
-
+  const {t} = useTranslation();
   const productsReady = products !== undefined;
 
   useEffect(() => {
@@ -30,7 +31,7 @@ function MyBuyScreen() {
       <View style={styles.flex1}>
         {!loading && products !== undefined && products.products?.length === 0 ? (
           <>
-            <Text style={styles.text}>구입한 상품이 존재하지 않습니다.</Text>
+            <Text style={styles.text}>{t('msg.notExistBuyProduct', '구입한 상품이 존재하지 않습니다.')}</Text>
             <ProductAddButton />
           </>
         ) : (
