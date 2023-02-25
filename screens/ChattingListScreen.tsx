@@ -1,24 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, StyleSheet, SafeAreaView, FlatList, Text, TouchableOpacity, ScrollView} from 'react-native';
-import Avatar from '../components/profile/Avatar';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import TopRightButton from '../components/common/TopRightButton';
+import {StyleSheet, FlatList, Text} from 'react-native';
 import ChattingCard from '../components/chatting/ChattingCard';
-import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
+import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
 import {chattingProps, getChatting} from '../utils/chatting';
 import {StackNavigationProp} from '@react-navigation/stack';
 import firestore from '@react-native-firebase/firestore';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
-import {chattingInfoState, chattingNotificationCntState} from '../recoil/chattingAtom';
-dayjs.locale('ko');
+import moment from 'moment-timezone';
+import {chattingNotificationCntState} from '../recoil/chattingAtom';
+moment.tz.setDefault('Asia/Seoul');
+
 const chattingCollection = firestore().collection('chatting');
 function ChattingListScreen() {
   const [myInfo] = useRecoilState(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
   // const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
+  const [chattingNotificationCnt, setChattingNotificationCnt] = useRecoilState(chattingNotificationCntState);
 
   const [chatting, setChatting] = useState<chattingProps[]>([]);
   const chattingReady = chatting !== undefined;
@@ -28,9 +26,6 @@ function ChattingListScreen() {
     // let clock = new clockSync({});
     // console.log('current Time', clock.getTime());
     console.log('myInfo', myInfo);
-    // navigation.setOptions({
-    //   headerRight: () => <TopRightButton name="search" onPress={() => navigation.push('SearchScreen')} />,
-    // });
 
     const unsubscribe = chattingCollection.onSnapshot(
       querySnapshot => {

@@ -18,7 +18,7 @@ export interface chattingProps {
   c_to_id: string;
   c_product: productProps;
   c_lastMessage: string;
-  c_regdate: number;
+  c_regdate: string;
   c_to_online: boolean;
   c_from_online: boolean;
   c_to_not_read_cnt: number;
@@ -28,7 +28,7 @@ export interface chattingProps {
 
 export interface updateChattingProps {
   c_lastMessage?: string;
-  c_regdate?: number;
+  c_regdate?: string;
   c_to_online?: boolean;
   c_from_online?: boolean;
   c_from_not_read_cnt?: number;
@@ -60,7 +60,7 @@ export async function getChatting(u_id: string): Promise<chattingProps[]> {
   return chatting;
 }
 //FirebaseFirestoreTypes.FieldValue
-export async function compareDiffChattingDate(c_id: string, c_regdate: number) {
+export async function compareDiffChattingDate(c_id: string, c_regdate: string) {
   console.log(c_id);
   const doc = await chattingCollection.doc(c_id).get();
   const chattingData = doc.data();
