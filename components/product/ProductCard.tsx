@@ -88,7 +88,7 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
       <View style={styles.block}>
         <TouchableOpacity style={styles.touchFlex} onPress={() => onPress()}>
           <View style={styles.review}>
-            <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/user.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
+            <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/image.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
             <View style={styles.flex3}>
               <View style={styles.review}>
                 <Text style={styles.bold1}>{product.p_title}</Text>

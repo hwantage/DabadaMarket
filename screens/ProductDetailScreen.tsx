@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -24,16 +25,22 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
     });
   }, [product.p_id]);
 
+  // 상품 상세 화면 포커스 될 때마다 새로 갱신
+  useFocusEffect(
+    useCallback(() => {
+      initProduct();
+    }, [initProduct]),
+  );
+
   useEffect(() => {
     if (productInfo.p_id === '') {
       updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
-      initProduct();
     }
     authInfo.u_id === product.u_id &&
       navigation.setOptions({
         headerRight: () => <TopRightButton name="more-vert" onPress={onPressMore} />,
       });
-  }, [authInfo.u_id, initProduct, navigation, onPressMore, product, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
+  }, [authInfo.u_id, navigation, onPressMore, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
 
   return (
     <>

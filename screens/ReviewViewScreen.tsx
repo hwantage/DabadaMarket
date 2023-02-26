@@ -44,7 +44,7 @@ function ReviewViewScreen({route}: ReviewViewScreenProps) {
             onPress={() => {
               navigation.push('UserHomeScreen', {u_id: product?.u_id});
             }}>
-            <Avatar source={isSeller ? (buyer?.u_photoUrl ? {uri: buyer?.u_photoUrl} : require('../assets/user.png')) : seller?.u_photoUrl ? {uri: seller?.u_photoUrl} : require('../assets/user.png')} />
+            <Avatar source={isSeller ? (buyer?.u_photoUrl ? {uri: buyer?.u_photoUrl} : require('../assets/octo1.png')) : seller?.u_photoUrl ? {uri: seller?.u_photoUrl} : require('../assets/octo1.png')} />
             <Text style={styles.nickname}>{isSeller ? buyer?.u_nickname : seller?.u_nickname}</Text>
           </Pressable>
         </TouchableOpacity>

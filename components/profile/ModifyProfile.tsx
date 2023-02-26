@@ -122,7 +122,7 @@ function ModifyProfile() {
       <View style={styles.fullscreen}>
         <View style={styles.row}>
           <Pressable onPress={onPress}>
-            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl !== '' ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
+            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl !== '' ? {uri: authInfo.u_photoUrl} : require('../../assets/octo1.png')} />
             <Icon name="enhance-photo-translate" size={26} style={styles.icon} />
           </Pressable>
         </View>

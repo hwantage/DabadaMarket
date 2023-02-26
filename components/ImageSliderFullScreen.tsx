@@ -39,7 +39,7 @@ const ImageSliderFullScreen = (props: Props) => {
             setCurrentIndex(index);
           }}>
           {props.images?.length === 0 ? (
-            <Image style={styles.image} source={require('../assets/user.png')} />
+            <Image style={styles.image} source={require('../assets/octo1.png')} />
           ) : (
             props.images?.map((image, i) => {
               return (

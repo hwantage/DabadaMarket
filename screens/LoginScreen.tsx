@@ -52,6 +52,11 @@ function LoginScreen() {
     setForm({...form, [name]: value});
   };
 
+  const setLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    AsyncStorage.setItem('@language', lang);
+  };
+
   const onSubmit = async () => {
     Keyboard.dismiss();
 
@@ -83,7 +88,7 @@ function LoginScreen() {
         navigation.navigate('MyProfileModifyScreen');
       } else {
         setAuthInfo(userInfo);
-        i18n.changeLanguage(userInfo.u_lang);
+        setLanguage(userInfo.u_lang);
         getChattingData(user.uid);
       }
     } catch (e: any) {

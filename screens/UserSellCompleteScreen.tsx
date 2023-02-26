@@ -49,7 +49,7 @@ function UserSellCompleteScreen({route}: UserSellCompleteScreenProps) {
           onPress={() => {
             navigation.pop();
           }}>
-          <Avatar source={user?.u_photoUrl ? {uri: user?.u_photoUrl} : require('../assets/user.png')} />
+          <Avatar source={user?.u_photoUrl ? {uri: user?.u_photoUrl} : require('../assets/octo1.png')} />
           <Text style={styles.nickname}>{user?.u_nickname}</Text>
         </Pressable>
       </View>

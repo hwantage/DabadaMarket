@@ -29,18 +29,15 @@ function ProductModifyScreen({route}: ProductModifyScreenProps) {
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [product, setProduct] = useState<productProps>({...productPropsDefault, p_images: []});
   const [images, setImages] = useState<any>([]);
+  const [dbImages, setDbImages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getProductInfo(p_id).then(_response => {
       if (authInfo.u_id === _response.u_id) {
-        setProduct(_response);
-        const p_images = _response.p_images.map((item: string) => {
-          return item;
-        });
-        console.log('이미지들', p_images);
-        setImages(p_images);
-        //console.log(_response);
+        setProduct({..._response, p_price: comma(uncomma(_response.p_price))});
+        const p_images = _response.p_images;
+        setDbImages(p_images);
       } else {
         Alert.alert(t('common.alert', '알림'), t('msg.isNotMyProduct', '본인이 작성한 상품만 수정할 수 있습니다.'));
         navigation.pop();
@@ -51,6 +48,9 @@ function ProductModifyScreen({route}: ProductModifyScreenProps) {
   /* 상품 저장 */
   const onSubmit = useCallback(async () => {
     setLoading(true);
+
+    product.p_images = dbImages;
+
     await Promise.all(
       images.map(async (item: any, index: number) => {
         const extension = item.realPath.split('.').pop(); // 확장자 추출
@@ -66,11 +66,12 @@ function ProductModifyScreen({route}: ProductModifyScreenProps) {
         product.p_images.push({pi_id: uuid.v4().toString(), p_url: imageURL});
       }),
     ).then(() => {
-      updateProduct(product.p_id, {...product, p_price: uncomma(product.p_price), p_keywords: product.p_title.split(' ')}); // Firebase 상품 등록
+      const productInfo = {...product, p_price: uncomma(product.p_price), p_keywords: product.p_title.split(' ')};
+      updateProduct(product.p_id, productInfo); // Firebase 상품 등록
       navigation.pop();
-      events.emit('refresh');
+      events.emit('updateProduct', p_id, productInfo);
     });
-  }, [navigation, images, product]);
+  }, [product, dbImages, images, navigation, p_id]);
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
@@ -108,17 +109,19 @@ function ProductModifyScreen({route}: ProductModifyScreenProps) {
         <ScrollView contentContainerStyle={styles.imageContainer} horizontal={true} showsHorizontalScrollIndicator={true}>
           <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
             <Icon style={styles.icon} name="add-a-photo" size={38} />
-            <Text style={styles.photoNum}>{images.length}/10</Text>
+            <Text style={styles.photoNum}>{images.length + dbImages.length}/10</Text>
           </TouchableOpacity>
+          {dbImages.map((item: any) => (
+            <TouchableOpacity key={item.pi_id} onPress={onSelectImage}>
+              <Image style={styles.imageBox} source={{uri: item.p_url}} />
+              <Icon style={styles.relative} name="cancel" size={24} onPress={() => setDbImages(dbImages.filter((obj: any) => obj.pi_id !== item.pi_id))} />
+            </TouchableOpacity>
+          ))}
           {images.map((item: any, index: number) => (
             <TouchableOpacity key={index} onPress={onSelectImage}>
               <Image style={styles.imageBox} source={{uri: item.path}} />
             </TouchableOpacity>
           ))}
-          <TouchableOpacity onPress={onSelectImage}>
-            <Image style={styles.imageBox} source={{uri: 'https://firebasestorage.googleapis.com/v0/b/dabadamarket.appspot.com/o/product%2F941e58d6-6aa6-4386-9eca-5b0dba69470e%2F0.jpeg?alt=media&token=6da6895f-c092-43c2-be83-796c34e0f52e'}} />
-            <Icon style={styles.relative} name="cancel" size={24} />
-          </TouchableOpacity>
         </ScrollView>
       </View>
       <View style={styles.block}>
@@ -129,13 +132,13 @@ function ProductModifyScreen({route}: ProductModifyScreenProps) {
               <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '현금바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'money' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'money'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '그냥바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'free' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'free'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.free', '그냥바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'free' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'free'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '한잔바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'drink' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.drink', '한잔바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'drink' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '몰래바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'secret' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.secret', '몰래바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'secret' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
             </View>
           </View>
           <DabadaInputLine placeholder={t('common.price', '₩ 가격(선택 사항)')} value={product.p_price} onChangeText={(text: string) => inputPriceFormat(text)} returnKeyType="next" keyboardType="numeric" hasMarginBottom={true} onSubmitEditing={() => ref_contents.current?.focus()} />

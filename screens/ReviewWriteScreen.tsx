@@ -51,7 +51,7 @@ function ReviewWriteScreen({navigation, route}: ReviewWriteScreenProps) {
     <>
       <SafeAreaView style={styles.fullscreen}>
         <View style={styles.touchFlex}>
-          <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../assets/user.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
+          <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../assets/octo1.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
           <View style={styles.flex3}>
             <Text style={styles.bold1}>{product.p_title}</Text>
             <View style={styles.row}>
