@@ -15,7 +15,7 @@
     "viewReview": "View Review",
     "searchProduct": "Search Product",
     "searchResult": "Search Result",
-    "setting": "Setting",
+    "setting": "Settings",
     "sellerHome": "Seller Info",
     "userSellProduct": "Seller's On Sale Product",
     "userSellcompleteProduct": "Seller's On Completed Product"
@@ -65,7 +65,8 @@
     "cancel": "Cancel",
     "chooseDefaultImg": "Choose default one ",
     "group": "Sea area",
-    "language": "Language"
+    "language": "Language",
+    "dear": ""
   },
   "button": {
     "save": "Save",
