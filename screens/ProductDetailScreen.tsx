@@ -9,6 +9,7 @@ import {RootStackParamList} from './AppStack';
 import useProductActions from '../hooks/useProductActions';
 import ActionSheetModal from '../components/ActionSheetModal';
 import {getProductInfo, productProps, productPropsDefault, updateProductField} from '../utils/products';
+import events from '../utils/events';
 
 type ProductDetailScreenProps = StackScreenProps<RootStackParamList, 'ProductDetailScreen'>;
 
@@ -33,14 +34,16 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   );
 
   useEffect(() => {
-    if (productInfo.p_id === '') {
-      updateProductField(product.p_id, 'p_view', product.p_view); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+    console.log('상품 상세 정보 조회');
+    if (productInfo.p_id === '' && product.u_id !== authInfo.u_id) {
+      updateProductField(product.p_id, 'p_view', product.p_view + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+      events.emit('updateProduct', product.p_id, {...product, p_view: product.p_view + 1});
     }
     authInfo.u_id === product.u_id &&
       navigation.setOptions({
         headerRight: () => <TopRightButton name="more-vert" onPress={onPressMore} />,
       });
-  }, [authInfo.u_id, navigation, onPressMore, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
+  }, [authInfo.u_id, navigation, onPressMore, product, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
 
   return (
     <>

@@ -42,11 +42,11 @@ function MyHomeScreen() {
           <Text style={styles.bold2}>{t('common.myTrading', '나의 거래')}</Text>
           <TouchableOpacity onPress={onPressSell} style={styles.row}>
             <Icon name="list-alt" size={30} color="#898989" />
-            <Text style={styles.bold3}>{t('common.myTrading', '판매내역')}</Text>
+            <Text style={styles.bold3}>{t('common.mySell', '판매 내역')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPressBuy} style={styles.row}>
             <Icon name="shopping-cart" size={30} color="#898989" />
-            <Text style={styles.bold3}>{t('common.myBuy', '구매내역')}</Text>
+            <Text style={styles.bold3}>{t('common.myBuy', '구매 내역')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPressKeyword} style={styles.row}>
             <Icon name="notifications" size={30} color="#898989" />

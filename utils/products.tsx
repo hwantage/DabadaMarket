@@ -20,6 +20,7 @@ export interface productSellReviewProps {
   p_seller_regdate: string;
 }
 export interface productProps {
+  p_group: string;
   p_id: string;
   u_id: string;
   p_title: string;
@@ -40,6 +41,7 @@ export interface productProps {
   p_keywords: string[];
 }
 export const productPropsDefault: productProps = {
+  p_group: 'somansa',
   p_id: '',
   u_id: '',
   p_title: '',
@@ -90,7 +92,12 @@ export const getProductsDefault: getProductsProps = {
 // 상품 리스트 조회
 export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: getProductsProps = getProductsDefault): Promise<productProps[]> {
   console.log('getProduct :: ', u_id, p_id, cursormode, querymode, keyword);
+
   let query = productCollection.orderBy('p_regdate', 'desc').limit(PAGE_SIZE);
+
+  // 어장 정보 조회 기능 추가 구현 필요.(recoil 정보로 설정 필요)
+  query = query.where('p_group', '==', 'somansa');
+
   if (querymode === 'buy') {
     query = query.where('p_buyer_id', '==', u_id);
   } else if (querymode === 'sell') {
@@ -102,7 +109,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
       query = query.where('u_id', '==', u_id).where('p_status', 'in', [3, 4]);
     }
   } else {
-    //query = query.where('p_status', 'in', [1, 2, 3, 4]);
+    query = query.where('p_status', 'in', [1, 2, 3]);
   }
 
   if (p_id) {

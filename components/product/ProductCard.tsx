@@ -5,12 +5,13 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {default as Text} from '../common/DabadaText';
 import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
-import {productProps, productPropsDefault, comma} from '../../utils/products';
+import {productProps, productPropsDefault, comma, updateProductField} from '../../utils/products';
 import moment from 'moment-timezone';
 import 'moment/locale/ko';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
 import {useTranslation} from 'react-i18next';
+import events from '../../utils/events';
 
 interface ProductCardProps {
   product: productProps;
@@ -27,10 +28,8 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
     setProduct(props);
   }, [props]);
 
-  const onPress = () => {
-    const p_viewCnt = product.p_view + 1;
-    setProduct({...product, p_view: p_viewCnt}); // p_view 조회수 카운터 증가
-    navigation.navigate('ProductDetailScreen', {product: {...product, p_view: p_viewCnt}, querymode});
+  const onPressProductCard = () => {
+    navigation.navigate('ProductDetailScreen', {product: {...product}, querymode});
   };
 
   const onPressReviewWrite = () => {
@@ -83,10 +82,18 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
       break;
   }
 
+  const onPressChangeStatus = (status: number) => {
+    if (product.p_status !== status) {
+      updateProductField(product.p_id, 'p_status', status);
+      setProduct({...product, p_status: status}); // 제품 상태 변경
+      events.emit('updateProduct', product.p_id, {...product, p_status: status});
+    }
+  };
+
   return (
     <>
       <View style={styles.block}>
-        <TouchableOpacity style={styles.touchFlex} onPress={() => onPress()}>
+        <TouchableOpacity style={styles.touchFlex} onPress={() => onPressProductCard()}>
           <View style={styles.review}>
             <Image source={product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../../assets/image.png')} style={styles.imageBox} resizeMethod="resize" resizeMode="cover" />
             <View style={styles.flex3}>
@@ -110,14 +117,38 @@ function ProductCard({product: props, querymode}: ProductCardProps) {
             </View>
           </View>
         </TouchableOpacity>
+
+        {querymode === 'sell' && authInfo.u_id === product.u_id && (
+          <View style={styles.statusBtnFlex}>
+            {product.p_status === 1 ? (
+              <TouchableOpacity onPress={() => onPressChangeStatus(2)}>
+                <Text style={styles.textStatus}>{t('ptype.t2', '예약중')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => onPressChangeStatus(1)}>
+                <Text style={styles.textStatus}>{t('ptype.t1', '판매중')}</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => onPressChangeStatus(3)}>
+              <Text style={styles.textStatus}>{t('ptype.t3', '거래완료')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onPressChangeStatus(4)}>
+              <Text style={styles.textStatus}>{t('ptype.t4', '판매중지')}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {querymode === 'sell_complete' && product.p_status === 3 && authInfo.u_id === product.u_id && (
           <>
             {product.p_seller_review.p_seller_star === '' ? (
-              <TouchableOpacity onPress={onPressReviewWrite}>
-                <View style={styles.reviewBtnFlex}>
-                  <Text style={styles.textReview1}>{t('common.writeReview', '거래 후기 남기기')}</Text>
-                </View>
-              </TouchableOpacity>
+              <View style={styles.reviewBtnFlex}>
+                <TouchableOpacity onPress={() => onPressChangeStatus(1)}>
+                  <Text style={styles.textStatus}>{t('ptype.t1', '판매중')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressReviewWrite}>
+                  <Text style={styles.textStatus}>{t('common.writeReview', '거래 후기 남기기')}</Text>
+                </TouchableOpacity>
+              </View>
             ) : (
               <TouchableOpacity onPress={onPressReviewView}>
                 <View style={styles.reviewBtnFlex}>
@@ -245,6 +276,7 @@ const styles = StyleSheet.create({
     color: '#b0b0b0',
   },
   bold1: {marginTop: 4, fontSize: 16, fontWeight: 'bold', color: '#898989', width: '75%'},
+  textStatus: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: '#166de0', marginRight: 40, marginLeft: 40},
   textReview1: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: '#166de0'},
   textReview2: {marginTop: 4, fontSize: 12, fontWeight: 'bold', color: 'black'},
   imageBox: {
@@ -320,19 +352,43 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   reviewBtnFlex: {
-    paddingVertical: 14,
+    paddingVertical: 4,
     flexDirection: 'row',
     width: '100%',
-    height: 50,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
     shadowColor: '#191919',
+    borderTopColor: '#efefef',
+    marginTop: 5,
+    borderTopWidth: 1,
+    borderStyle: 'solid',
     shadowOpacity: 0.1,
     shadowRadius: 0,
     shadowOffset: {
       width: 0,
-      height: 30,
+      height: 20,
+    },
+  },
+  statusBtnFlex: {
+    paddingVertical: 4,
+    flexDirection: 'row',
+    width: '100%',
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    shadowColor: '#191919',
+    borderTopColor: '#efefef',
+    marginTop: 5,
+    borderTopWidth: 1,
+    borderStyle: 'solid',
+    shadowOpacity: 0.1,
+    shadowRadius: 0,
+    shadowOffset: {
+      width: 0,
+      height: 20,
     },
   },
   bold2: {

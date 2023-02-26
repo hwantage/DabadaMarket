@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {getProducts, getProductCnt, PAGE_SIZE} from '../utils/products';
+import {getProducts, PAGE_SIZE} from '../utils/products';
 import useProductsEventEffect from './useProductsEventEffect';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
@@ -21,6 +21,7 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
       }
     });
 
+    /*
     // sell | sell_complete 인 경우 갯수 조회
     if (querymode !== undefined && querymode !== 'buy') {
       getProductCnt({u_id, querymode, keyword}).then(_cnt => {
@@ -30,7 +31,7 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
           setProductCnt_complete(_cnt);
         }
       });
-    }
+    }*/
   }, [keyword, querymode, u_id]);
 
   const decreaseCount = useCallback(

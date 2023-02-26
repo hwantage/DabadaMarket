@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Fragment, useCallback} from 'react';
+import React, {useEffect, useState, Fragment} from 'react';
 import {ActivityIndicator, FlatList, useWindowDimensions, ListRenderItem, RefreshControl, StyleSheet, View} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import ProductCard from '../components/product/ProductCard';
@@ -17,26 +17,28 @@ function MySellScreen() {
   const products = useProducts({u_id: authInfo.u_id, querymode: 'sell'});
   const products_complete = useProducts({u_id: authInfo.u_id, querymode: 'sell_complete'});
   const [loading, setLoading] = useState(true);
-  const [routes, setRoutes] = React.useState([
-    {key: 'first', title: t('common.onSale', '판매중') + '(0)'},
-    {key: 'second', title: t('common.completeTrade', '거래완료') + '(0)'},
+  const [routes] = React.useState([
+    {key: 'first', title: t('common.onSale', '판매중')},
+    {key: 'second', title: t('common.completeTrade', '거래완료')},
   ]);
 
   const productsReady = products !== undefined && products_complete !== undefined;
 
+  /*
   const updateRoutes = useCallback(() => {
     setRoutes([
       {key: 'first', title: t('common.onSale', '판매중') + '(' + products.productCnt + ')'},
       {key: 'second', title: t('common.completeTrade', '거래완료') + '(' + products_complete.productCnt_complete + ')'},
     ]);
   }, [products.productCnt, products_complete.productCnt_complete, t]);
+  */
 
   useEffect(() => {
     if (productsReady) {
       setLoading(false);
-      updateRoutes();
+      //updateRoutes();
     }
-  }, [productsReady, updateRoutes]);
+  }, [productsReady]);
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="sell" />;
   const listFooterComponent: any = !products.noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;

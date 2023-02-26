@@ -24,7 +24,7 @@ function ProductAddScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const ref_contents = useRef<TextInput>(null);
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const [product, setProduct] = useState<productProps>({...productPropsDefault, p_id: uuid.v4().toString(), u_id: authInfo.u_id, p_images: []});
+  const [product, setProduct] = useState<productProps>({...productPropsDefault, p_id: uuid.v4().toString(), p_group: authInfo.u_group, u_id: authInfo.u_id, p_images: []});
   const [images, setImages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
