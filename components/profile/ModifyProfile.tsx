@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import DabadaText, {default as Text} from '../common/DabadaText';
@@ -37,9 +37,27 @@ function ModifyProfile() {
   const [defaultImageIndex, setDefaultImageIndex] = useState<number>(-1);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [arrDefaultImages, setArrDefaultImages] = useState<string[]>([]);
 
-  const arrDefaultImages = useMemo(() => {
-    return ['https://firebasestorage.googleapis.com/v0/b/dabadamarket.appspot.com/o/profile%2Fbada1.png?alt=media&token=039556c3-67cf-4cb7-97f5-aaa3b7f026f1', 'https://firebasestorage.googleapis.com/v0/b/dabadamarket.appspot.com/o/profile%2Fbada2.png?alt=media&token=05cf766a-9c73-45b3-b8ee-c3aafabf6b60'];
+  navigation.setOptions({
+    headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
+  });
+
+  /* firebase store 의 defaultProfile 폴더의 이미지 조회 */
+  useEffect(() => {
+    const storageRef = storage().ref('/defaultProfile/');
+    storageRef
+      .listAll()
+      .then(result => {
+        const promises = result.items.map(item => item.getDownloadURL());
+        Promise.all(promises)
+          .then(urls => {
+            const files: string[] = result.items.map((item, index) => urls[index]);
+            setArrDefaultImages(files);
+          })
+          .catch(error => console.log(error));
+      })
+      .catch(error => console.log(error));
   }, []);
 
   const onSubmit: any = useCallback(async () => {
@@ -81,13 +99,6 @@ function ModifyProfile() {
     setAuthInfo(userInfo); // 프로필 정보 recoil 저장
     navigation.navigate('BottomTab');
   }, [arrDefaultImages, authInfo.u_fcmToken, authInfo.u_id, authInfo.u_photoUrl, defaultImageIndex, navigation, nickname, response, setAuthInfo]);
-
-  /* 우측 상단 이미지 (저장) */
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
-    });
-  }, [authInfo, loading, navigation, onSubmit]);
 
   const onPickImage = (res: any) => {
     if (res.didCancel || !res) {
