@@ -67,7 +67,8 @@
     "chooseDefaultImg": "기본 이미지 선택 ",
     "group": "어장",
     "language": "언어",
-    "dear": "님"
+    "dear": "님",
+    "chooseUserImg": "사용자 이미지 선택"
   },
   "button": {
     "save": "저장",

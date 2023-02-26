@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS} from 'react-native';
+import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS, ScrollView} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import DabadaText, {default as Text} from '../common/DabadaText';
 import storage from '@react-native-firebase/storage';
@@ -146,14 +146,19 @@ function ModifyProfile() {
   return (
     <>
       <View style={styles.fullscreen}>
+        <DabadaText style={styles.dtext}>{t('common.chooseDefaultImg', '기본 이미지 선택 ')} </DabadaText>
+
         <View style={styles.toprow}>
-          <DabadaText style={styles.dtext}>{t('common.chooseDefaultImg', '기본 이미지 선택 ')} </DabadaText>
-          {arrDefaultImages.map((item: string, index: number) => (
-            <Pressable key={index} onPress={() => onPressDefault(index)}>
-              <Image style={styles.smallcircle} source={{uri: arrDefaultImages[index]}} />
-            </Pressable>
-          ))}
+          <ScrollView contentContainerStyle={styles.imageContainer} horizontal={true} showsHorizontalScrollIndicator={true}>
+            {arrDefaultImages.map((item: string, index: number) => (
+              <Pressable key={index} onPress={() => onPressDefault(index)}>
+                <Image style={styles.smallcircle} source={{uri: arrDefaultImages[index]}} />
+              </Pressable>
+            ))}
+          </ScrollView>
         </View>
+
+        <DabadaText style={styles.dtext}>{t('common.chooseUserImg', '사용자 이미지 선택 ')} </DabadaText>
         <View style={styles.row}>
           <Pressable onPress={onPressGalary}>
             <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : defaultImageIndex >= 0 ? {uri: arrDefaultImages[defaultImageIndex]} : authInfo?.u_photoUrl !== '' ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
@@ -187,6 +192,9 @@ function ModifyProfile() {
 }
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    height: 70,
+  },
   fullscreen: {
     flex: 1,
     paddingHorizontal: 12,
@@ -215,7 +223,7 @@ const styles = StyleSheet.create({
     borderRadius: 64,
     width: 128,
     height: 128,
-    marginVertical: 36,
+    marginVertical: 20,
   },
   smallcircle: {
     backgroundColor: '#cdcdcd',
@@ -233,7 +241,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 16,
     position: 'absolute',
-    top: 140,
+    top: 120,
     right: 6,
   },
 });

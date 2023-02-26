@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Pressable, Alert} from 'react-native';
+import {View, StyleSheet, Pressable, Alert, ScrollView} from 'react-native';
 import DabadaButton from '../components/common/DabadaButton';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState, authInfoDefault} from '../recoil/authInfoAtom';
@@ -48,14 +48,16 @@ function SettingScreen() {
           </View>
         </View>
         <DabadaButton hasMarginBottom={false} title={t('button.logout', '로그아웃')} onPress={onLogout} />
-        <Text style={styles.text1}>{t('common.creator', '만든 사람들')}</Text>
-        <Text style={styles.text2}>김정환 : Product Management, Development</Text>
-        <Text style={styles.text2}>최형근 : Development</Text>
-        <Text style={styles.text2}>신희성 : Research, Document works</Text>
-        <Text style={styles.text2}>김바다 : Planning design, Markup</Text>
-        <Text style={styles.text2}>김시윤 : Login screen 케리커처</Text>
-        <Text style={styles.text2}>openAI(DALL·E 2) : Character Design</Text>
-        <Text style={styles.text3}>help : ux@somansa.com</Text>
+        <ScrollView>
+          <Text style={styles.text1}>{t('common.creator', '만든 사람들')}</Text>
+          <Text style={styles.text2}>김정환 : Product Management, Development</Text>
+          <Text style={styles.text2}>최형근 : Development</Text>
+          <Text style={styles.text2}>신희성 : Research, Document works</Text>
+          <Text style={styles.text2}>김바다 : Planning design, Markup</Text>
+          <Text style={styles.text2}>김시윤 : Login screen & Default profile 케리커처</Text>
+          <Text style={styles.text2}>openAI(DALL·E 2) : Character Design</Text>
+          <Text style={styles.text3}>help : ux@somansa.com</Text>
+        </ScrollView>
       </View>
     </View>
   );
