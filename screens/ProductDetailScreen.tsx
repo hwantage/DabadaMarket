@@ -34,7 +34,6 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   );
 
   useEffect(() => {
-    console.log('상품 상세 정보 조회');
     if (productInfo.p_id === '' && product.u_id !== authInfo.u_id) {
       updateProductField(product.p_id, 'p_view', product.p_view + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
       events.emit('updateProduct', product.p_id, {...product, p_view: product.p_view + 1});
