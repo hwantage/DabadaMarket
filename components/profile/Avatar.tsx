@@ -10,7 +10,7 @@ function Avatar({source, size}: avatarProps) {
   if (!source) {
     return (
       <Image
-        source={source || require('../../assets/octo1.png')}
+        source={source || require('../../assets/user.png')}
         resizeMode="cover"
         style={[
           {
@@ -24,7 +24,7 @@ function Avatar({source, size}: avatarProps) {
   }
   return (
     <Image
-      source={source || require('../../assets/octo1.png')}
+      source={source || require('../../assets/user.png')}
       resizeMode="cover"
       style={[
         {

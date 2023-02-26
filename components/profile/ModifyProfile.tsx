@@ -1,8 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-import {default as Text} from '../common/DabadaText';
+import DabadaText, {default as Text} from '../common/DabadaText';
 import storage from '@react-native-firebase/storage';
 import {createUser} from '../../utils/auth';
 import DabadaInput from '../common/DabadaInput';
@@ -34,14 +34,19 @@ function ModifyProfile() {
   const [authInfo, setAuthInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [nickname, setNickname] = useState(authInfo.u_nickname);
   const [response, setResponse] = useState<any>(null);
+  const [defaultImageIndex, setDefaultImageIndex] = useState<number>(-1);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const arrDefaultImages = useMemo(() => {
+    return ['https://firebasestorage.googleapis.com/v0/b/dabadamarket.appspot.com/o/profile%2Fbada1.png?alt=media&token=039556c3-67cf-4cb7-97f5-aaa3b7f026f1', 'https://firebasestorage.googleapis.com/v0/b/dabadamarket.appspot.com/o/profile%2Fbada2.png?alt=media&token=05cf766a-9c73-45b3-b8ee-c3aafabf6b60'];
+  }, []);
 
   const onSubmit: any = useCallback(async () => {
     setLoading(true);
 
     let photoURL = null;
-    if (response) {
+    if (response && defaultImageIndex < 0) {
       const asset = response.assets[0];
       const extension = asset.fileName.split('.').pop(); // 확장자 추출
       const reference = storage().ref(`/profile/${authInfo.u_id}.${extension}`);
@@ -59,6 +64,10 @@ function ModifyProfile() {
       photoURL = authInfo.u_photoUrl || '';
     }
 
+    if (defaultImageIndex >= 0) {
+      photoURL = arrDefaultImages[defaultImageIndex];
+    }
+
     const userInfo = {
       u_id: authInfo.u_id,
       u_nickname: nickname,
@@ -71,7 +80,7 @@ function ModifyProfile() {
     createUser(userInfo); // Firebase 프로필 정보 갱신
     setAuthInfo(userInfo); // 프로필 정보 recoil 저장
     navigation.navigate('BottomTab');
-  }, [authInfo.u_fcmToken, authInfo.u_id, authInfo.u_photoUrl, navigation, nickname, response, setAuthInfo]);
+  }, [arrDefaultImages, authInfo.u_fcmToken, authInfo.u_id, authInfo.u_photoUrl, defaultImageIndex, navigation, nickname, response, setAuthInfo]);
 
   /* 우측 상단 이미지 (저장) */
   useEffect(() => {
@@ -85,6 +94,7 @@ function ModifyProfile() {
       return;
     }
     setResponse(res);
+    setDefaultImageIndex(-1);
   };
 
   const onLaunchCamera = () => {
@@ -95,7 +105,7 @@ function ModifyProfile() {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
 
-  const onPress = () => {
+  const onPressGalary = () => {
     if (Platform.OS === 'android') {
       setModalVisible(true);
       return;
@@ -117,12 +127,25 @@ function ModifyProfile() {
     );
   };
 
+  const onPressDefault = (i: number) => {
+    setResponse(null);
+    setDefaultImageIndex(i);
+  };
+
   return (
     <>
       <View style={styles.fullscreen}>
+        <View style={styles.toprow}>
+          <DabadaText style={styles.dtext}>{t('common.chooseDefaultImg', '기본 이미지 선택 ')} </DabadaText>
+          {arrDefaultImages.map((item: string, index: number) => (
+            <Pressable key={index} onPress={() => onPressDefault(index)}>
+              <Image style={styles.smallcircle} source={{uri: arrDefaultImages[index]}} />
+            </Pressable>
+          ))}
+        </View>
         <View style={styles.row}>
-          <Pressable onPress={onPress}>
-            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : authInfo?.u_photoUrl !== '' ? {uri: authInfo.u_photoUrl} : require('../../assets/octo1.png')} />
+          <Pressable onPress={onPressGalary}>
+            <Image style={styles.circle} source={response ? {uri: response?.assets[0]?.uri} : defaultImageIndex >= 0 ? {uri: arrDefaultImages[defaultImageIndex]} : authInfo?.u_photoUrl !== '' ? {uri: authInfo.u_photoUrl} : require('../../assets/user.png')} />
             <Icon name="enhance-photo-translate" size={26} style={styles.icon} />
           </Pressable>
         </View>
@@ -163,6 +186,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  toprow: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  dtext: {fontSize: 14, fontWeight: 'bold', marginTop: 12},
   bold2: {fontSize: 18, fontWeight: 'bold', marginBottom: 8},
   bold3: {marginLeft: 8, fontSize: 18, fontWeight: 'bold'},
   block: {
@@ -177,6 +205,13 @@ const styles = StyleSheet.create({
     width: 128,
     height: 128,
     marginVertical: 36,
+  },
+  smallcircle: {
+    backgroundColor: '#cdcdcd',
+    borderRadius: 64,
+    width: 50,
+    height: 50,
+    marginLeft: 10,
   },
   spinner: {
     marginTop: 48,

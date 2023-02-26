@@ -63,7 +63,9 @@
     "takePicture": "Take Camera",
     "chooseAlbum": "Photo Album",
     "cancel": "Cancel",
-    "modifyProfile": "Modify profile"
+    "chooseDefaultImg": "Choose default one ",
+    "group": "Sea area",
+    "language": "Language"
   },
   "button": {
     "save": "Save",
@@ -72,7 +74,9 @@
     "writeReview": "Write review",
     "deleteAll": "Delete all",
     "chatting": "Chatting",
-    "logout": "Logout"
+    "logout": "Logout",
+    "editProfile": "Edit profile",
+    "groupChange": "Chagnge area"
   },
   "msg": {
     "enterEmail": "Please enter your email",

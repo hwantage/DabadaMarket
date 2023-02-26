@@ -35,8 +35,12 @@ function MyKeywordScreen() {
     }
   };
 
-  const onPressNotification = () => {
+  const onPressAddNotification = () => {
     let newNotification = notifications;
+    if (keyword === '') {
+      Alert.alert(t('common.fail', '실패'), t('common.pleaseInputKeyword', '키워드를 입력해주세요. (예: 자전거)'));
+      return;
+    }
     if (newNotification !== undefined) {
       const index = newNotification.notifications.findIndex(item => item.n_word === keyword);
 
@@ -72,8 +76,8 @@ function MyKeywordScreen() {
     <View style={styles.fullscreen}>
       <View style={styles.flex}>
         <View style={styles.row2}>
-          <DabadaInput placeholder={t('common.pleaseInputKeyword', '키워드를 입력해주세요. (예: 자전거)')} value={keyword} onChangeText={(text: string) => setKeyword(text)} onSubmitEditing={onPressNotification} hasMarginBottom={false} />
-          <DabadaButton theme={'secondary'} hasMarginBottom={false} title={t('common.registKeywordNoti', '키워드 알림으로 등록하기')} onPress={onPressNotification} />
+          <DabadaInput placeholder={t('common.pleaseInputKeyword', '키워드를 입력해주세요. (예: 자전거)')} value={keyword} onChangeText={(text: string) => setKeyword(text)} onSubmitEditing={onPressAddNotification} hasMarginBottom={false} />
+          <DabadaButton theme={'secondary'} hasMarginBottom={false} title={t('common.registKeywordNoti', '키워드 알림으로 등록하기')} onPress={onPressAddNotification} />
         </View>
       </View>
       {notifications !== undefined && (
@@ -105,7 +109,7 @@ function MyKeywordScreen() {
             ))}
           </View>
         ) : (
-          <Text style={styles.textEmpty}>{t('msg.enterSearchKeyword', '알림을 등록할 키워드를 입력하십시오.')}</Text>
+          <Text style={styles.textEmpty}>{t('msg.enterKeyword', '알림을 등록할 키워드를 입력하십시오.')}</Text>
         )}
       </>
     </View>

@@ -38,7 +38,7 @@ function Profile({profileUser}: avatarProps) {
       <View style={styles.block}>
         {authInfo.u_id === user?.u_id && (
           <Pressable onPress={onPress} style={styles.button}>
-            <Text style={styles.text}>{t('common.modifyProfile', '프로필 수정')}</Text>
+            <Text style={styles.text}>{t('button.editProfile', '프로필 수정')}</Text>
           </Pressable>
         )}
       </View>

@@ -106,13 +106,13 @@ function ProductAddScreen() {
               <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '현금바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'money' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'money'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '그냥바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'free' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'free'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.free', '그냥바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'free' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'free'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '한잔바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'drink' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.drink', '한잔바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'drink' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'drink'})} />
             </View>
             <View style={styles.container}>
-              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.money', '몰래바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'secret' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
+              <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text={t('badatype.secret', '몰래바다')} innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={product.p_badatype === 'secret' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setProduct({...product, p_badatype: 'secret'})} />
             </View>
           </View>
           <DabadaInputLine placeholder={t('common.price', '₩ 가격(선택 사항)')} value={product.p_price} onChangeText={(text: string) => inputPriceFormat(text)} returnKeyType="next" keyboardType="numeric" hasMarginBottom={true} onSubmitEditing={() => ref_contents.current?.focus()} />

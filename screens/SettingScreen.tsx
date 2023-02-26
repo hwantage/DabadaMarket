@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable, Alert} from 'react-native';
 import DabadaButton from '../components/common/DabadaButton';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState, authInfoDefault} from '../recoil/authInfoAtom';
@@ -24,21 +24,30 @@ function SettingScreen() {
     AsyncStorage.setItem('@language', lang);
   };
 
+  const onPressChangeGroup = () => {
+    Alert.alert(t('common.alert', '알림'), '바다 어장을 선택할 수 있는 기능을 준비 중입니다. 회사, 건물, 지역 등 어장 확대 및 어장 변경 기능 출시를 기대해 주십시오.');
+  };
+
   return (
     <View style={styles.fullScreen}>
       <View style={styles.buttons}>
+        <View style={styles.group}>
+          <View style={styles.fullScreen}>
+            <Text style={styles.textLbl}>{t('common.group', '어장')}</Text>
+            <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="Somansa" innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={authInfo.u_group === 'somansa' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} />
+            <Pressable onPress={onPressChangeGroup}>
+              <Text style={styles.btnText}>{t('button.groupChange', '어장 변경')}</Text>
+            </Pressable>
+          </View>
+        </View>
         <View style={styles.radioGroup}>
           <View style={styles.fullScreen}>
-            <Text style={styles.textLan}>Language</Text>
-          </View>
-          <View style={styles.fullScreen}>
+            <Text style={styles.textLbl}>{t('common.language', '언어')}</Text>
             <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="Korean" innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={authInfo.u_lang === 'ko' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setLanguage('ko')} />
-          </View>
-          <View style={styles.fullScreen}>
             <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="English" innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={authInfo.u_lang === 'en' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} onPress={() => setLanguage('en')} />
           </View>
         </View>
-        <DabadaButton hasMarginBottom={true} title={t('button.logout', '로그아웃')} onPress={onLogout} />
+        <DabadaButton hasMarginBottom={false} title={t('button.logout', '로그아웃')} onPress={onLogout} />
         <Text style={styles.text1}>{t('common.creator', '만든 사람들')}</Text>
         <Text style={styles.text2}>김정환 : Product Management, Development</Text>
         <Text style={styles.text2}>최형근 : Development</Text>
@@ -55,26 +64,30 @@ function SettingScreen() {
 const styles = StyleSheet.create({
   fullScreen: {
     flex: 1,
+    flexDirection: 'row',
   },
   buttons: {
     padding: 24,
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  textLan: {fontSize: 14, fontWeight: 'bold'},
-  text1: {textAlign: 'center', fontSize: 17, fontWeight: 'bold'},
-  text2: {paddingTop: 40, textAlign: 'center', fontSize: 15, fontWeight: 'bold'},
-  text3: {paddingTop: 40, textAlign: 'center', fontSize: 12, fontWeight: 'bold', color: '#039DF4'},
-  radioGroup: {
+  textLbl: {fontSize: 14, fontWeight: 'bold', width: 70},
+  text1: {textAlign: 'center', fontSize: 17, fontWeight: 'bold', marginTop: 30, fontStyle: 'italic'},
+  text2: {paddingTop: 30, textAlign: 'center', fontSize: 15, fontWeight: 'bold'},
+  text3: {paddingTop: 30, textAlign: 'center', fontSize: 12, fontWeight: 'bold', color: '#039DF4'},
+  btnText: {paddingTop: 5, textAlign: 'center', fontSize: 10, fontWeight: 'bold', color: '#039DF4'},
+  group: {
     flexDirection: 'row',
     display: 'flex',
-    alignItems: 'center',
     marginLeft: 12,
     paddingVertical: 12,
   },
-  radioContainer: {
+  radioGroup: {
     flexDirection: 'row',
-    alignItems: 'center',
+    display: 'flex',
+    marginLeft: 12,
+    paddingVertical: 12,
+    marginBottom: 20,
   },
   chkIcon: {
     borderRadius: 12,
@@ -88,6 +101,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'none',
     marginLeft: -8,
     fontSize: 14,
+    width: 100,
   },
 });
 export default SettingScreen;
