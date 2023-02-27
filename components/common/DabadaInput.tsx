@@ -13,6 +13,7 @@ function DabadaInput({hasMarginBottom, ...rest}: DabadaInputProps, ref: LegacyRe
 }
 const styles = StyleSheet.create({
   input: {
+    color: '#000000',
     borderColor: '#bdbdbd',
     borderWidth: 1,
     paddingHorizontal: 16,
