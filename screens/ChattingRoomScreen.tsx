@@ -255,12 +255,13 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
   const updateChattingInfo = useCallback(
     async message => {
+      const currentDatetime = moment().format('YYYY-MM-DD HH:mm:ss');
       setMessages(prevMessages => [message, ...prevMessages]);
       setChattingStateInfo(prevChattingInfo => {
         const convertedChattingInfo = prevChattingInfo.map(chattingInfo => {
           if (chattingInfo.c_id === chattingId) {
             chattingInfo.c_lastMessage = message.text;
-            chattingInfo.c_regdate = moment().format('YYYY-MM-DD HH:mm:ss');
+            chattingInfo.c_regdate = currentDatetime;
             chattingInfo.c_messages = [message, ...chattingInfo.c_messages];
           }
 
@@ -272,7 +273,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       });
 
       const currentChattingInfo = await getChattingData(chattingId);
-      const updChattingInfo: updateChattingProps = {c_lastMessage: message.text, c_regdate: firestore.Timestamp.now()?.seconds};
+      const updChattingInfo: updateChattingProps = {c_lastMessage: message.text, c_regdate: currentDatetime};
 
       let readCnt = sendMessageCount;
       let senderId = currentChattingInfo.c_from_id;

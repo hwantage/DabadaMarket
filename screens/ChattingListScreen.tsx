@@ -9,7 +9,6 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment-timezone';
 import {chattingNotificationCntState} from '../recoil/chattingAtom';
-moment.tz.setDefault('Asia/Seoul');
 
 const chattingCollection = firestore().collection('chatting');
 function ChattingListScreen() {
