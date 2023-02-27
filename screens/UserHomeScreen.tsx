@@ -6,7 +6,7 @@ import Avatar from '../components/profile/Avatar';
 import {authInfoDefault, authInfoProps} from '../recoil/authInfoAtom';
 import {RootStackParamList} from './AppStack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import useProducts from '../hooks/useProducts';
+//import useProducts from '../hooks/useProducts';
 import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 
@@ -17,8 +17,8 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [user, setUser] = useState<authInfoProps>(authInfoDefault);
   const {u_id} = route.params;
-  const products = useProducts({u_id: u_id, querymode: 'sell'});
-  const products_complete = useProducts({u_id: u_id, querymode: 'sell_complete'});
+  //const products = useProducts({u_id: u_id, querymode: 'sell'});
+  //const products_complete = useProducts({u_id: u_id, querymode: 'sell_complete'});
 
   useEffect(() => {
     getUserInfo(u_id).then(_user => {
@@ -45,7 +45,9 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
           <View style={styles.sellProduct}>
             <View style={styles.flex}>
               <Text style={styles.bold2}>{t('common.productOnSale', '판매중인 상품')}</Text>
+              {/*
               <Text style={styles.bold3}>{products.productCnt}개</Text>
+              */}
             </View>
             <Icon name="chevron-right" size={30} color="#898989" />
           </View>
@@ -54,7 +56,9 @@ function UserHomeScreen({route}: UserHomeScreenProps) {
           <View style={styles.review}>
             <View style={styles.flex}>
               <Text style={styles.bold2}>{t('common.productOnComplete', '거래 완료 상품')}</Text>
+              {/*
               <Text style={styles.bold3}>{products_complete.productCnt_complete}개</Text>
+              */}
             </View>
             <Icon name="chevron-right" size={30} color="#898989" />
           </View>

@@ -39,10 +39,6 @@ function ModifyProfile() {
   const [modalVisible, setModalVisible] = useState(false);
   const [arrDefaultImages, setArrDefaultImages] = useState<string[]>([]);
 
-  navigation.setOptions({
-    headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
-  });
-
   /* firebase store 의 defaultProfile 폴더의 이미지 조회 */
   useEffect(() => {
     const storageRef = storage().ref('/defaultProfile/');
@@ -99,6 +95,10 @@ function ModifyProfile() {
     setAuthInfo(userInfo); // 프로필 정보 recoil 저장
     navigation.navigate('BottomTab');
   }, [arrDefaultImages, authInfo.u_fcmToken, authInfo.u_id, authInfo.u_photoUrl, defaultImageIndex, navigation, nickname, response, setAuthInfo]);
+
+  navigation.setOptions({
+    headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
+  });
 
   const onPickImage = (res: any) => {
     if (res.didCancel || !res) {
