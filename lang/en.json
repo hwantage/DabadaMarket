@@ -18,7 +18,10 @@
     "setting": "Settings",
     "sellerHome": "Seller Info",
     "userSellProduct": "Seller's On Sale Product",
-    "userSellcompleteProduct": "Seller's On Completed Product"
+    "userSellcompleteProduct": "Seller's On Completed Product",
+    "writeInformation": "Write sea of information",
+    "viewInformation": "View sear of information",
+    "modifyInformation": "Edit information"
   },
   "common": {
     "email": "Email",
@@ -67,7 +70,8 @@
     "group": "Sea area",
     "language": "Language",
     "dear": "",
-    "chooseUserImg": "Choose user's picture"
+    "chooseUserImg": "Choose user's picture",
+    "newCommentWrite": "Create a new comment"
   },
   "button": {
     "save": "Save",
@@ -78,7 +82,8 @@
     "chatting": "Chatting",
     "logout": "Logout",
     "editProfile": "Edit profile",
-    "groupChange": "Chagnge area"
+    "groupChange": "Chagnge area",
+    "commentSend": "Send comment"
   },
   "msg": {
     "enterEmail": "Please enter your email",
@@ -106,7 +111,10 @@
     "notExistSearchResult": "The search result does not exist.",
     "inputSearchKeyword": "Please enter a search keyword.",
     "inputSearchKeywordOnTheForm": "Please enter a search keyword in the search keyword box.",
-    "deleteSure": "Are you sure you want to delete it?"
+    "deleteSure": "Are you sure you want to delete it?",
+    "pleaseInputInformationContents": "Write informational articles, questions, and stories you want to share. We encourage you to write as many stories as you find helpful.",
+    "pleaseInputComment": "Please write a comment.",
+    "isNotMyInformation": "You can only edit posts that you have created."
   },
   "badatype": {
     "free": "Free",
@@ -119,5 +127,13 @@
     "t2": "On reservation",
     "t3": "Complete on sale",
     "t4": "Stop trading"
+  },
+  "infocategory": {
+    "c1": "Info",
+    "c2": "Question",
+    "c3": "Life",
+    "c4": "Grumble",
+    "c90": "DABADA News",
+    "c91": "Event"
   }
 }

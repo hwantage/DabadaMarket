@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import {productProps, productPropsDefault, comma, updateProductField} from '../../utils/products';
 import moment from 'moment-timezone';
-import 'moment/locale/ko';
+//import 'moment/locale/ko';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilState} from 'recoil';
 import {useTranslation} from 'react-i18next';

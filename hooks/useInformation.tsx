@@ -48,29 +48,29 @@ export default function useInformations({i_group, u_id}: getInformationProps) {
       return;
     }
     const lastInformation = informations[informations.length - 1];
-    const olderInformation = await getInformations({i_id: lastInformation.i_id});
+    const olderInformation = await getInformations({i_group: i_group, i_id: lastInformation.i_id, cursormode: 'older', u_id: u_id});
     if (olderInformation.length < PAGE_SIZE) {
       setNoMoreInformation(true);
     }
     setInformations(informations.concat(olderInformation));
   };
 
-  const onRefreshInfo = useCallback(async () => {
+  const refreshInformation = useCallback(async () => {
     if (!informations || informations.length === 0 || refreshing) {
       return;
     }
     const firstInformation = informations[0];
     setRefreshing(true);
-    const newerInformation = await getInformations({i_id: firstInformation.i_id, cursormode: 'newer', u_id: u_id});
+    const newerInformation = await getInformations({i_group: i_group, i_id: firstInformation.i_id, cursormode: 'newer', u_id: u_id});
     setRefreshing(false);
     if (newerInformation.length === 0) {
       return;
     }
     setInformations(newerInformation.concat(informations));
-  }, [informations, refreshing, u_id]);
+  }, [i_group, informations, refreshing, u_id]);
 
   useInformationEventEffect({
-    refreshInformation: onRefreshInfo,
+    refreshInformation,
     removeInformation,
     updateInformation,
     enabled: !u_id || u_id === authInfo.u_id,
@@ -81,6 +81,6 @@ export default function useInformations({i_group, u_id}: getInformationProps) {
     noMoreInformation,
     refreshing,
     onLoadMoreInfo,
-    onRefreshInfo,
+    refreshInformation,
   };
 }

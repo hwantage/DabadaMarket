@@ -22,9 +22,15 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
 
   const initProduct = useCallback(async () => {
     await getProductInfo(product.p_id).then(_response => {
-      setProductInfo(_response);
+      if (product.u_id !== authInfo.u_id) {
+        setProductInfo({..._response, p_view: _response.p_view + 1});
+        updateProductField(product.p_id, 'p_view', product.p_view + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+        events.emit('updateProduct', product.p_id, {...product, p_view: product.p_view + 1});
+      } else {
+        setProductInfo(_response);
+      }
     });
-  }, [product.p_id]);
+  }, [authInfo.u_id, product]);
 
   // 상품 상세 화면 포커스 될 때마다 새로 갱신
   useFocusEffect(
@@ -34,15 +40,11 @@ function ProductDetailScreen({navigation, route}: ProductDetailScreenProps) {
   );
 
   useEffect(() => {
-    if (productInfo.p_id === '' && product.u_id !== authInfo.u_id) {
-      updateProductField(product.p_id, 'p_view', product.p_view + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
-      events.emit('updateProduct', product.p_id, {...product, p_view: product.p_view + 1});
-    }
     authInfo.u_id === product.u_id &&
       navigation.setOptions({
         headerRight: () => <TopRightButton name="more-vert" onPress={onPressMore} />,
       });
-  }, [authInfo.u_id, navigation, onPressMore, product, product.p_id, product.p_view, product.u_id, productInfo.p_id]);
+  }, [authInfo.u_id, navigation, onPressMore, product.u_id]);
 
   return (
     <>

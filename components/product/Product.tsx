@@ -12,7 +12,6 @@ import {getUserInfo} from '../../utils/auth';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import {useRecoilValue} from 'recoil';
 import moment from 'moment-timezone';
-import 'moment/locale/ko';
 import {useTranslation} from 'react-i18next';
 
 interface ProductProps {
@@ -119,13 +118,13 @@ function Product({product}: ProductProps) {
             </View>
           </View>
           <View style={styles.row2}>
-            <Text style={styles.p_price}>{product?.p_contents}</Text>
+            <Text style={styles.p_contents}>{product?.p_contents}</Text>
           </View>
           <View style={styles.iconBox}>
             <Icon name="chat" color="#898989" size={16} />
-            <Text style={styles.p_price}>{product?.p_chat}</Text>
+            <Text style={styles.p_contents}>{product?.p_chat}</Text>
             <Icon name="remove-red-eye" color="#898989" size={16} />
-            <Text style={styles.p_price}>{product?.p_view}</Text>
+            <Text style={styles.p_contents}>{product?.p_view}</Text>
           </View>
           <View style={styles.borderTop}>
             <View style={styles.head2}>
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   p_title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#606060',
     marginLeft: 6,
@@ -172,6 +171,13 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  p_contents: {
+    lineHeight: 17,
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginHorizontal: 3,
+    color: '#898989',
   },
   p_price: {
     lineHeight: 17,
@@ -236,7 +242,7 @@ const styles = StyleSheet.create({
   },
   nickname: {
     lineHeight: 16,
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 8,
     fontWeight: 'bold',
   },

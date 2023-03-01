@@ -49,7 +49,7 @@ function ProductAddScreen() {
       const regdate = moment().format('YYYY-MM-DD HH:mm:ss');
       createProduct({...product, p_price: uncomma(product.p_price), p_keywords: product.p_title.split(' '), p_regdate: regdate}); // Firebase 상품 등록
       navigation.pop();
-      events.emit('refresh');
+      events.emit('refreshProduct');
     });
   }, [navigation, images, product]);
 
@@ -200,24 +200,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderRadius: 10,
     marginRight: 8,
-  },
-  mainPhotoBox: {
-    backgroundColor: '#347deb',
-    opacity: 0.6,
-    flex: 1,
-    width: '100%',
-    paddingHorizontal: 10,
-    height: 200,
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-  },
-  mainPhotoText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
   form: {
     marginTop: 8,

@@ -1,7 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 export const productCollection = firestore().collection('product');
 export const PAGE_SIZE = 12;
-import 'moment/locale/ko';
 
 export interface productImageProps {
   pi_id: string;
