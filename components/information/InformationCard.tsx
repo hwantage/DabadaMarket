@@ -25,7 +25,7 @@ function InformationCard({information: props}: InformationCardProps) {
     navigation.navigate('InformationDetailScreen', {information: information});
   };
 
-  let i_category_str = ''; // 1 : 정보, 2 : 질문, 3 : 일상 생활, 4 : 넋두리
+  let i_category_str = ''; // 1 : 정보, 2 : 질문, 3 : 일상 생활, 4 : 넋두리, 90 : 다바다 소식, 91 : 다바다 이벤트
   let i_category_css = {};
 
   switch (information.i_category) {
@@ -50,7 +50,7 @@ function InformationCard({information: props}: InformationCardProps) {
       i_category_css = styles.tag_c91;
       break;
     case 91:
-      i_category_str = t('infocategory.c91', '이벤트');
+      i_category_str = t('infocategory.c91', '다바다 이벤트');
       i_category_css = styles.tag_c91;
       break;
   }

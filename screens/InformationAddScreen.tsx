@@ -96,7 +96,7 @@ function InformationAddScreen() {
             </View>
           </View>
           <View style={styles.flex1}>
-            <DabadaInput style={styles.input} placeholder={t('msg.pleaseInputInformationContents', '정보 글, 질문 글, 나누고 싶은 이야기를 적어 보세요. 어장 동료들에게 도움이 되는 많은 이야기들을 작성해보세요.')} value={information.i_contents} onChangeText={(text: string) => setInformation({...information, i_contents: text})} returnKeyType="default" multiline={true} numberOfLines={10} hasMarginBottom={false} ref={ref_contents} />
+            <DabadaInput style={styles.input} placeholder={t('msg.pleaseInputInformationContents', '정보 글, 질문 글, 나누고 싶은 이야기를 적어 보세요. 어촌 동료들에게 도움이 되는 많은 이야기들을 작성해보세요.')} value={information.i_contents} onChangeText={(text: string) => setInformation({...information, i_contents: text})} returnKeyType="default" multiline={true} numberOfLines={10} hasMarginBottom={false} ref={ref_contents} />
           </View>
         </View>
       </View>

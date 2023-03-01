@@ -10,12 +10,13 @@ import {getUserInfo} from '../../utils/auth';
 import {authInfoProps, authInfoState} from '../../recoil/authInfoAtom';
 import moment from 'moment-timezone';
 import {useTranslation} from 'react-i18next';
-import {commentProps, createComment, informationProps, removeComment, updateComment} from '../../utils/informations';
+import {commentProps, createComment, informationProps, informationPropsDefault, removeComment, updateComment, updateInformationField} from '../../utils/informations';
 import DabadaInput from '../common/DabadaInput';
 import DabadaButton from '../common/DabadaButton';
 import useComments from '../../hooks/useComments';
 import uuid from 'react-native-uuid';
 import {useRecoilState} from 'recoil';
+import events from '../../utils/events';
 
 interface InformationProps {
   information: informationProps;
@@ -26,30 +27,12 @@ function Information({information}: InformationProps) {
   const [user, setUser] = useState<authInfoProps>(); // 등록자 정보
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const [informationInfo, setInformationInfo] = useState<informationProps>(informationPropsDefault);
   const [commentContents, setCommentContents] = useState('');
   const [updatedComment, setUpdatedComment] = useState('');
   const {comments, onAddComment, onUpdateComment, onRemoveComment} = useComments(information.i_id);
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-
-  const handleEditComment = (commentId: string) => {
-    setEditingCommentId(commentId);
-  };
-
-  const handleCancelEditComment = () => {
-    setEditingCommentId(null);
-  };
-
-  const handleSaveComment = (commentId: string) => {
-    const commentInfo: commentProps | undefined = comments?.find(item => {
-      return item.ic_id === commentId;
-    });
-    if (commentInfo !== undefined) {
-      onUpdateComment(commentId, {...commentInfo, ic_contents: updatedComment}); // 객체 관리
-      updateComment(commentId, {...commentInfo, ic_contents: updatedComment}); // 디비 저장
-    }
-    setEditingCommentId(null);
-  };
 
   const setUserAvatar = useCallback(async () => {
     await getUserInfo(information.u_id).then(_user => {
@@ -60,9 +43,10 @@ function Information({information}: InformationProps) {
 
   useEffect(() => {
     setUserAvatar();
-  }, [comments, setUserAvatar]);
+    setInformationInfo(information);
+  }, [comments, information, setUserAvatar]);
 
-  let i_category_str = ''; // 1 : 정보, 2 : 질문, 3 : 일상 생활, 4 : 넋두리
+  let i_category_str = ''; // 1 : 정보, 2 : 질문, 3 : 일상 생활, 4 : 넋두리, 90 : 다바다 소식, 91 : 다바다 이벤트
   let i_category_css = {};
 
   switch (information.i_category) {
@@ -87,12 +71,25 @@ function Information({information}: InformationProps) {
       i_category_css = styles.tag_c91;
       break;
     case 91:
-      i_category_str = t('infocategory.c91', '이벤트');
+      i_category_str = t('infocategory.c91', '다바다 이벤트');
       i_category_css = styles.tag_c91;
       break;
   }
 
-  const deleteComment = (id: string) => {
+  // 기존 코멘트 수정
+  const handleUpdateComment = (commentId: string) => {
+    const commentInfo: commentProps | undefined = comments?.find(item => {
+      return item.ic_id === commentId;
+    });
+    if (commentInfo !== undefined) {
+      onUpdateComment(commentId, {...commentInfo, ic_contents: updatedComment}); // 객체 관리
+      updateComment(commentId, {...commentInfo, ic_contents: updatedComment}); // 디비 반영
+    }
+    setEditingCommentId(null);
+  };
+
+  // 기존 코멘트 삭제
+  const handleDeleteComment = (id: string) => {
     Alert.alert(
       t('common.delete', '삭제'),
       t('msg.deleteSure', '정말로 삭제하시겠어요?'),
@@ -104,9 +101,12 @@ function Information({information}: InformationProps) {
         },
         {
           text: t('common.delete', '삭제'),
-          onPress: () => {
-            onRemoveComment(id);
-            removeComment(id);
+          onPress: async () => {
+            onRemoveComment(id); // 객체 관리
+            await removeComment(id); // 디비 반영
+            await updateInformationField(informationInfo.i_id, 'i_comment_cnt', informationInfo.i_comment_cnt - 1); // 코멘트 개수 Down
+            setInformationInfo({...informationInfo, i_comment_cnt: informationInfo.i_comment_cnt - 1}); // 코멘트 개수 화면 반영
+            events.emit('updateInformation', informationInfo.i_id, {...informationInfo, i_comment_cnt: informationInfo.i_comment_cnt - 1}); // 리스트에 개수 반영
           },
           style: 'destructive',
         },
@@ -115,7 +115,8 @@ function Information({information}: InformationProps) {
     );
   };
 
-  const onSubmitComment = () => {
+  // 신규 코멘트 저장
+  const onSubmitComment = async () => {
     const regdate = moment().format('YYYY-MM-DD HH:mm:ss');
     const commentInfo = {
       ic_id: uuid.v4().toString(),
@@ -128,13 +129,17 @@ function Information({information}: InformationProps) {
       ic_regdate: regdate,
     };
     onAddComment(commentInfo); // 객체 관리
-    createComment(commentInfo); // 디비 저장
+    await createComment(commentInfo); // 디비 반영
+    await updateInformationField(informationInfo.i_id, 'i_comment_cnt', informationInfo.i_comment_cnt + 1); // 코멘트 개수 Up
+    setInformationInfo({...informationInfo, i_comment_cnt: informationInfo.i_comment_cnt + 1}); // 코멘트 개수 화면 반영
+    events.emit('updateInformation', informationInfo.i_id, {...informationInfo, i_comment_cnt: informationInfo.i_comment_cnt + 1}); // 리스트에 개수 반영
+
     setCommentContents(''); // state 초기화
   };
 
   return (
     <>
-      {loading || information?.i_id === '' ? (
+      {loading || informationInfo.i_id === '' ? (
         <View style={styles.spinnerWrapper}>
           <ActivityIndicator size={32} color="#347deb" />
         </View>
@@ -144,30 +149,30 @@ function Information({information}: InformationProps) {
             <Pressable
               style={styles.profile}
               onPress={() => {
-                navigation.push('UserHomeScreen', {u_id: information?.u_id});
+                navigation.push('UserHomeScreen', {u_id: informationInfo.u_id});
               }}>
               <Avatar source={user?.u_photoUrl ? {uri: user?.u_photoUrl} : require('../../assets/user.png')} />
               <Text style={styles.nickname}>{user?.u_nickname}</Text>
             </Pressable>
             <Text style={[styles.text, styles.hour]}>
-              {information?.i_regdate} ({moment(information?.i_regdate).fromNow()})
+              {informationInfo.i_regdate} ({moment(informationInfo.i_regdate).fromNow()})
             </Text>
           </View>
           <View style={styles.review}>
             <Text style={i_category_css}>{i_category_str}</Text>
           </View>
           <View style={styles.row2}>
-            <Text style={styles.iTxt}>{information?.i_contents}</Text>
+            <Text style={styles.iTxt}>{informationInfo.i_contents}</Text>
           </View>
           <View style={styles.iconBox}>
             <Icon name="chat" color="#898989" size={16} />
-            <Text style={styles.iTxt}>{information?.i_comment_cnt}</Text>
+            <Text style={styles.iTxt}>{informationInfo.i_comment_cnt}</Text>
             <Icon name="remove-red-eye" color="#898989" size={16} />
-            <Text style={styles.iTxt}>{information?.i_view}</Text>
+            <Text style={styles.iTxt}>{informationInfo.i_view}</Text>
           </View>
-          {information?.i_images.length > 0 && (
+          {informationInfo.i_images.length > 0 && (
             <View style={styles.head}>
-              <ImageSlider images={information?.i_images?.map(item => item.ii_url)} />
+              <ImageSlider images={informationInfo.i_images?.map(item => item.ii_url)} />
             </View>
           )}
           {comments?.map((item: any, index: number) => (
@@ -189,13 +194,13 @@ function Information({information}: InformationProps) {
                     <>
                       {editingCommentId === item.ic_id ? (
                         <>
-                          <Icon name="save" color="#898989" size={16} onPress={() => handleSaveComment(item.ic_id)} />
-                          <Icon name="close" color="#898989" size={16} onPress={() => handleCancelEditComment()} />
+                          <Icon name="save" color="#898989" size={16} onPress={() => handleUpdateComment(item.ic_id)} />
+                          <Icon name="close" color="#898989" size={16} onPress={() => setEditingCommentId(item.ic_id)} />
                         </>
                       ) : (
                         <>
-                          <Icon name="edit" color="#898989" size={16} onPress={() => handleEditComment(item.ic_id)} />
-                          <Icon name="delete-forever" color="#898989" size={16} onPress={() => deleteComment(item.ic_id)} />
+                          <Icon name="edit" color="#898989" size={16} onPress={() => setEditingCommentId(item.ic_id)} />
+                          <Icon name="delete-forever" color="#898989" size={16} onPress={() => handleDeleteComment(item.ic_id)} />
                         </>
                       )}
                     </>
@@ -206,8 +211,8 @@ function Information({information}: InformationProps) {
             </View>
           ))}
           <View style={styles.profileComment2} />
-          <Text style={styles.commentTitleText}>{t('newCommentWrite', '신규 댓글 작성')}</Text>
-          <DabadaInput style={styles.input} maxLength={1000} placeholder={t('msg.pleaseInputComment', '댓글을 작성해 주십시오.')} onChangeText={setCommentContents} returnKeyType="default" multiline={true} numberOfLines={3} hasMarginBottom={true} />
+          <Text style={styles.commentTitleText}>{t('common.newCommentWrite', '신규 댓글 작성')}</Text>
+          <DabadaInput style={styles.input} value={commentContents} maxLength={1000} placeholder={t('msg.pleaseInputComment', '댓글을 작성해 주십시오.')} onChangeText={setCommentContents} returnKeyType="default" multiline={true} numberOfLines={3} hasMarginBottom={true} />
           <DabadaButton theme={'secondary'} hasMarginBottom={false} title={t('button.commentSend', '댓글 저장')} onPress={onSubmitComment} />
         </ScrollView>
       )}
@@ -231,7 +236,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   iTxt: {
-    lineHeight: 16,
+    lineHeight: 18,
     fontSize: 14,
     fontWeight: 'bold',
     marginHorizontal: 3,

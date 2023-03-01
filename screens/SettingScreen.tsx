@@ -25,7 +25,7 @@ function SettingScreen() {
   };
 
   const onPressChangeGroup = () => {
-    Alert.alert(t('common.alert', '알림'), '바다 어장을 선택할 수 있는 기능을 준비 중입니다. 회사, 건물, 지역 등 어장 확대 및 어장 변경 기능 출시를 기대해 주십시오.');
+    Alert.alert(t('common.alert', '알림'), '바다 어촌을 선택할 수 있는 기능을 준비 중입니다. 회사, 건물, 지역 등 어촌 확대 및 어촌 변경 기능 출시를 기대해 주십시오.');
   };
 
   return (
@@ -33,10 +33,10 @@ function SettingScreen() {
       <View style={styles.buttons}>
         <View style={styles.group}>
           <View style={styles.fullScreen}>
-            <Text style={styles.textLbl}>{t('common.group', '어장')}</Text>
+            <Text style={styles.textLbl}>{t('common.group', '어촌')}</Text>
             <BouncyCheckbox size={18} fillColor="#039DF4" unfillColor="#FFFFFF" text="Somansa" innerIconStyle={styles.chkIconInner} iconStyle={styles.chkIcon} disableBuiltInState={true} isChecked={authInfo.u_group === 'somansa' ? true : false} textStyle={styles.chkTxt} checkIconImageSource={undefined} />
             <Pressable onPress={onPressChangeGroup}>
-              <Text style={styles.btnText}>{t('button.groupChange', '어장 변경')}</Text>
+              <Text style={styles.btnText}>{t('button.groupChange', '어촌 변경')}</Text>
             </Pressable>
           </View>
         </View>

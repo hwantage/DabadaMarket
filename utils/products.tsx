@@ -94,7 +94,7 @@ export async function getProducts({u_id, p_id, cursormode, querymode, keyword}: 
 
   let query = productCollection.orderBy('p_regdate', 'desc').limit(PAGE_SIZE);
 
-  // 어장 정보 조회 기능 추가 구현 필요.(recoil 정보로 설정 필요)
+  // 어촌 정보 조회 기능 추가 구현 필요.(recoil 정보로 설정 필요)
   query = query.where('p_group', '==', 'somansa');
 
   if (querymode === 'buy') {
