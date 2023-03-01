@@ -37,11 +37,11 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
                 <Text numberOfLines={1} ellipsizeMode="tail" style={styles.bold4}>
                   {chatInfo.c_lastMessage}
                 </Text>
-                {readCnt && readCnt > 0 && (
+                {readCnt && readCnt > 0 ? (
                   <View style={styles.notReadBadgeRow}>
                     <Text style={styles.c_notReadMessage}>{readCnt}</Text>
                   </View>
-                )}
+                ) : null}
               </View>
             </View>
           </View>
