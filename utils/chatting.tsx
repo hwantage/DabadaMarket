@@ -19,10 +19,10 @@ export interface chattingProps {
   c_product: productProps;
   c_lastMessage: string;
   c_regdate: string;
-  c_to_online: boolean;
-  c_from_online: boolean;
-  c_to_not_read_cnt: number;
-  c_from_not_read_cnt: number;
+  c_to_online?: boolean;
+  c_from_online?: boolean;
+  c_to_not_read_cnt?: number;
+  c_from_not_read_cnt?: number;
   c_product_state: CHAT_PRODUCT_STATE;
 }
 
@@ -38,13 +38,10 @@ export interface updateChattingProps {
 }
 
 export async function getChatting(u_id: string): Promise<chattingProps[]> {
-  //console.log('getProduct :: ', u_id, p_id, cursormode, querymode, keyword);
-  //  let query = chattingCollection.orderBy('regdate', 'desc');
   let query = chattingCollection;
   console.log(u_id);
   const query1 = query.where('c_from_id', '==', u_id).get();
   const query2 = query.where('c_to_id', '==', u_id).get();
-  //const snapshot = await query.get();
 
   const [querySnapshot1, querySnapshot2] = await Promise.all([query1, query2]);
 
@@ -59,9 +56,8 @@ export async function getChatting(u_id: string): Promise<chattingProps[]> {
 
   return chatting;
 }
-//FirebaseFirestoreTypes.FieldValue
+
 export async function compareDiffChattingDate(c_id: string, c_regdate: string) {
-  console.log(c_id);
   const doc = await chattingCollection.doc(c_id).get();
   const chattingData = doc.data();
   if (!chattingData) {

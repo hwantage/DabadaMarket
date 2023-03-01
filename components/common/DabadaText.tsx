@@ -1,7 +1,7 @@
 import React from 'react';
-import {Text, StyleSheet, StyleProp, TextStyle} from 'react-native';
+import {Text, StyleSheet, StyleProp, TextStyle, TextProps} from 'react-native';
 
-type DabadaTextProps = {
+type DabadaTextProps = TextProps & {
   style?: StyleProp<TextStyle>;
   children: React.ReactNode;
   onPress?: () => void;

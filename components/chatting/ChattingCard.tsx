@@ -7,7 +7,6 @@ import {authInfoState} from '../../recoil/authInfoAtom';
 import Avatar from '../profile/Avatar';
 import {chattingProps} from '../../utils/chatting';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {chattingNotificationCntState} from '../../recoil/chattingAtom';
 interface ChattingCardProps {
   chatInfo: chattingProps;
 }
@@ -15,15 +14,14 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [myInfo] = useRecoilState(authInfoState);
   const readCnt = myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_from_not_read_cnt : chatInfo.c_to_not_read_cnt;
-  console.log('chat_card', chatInfo?.c_product?.p_images[0]);
   const onPress = () => {
-    navigation.navigate('ChattingRoomScreen', {p_id: chatInfo.c_p_id, u_id: myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_id : chatInfo.c_from_id, c_id: chatInfo.c_id});
+    navigation.navigate('ChattingRoomScreen', {p_id: chatInfo?.c_product.p_id, u_id: myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_id : chatInfo.c_from_id, c_id: chatInfo.c_id});
   };
 
-  const getFormatDateString = (dateValue: number) => {
-    const date = new Date(dateValue);
-    return date.getMonth() + 1 + '월' + date.getDate() + '일';
-  };
+  // const getFormatDateString = (dateValue: number) => {
+  //   const date = new Date(dateValue);
+  //   return date.getMonth() + 1 + '월' + date.getDate() + '일';
+  // };
 
   return (
     <>
@@ -36,8 +34,10 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
                 <Text style={styles.bold3}>{myInfo.u_id === chatInfo.c_from_id ? chatInfo.c_to_nickname : chatInfo.c_from_nickname}</Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.bold4}>{chatInfo.c_lastMessage}</Text>
-                {readCnt > 0 && (
+                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.bold4}>
+                  {chatInfo.c_lastMessage}
+                </Text>
+                {readCnt && readCnt > 0 && (
                   <View style={styles.notReadBadgeRow}>
                     <Text style={styles.c_notReadMessage}>{readCnt}</Text>
                   </View>
@@ -57,13 +57,6 @@ function ChattingCard({chatInfo}: ChattingCardProps) {
 }
 
 const styles = StyleSheet.create({
-  block: {
-    // paddingTop: 10,
-    // paddingLeft: 15,
-    // paddingBottom: 10,
-    // borderBottomWidth: 1,
-    // borderBottomColor: 'grey',
-  },
   chattingTextRow: {
     width: '100%',
     paddingHorizontal: 16,
@@ -79,6 +72,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    width: 210,
   },
   review: {
     flexDirection: 'row',
