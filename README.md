@@ -86,3 +86,7 @@
 ## Dabada Market 소개 PPT
 
 [Canva link](https://www.canva.com/design/DAFbGp9J41g/nnRT9pUTwE3PzGytZBSoQA/view?utm_content=DAFbGp9J41g&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+## 앱 스택 네비게이션 구조
+
+![image](https://user-images.githubusercontent.com/82494320/221725076-025362ac-aafd-40a3-a1e6-a4e1c74cf916.png)
