@@ -89,7 +89,7 @@ function AppStackRoot() {
       setAuthInfo(profile);
       i18n.changeLanguage(profile.u_lang);
     });
-  }, [authInfo, i18n, setAuthInfo]);
+  }, [i18n, setAuthInfo]);
 
   return (
     <Stack.Navigator>
