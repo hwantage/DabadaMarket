@@ -7,27 +7,28 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {getNotificationKeyword} from '../utils/notifications';
-import useProducts from '../hooks/useProducts';
-import {productProps} from '../utils/products';
-import ProductCard from '../components/product/ProductCard';
 import {useTranslation} from 'react-i18next';
+import useInformations from '../hooks/useInformation';
+import {informationProps} from '../utils/informations';
+import InformationCard from '../components/information/InformationCard';
+import InformationAddButton from '../components/common/InformationAddButton';
 
 function NotificationListScreen() {
   const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const products = useProducts({u_id: authInfo.u_id, keyword: '구현중'}); // keyword 에 배열 입력시 무한루프 => 추후 확인 및 보완 필요.
+  const informations = useInformations({i_group: authInfo.u_group});
   const [ncount, setNcount] = useState<number>(0);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
 
-  const productsReady = products !== undefined;
+  const informationsReady = informations !== undefined;
 
   useEffect(() => {
-    if (productsReady) {
+    if (informationsReady) {
       setLoading(false);
     }
-  }, [productsReady]);
+  }, [informationsReady]);
 
   const getNotificationCount = useCallback(() => {
     getNotificationKeyword(authInfo.u_id).then(_response => {
@@ -45,9 +46,9 @@ function NotificationListScreen() {
     navigation.navigate('MyKeywordScreen');
   };
 
-  const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="sell" />;
-  const listFooterComponent: any = !products.noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
-  const listRefreshControl: any = <RefreshControl onRefresh={products.onRefresh} refreshing={products.refreshing} colors={['#347deb']} />;
+  const renderItem: ListRenderItem<informationProps> = ({item}) => <InformationCard information={item} />;
+  const listFooterComponent: any = !informations.noMoreInformation && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
+  const listRefreshControl: any = <RefreshControl onRefresh={informations.refreshInformation} refreshing={informations.refreshing} colors={['#347deb']} />;
 
   return (
     <>
@@ -61,12 +62,13 @@ function NotificationListScreen() {
         </TouchableOpacity>
       </View>
       <View style={styles.flex1}>
-        {!loading && products !== undefined && products.products?.length === 0 ? (
+        <InformationAddButton />
+        {!loading && informations !== undefined && informations.informations?.length === 0 ? (
           <>
-            <Text style={styles.text2}>알림기능 구현중.</Text>
+            <Text style={styles.text2}>기능 구현중.{informations.informations?.length}</Text>
           </>
         ) : (
-          <FlatList<productProps> data={products.products} renderItem={renderItem} keyExtractor={item => item.p_id} contentContainerStyle={styles.container} onEndReached={products.onLoadMore} onEndReachedThreshold={0.75} refreshControl={listRefreshControl} ListFooterComponent={listFooterComponent} />
+          <FlatList<informationProps> data={informations.informations} renderItem={renderItem} keyExtractor={item => item.i_id} contentContainerStyle={styles.container} onEndReached={informations.onLoadMoreInfo} onEndReachedThreshold={0.75} refreshControl={listRefreshControl} ListFooterComponent={listFooterComponent} />
         )}
       </View>
     </>

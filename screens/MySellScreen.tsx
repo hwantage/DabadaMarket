@@ -42,11 +42,11 @@ function MySellScreen() {
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="sell" />;
   const listFooterComponent: any = !products.noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
-  const listRefreshControl: any = <RefreshControl onRefresh={products.onRefresh} refreshing={products.refreshing} colors={['#347deb']} />;
+  const listRefreshControl: any = <RefreshControl onRefresh={products.refreshProduct} refreshing={products.refreshing} colors={['#347deb']} />;
 
   const renderItem_complete: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="sell_complete" />;
   const listFooterComponent_complete: any = !products_complete.noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
-  const listRefreshControl_complete: any = <RefreshControl onRefresh={products_complete.onRefresh} refreshing={products_complete.refreshing} colors={['#347deb']} />;
+  const listRefreshControl_complete: any = <RefreshControl onRefresh={products_complete.refreshProduct} refreshing={products_complete.refreshing} colors={['#347deb']} />;
 
   const layout = useWindowDimensions();
 

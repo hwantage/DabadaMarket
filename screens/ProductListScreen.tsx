@@ -10,7 +10,7 @@ import useProducts from '../hooks/useProducts';
 
 function ProductListScreen() {
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({u_id: undefined, querymode: ''});
+  const {products, noMoreProduct, refreshing, onLoadMore, refreshProduct} = useProducts({u_id: undefined, querymode: ''});
 
   const productsReady = products !== undefined;
   useEffect(() => {
@@ -30,7 +30,7 @@ function ProductListScreen() {
     return productsReady ? <ProductCard product={item} querymode={null} /> : <></>;
   };
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
-  const listRefreshControl: any = <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={['#347deb']} />;
+  const listRefreshControl: any = <RefreshControl onRefresh={refreshProduct} refreshing={refreshing} colors={['#347deb']} />;
 
   return <FlatList<productProps> data={products} renderItem={renderItem} keyExtractor={item => item.p_id} contentContainerStyle={styles.container} onEndReached={onLoadMore} onEndReachedThreshold={0.75} refreshControl={listRefreshControl} ListFooterComponent={listFooterComponent} />;
 }

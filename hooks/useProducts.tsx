@@ -81,7 +81,7 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
     setProducts(products.concat(olderProduct));
   };
 
-  const onRefresh = useCallback(async () => {
+  const refreshProduct = useCallback(async () => {
     if (!products || products.length === 0 || refreshing) {
       return;
     }
@@ -96,7 +96,7 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
   }, [products, refreshing, u_id, querymode]);
 
   useProductsEventEffect({
-    refresh: onRefresh,
+    refreshProduct,
     removeProduct,
     updateProduct,
     enabled: !u_id || u_id === authInfo.u_id,
@@ -107,7 +107,7 @@ export default function useProducts({u_id, querymode, keyword}: getProductsProps
     noMoreProduct,
     refreshing,
     onLoadMore,
-    onRefresh,
+    refreshProduct,
     productCnt,
     productCnt_complete,
   };

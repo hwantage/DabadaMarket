@@ -6,6 +6,9 @@ import SplashScreen from 'react-native-splash-screen';
 import BottomTab from './BottomTab';
 import ChattingListScreen from './ChattingListScreen';
 import ChattingRoomScreen from './ChattingRoomScreen';
+import InformationAddScreen from './InformationAddScreen';
+import InformationDetailScreen from './InformationDetailScreen';
+import InformationModifyScreen from './InformationModifyScreen';
 import LoginScreen from './LoginScreen';
 import MyBuyScreen from './MyBuyScreen';
 import MyHomeScreen from './MyHomeScreen';
@@ -28,6 +31,7 @@ import {useRecoilState} from 'recoil';
 import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {productProps} from '../utils/products';
 import SearchResultScreen from './SearchResultScreen';
+import {informationProps} from '../utils/informations';
 
 export interface u_idProp {
   u_id: string;
@@ -37,6 +41,9 @@ export type RootStackParamList = {
   BottomTab: undefined;
   ChattingListScreen: undefined;
   ChattingRoomScreen: undefined;
+  InformationAddScreen: undefined;
+  InformationDetailScreen: {information: informationProps};
+  InformationModifyScreen: {i_id: string};
   MyBuyScreen: undefined;
   MyHomeScreen: undefined;
   MyKeywordScreen: undefined;
@@ -64,21 +71,23 @@ function AppStackRoot() {
   const {t, i18n} = useTranslation();
 
   useEffect(() => {
-    //console.log('useeffect of AppStackRoot', authInfo);
     SplashScreen.hide();
     // 컴포넌트 첫 로딩 시 로그인 상태를 확인하고 UserContext에 적용
     const unsubscribe = subscribeAuth(async (currentUser: authInfoProps) => {
       // 여기에 등록한 함수는 사용자 정보가 바뀔 때마다 호출되는데
       // 처음 호출될 때 바로 unsubscribe해 한 번 호출된 후에는 더 이상 호출되지 않게 설정
       unsubscribe();
-      if (authInfo.u_id !== '') {
-        const profile = await getUserInfo(currentUser.u_id);
-        if (!profile) {
-          return;
-        }
-        setAuthInfo(profile);
-        i18n.changeLanguage(profile.u_lang);
+
+      if (!currentUser) {
+        return;
       }
+
+      const profile = await getUserInfo(currentUser.u_id);
+      if (!profile) {
+        return;
+      }
+      setAuthInfo(profile);
+      i18n.changeLanguage(profile.u_lang);
     });
   }, [authInfo, i18n, setAuthInfo]);
 
@@ -95,6 +104,9 @@ function AppStackRoot() {
           <Stack.Screen name="MyProfileModifyScreen" component={MyProfileModifyScreen} options={{title: t('title.modifyProfile', '프로필 수정')}} />
           <Stack.Screen name="MySellScreen" component={MySellScreen} options={{title: t('title.mySellProduct', '내 판매 상품')}} />
           <Stack.Screen name="NotificationListScreen" component={NotificationListScreen} options={{title: t('title.keywordNoti', '키워드 알림')}} />
+          <Stack.Screen name="InformationAddScreen" component={InformationAddScreen} options={{title: t('title.writeInformation', '정보의 바다 글 작성')}} />
+          <Stack.Screen name="InformationDetailScreen" component={InformationDetailScreen} options={{title: t('title.viewInformation', '정보의 바다 글 보기')}} />
+          <Stack.Screen name="InformationModifyScreen" component={InformationModifyScreen} options={{title: t('title.modifyInformation', '정보의 바다 글 수정')}} />
           <Stack.Screen name="ProductAddScreen" component={ProductAddScreen} options={{title: t('title.writeProduct', '상품 등록')}} />
           <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{title: t('title.productDetail', '상품 상세')}} />
           <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{title: t('title.dabadamarket', '다바다 마켓')}} />

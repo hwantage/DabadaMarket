@@ -18,7 +18,10 @@
     "setting": "설정",
     "sellerHome": "판매자 정보",
     "userSellProduct": "판매자의 판매 중인 상품",
-    "userSellcompleteProduct": "판매자의 판매 완료 상품"
+    "userSellcompleteProduct": "판매자의 판매 완료 상품",
+    "writeInformation": "정보의 바다 글 작성",
+    "viewInformation": "정보의 바다 글 보기",
+    "modifyInformation": "정보의 바다 글 수정"
   },
   "common": {
     "email": "이메일",
@@ -68,7 +71,8 @@
     "group": "어장",
     "language": "언어",
     "dear": "님",
-    "chooseUserImg": "사용자 이미지 선택"
+    "chooseUserImg": "사용자 이미지 선택",
+    "newCommentWrite": "신규 댓글 작성"
   },
   "button": {
     "save": "저장",
@@ -79,7 +83,8 @@
     "chatting": "채팅하기",
     "logout": "로그아웃",
     "editProfile": "프로필 수정",
-    "groupChange": "어장 변경"
+    "groupChange": "어장 변경",
+    "commentSend": "댓글 저장"
   },
   "msg": {
     "enterEmail": "이메일을 입력하십시오.",
@@ -107,7 +112,10 @@
     "notExistSearchResult": "검색 결과가 존재하지 않습니다.",
     "inputSearchKeyword": "검색어를 입력하세요.",
     "inputSearchKeywordOnTheForm": "검색어 창에 검색어를 입력하십시오.",
-    "deleteSure": "정말로 삭제하시겠어요?"
+    "deleteSure": "정말로 삭제하시겠어요?",
+    "pleaseInputInformationContents": "정보 글, 질문 글, 나누고 싶은 이야기를 적어 보세요. 어장 동료들에게 도움이 되는 많은 이야기들을 작성해보세요.",
+    "pleaseInputComment": "댓글을 작성해 주십시오.",
+    "isNotMyInformation": "본인이 작성한 게시물만 수정할 수 있습니다."
   },
   "badatype": {
     "free": "그냥바다",
@@ -120,5 +128,13 @@
     "t2": "예약중",
     "t3": "거래완료",
     "t4": "판매중지"
+  },
+  "infocategory": {
+    "c1": "정보",
+    "c2": "질문",
+    "c3": "일상 생활",
+    "c4": "넋두리",
+    "c90": "다바다 소식",
+    "c91": "이벤트"
   }
 }

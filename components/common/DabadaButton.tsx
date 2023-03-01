@@ -18,7 +18,7 @@ function CustomButton({onPress, title, hasMarginBottom, theme = 'primary'}: Daba
         onPress={onPress}
         style={({pressed}) => [styles.wrapper, isPrimary && styles.primaryWrapper, Platform.OS === 'ios' && pressed && {opacity: 0.5}]}
         android_ripple={{
-          color: isPrimary ? '#ffffff' : '#6200ee',
+          color: isPrimary ? '#ffffff' : '#039DF4',
         }}>
         <Text style={[styles.text, isPrimary ? styles.primaryText : styles.secondaryText]}>{title}</Text>
       </Pressable>

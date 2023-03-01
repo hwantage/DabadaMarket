@@ -21,7 +21,7 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
   const {keyword} = route.params;
   const [authInfo] = useRecoilState<authInfoProps>(authInfoState);
   const [notifications, setNotifications] = useState<notificationKeywordProps>();
-  const {products, noMoreProduct, refreshing, onLoadMore, onRefresh} = useProducts({keyword: keyword});
+  const {products, noMoreProduct, refreshing, onLoadMore, refreshProduct} = useProducts({keyword: keyword});
   const [loading, setLoading] = useState(true);
   const [icon, setIcon] = useState('notifications-none');
 
@@ -86,7 +86,7 @@ function SearchResultScreen({navigation, route}: SearchResultScreenProps) {
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode={null} />;
   const listFooterComponent: any = !noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
-  const listRefreshControl: any = <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={['#347deb']} />;
+  const listRefreshControl: any = <RefreshControl onRefresh={refreshProduct} refreshing={refreshing} colors={['#347deb']} />;
 
   return (
     <View style={styles.fullscreen}>
