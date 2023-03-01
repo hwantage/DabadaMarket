@@ -115,17 +115,13 @@ function LoginScreen() {
     try {
       const value = await AsyncStorage.getItem('@chattingInfo');
 
-      console.log('ChattingData uid', uid);
-      console.log('ChattingData1', value);
       if (value !== null) {
         let allChattingInfoState = JSON.parse(value);
+        console.log('allChattingInfoState', allChattingInfoState);
         let myChattingInfoState = allChattingInfoState.filter((chattingInfo: {u_id: string}) => chattingInfo.u_id === uid);
-
-        console.log('ChattingData2', myChattingInfoState);
         setChattingInfoState(myChattingInfoState);
       }
     } catch (e: any) {
-      // error reading value
       console.log(e.code, e.message);
     }
   };

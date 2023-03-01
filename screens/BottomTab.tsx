@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, View, Text} from 'react-native';
 import AppStackProduct from './AppStackProduct';
@@ -8,14 +8,12 @@ import AppStackNotification from './AppStackNotification';
 import AppStackChatting from './AppStackChatting';
 import AppStackMy from './AppStackMy';
 import {chattingNotificationCntState} from '../recoil/chattingAtom';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilValue} from 'recoil';
 
 const Tab = createBottomTabNavigator();
 
 function BottomTab() {
-  const [chattingNotificationCnt, setChattingNotificationCnt] = useRecoilState(chattingNotificationCntState);
-
-  useEffect(() => {}, []);
+  const chattingNotificationCnt = useRecoilValue(chattingNotificationCntState);
 
   return (
     <>

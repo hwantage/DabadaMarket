@@ -11,19 +11,16 @@ export interface chatMessageProps {
   };
 }
 export interface chattingStateProps extends chattingProps {
+  u_id?: string;
   c_messages: IMessage[];
 }
-// export interface chattingProps {
-//   c_id: string;
-//   c_messages: chatMessageProps[];
-//   p_id: string;
-// }
 
 export const chattingInfoState = atom<chattingStateProps[]>({
   key: 'chattingInfo',
   default: [],
 });
 
+// 채팅 알림 횟수
 export const chattingNotificationCntState = atom({
   key: 'chattingNotificationCntState',
   default: 0,

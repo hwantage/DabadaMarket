@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {GiftedChat, IMessage, SystemMessage} from 'react-native-gifted-chat';
+import {GiftedChat, IMessage, User} from 'react-native-gifted-chat';
 import db from '@react-native-firebase/database';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, KeyboardAvoidingView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useRecoilValue} from 'recoil';
@@ -12,12 +12,11 @@ import {chattingInfoState, chattingStateProps} from '../recoil/chattingAtom';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
 import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
 import {Picker} from '@react-native-picker/picker';
 import {default as Text} from '../components/common/DabadaText';
 import {comma, updateProductField} from '../utils/products';
 import moment from 'moment-timezone';
-moment.tz.setDefault('Asia/Seoul');
+import {FIREBASE_API_KEY} from '../components/common/FirebaseInfo';
 
 const database = db().ref('chatting');
 type ChattingRoomScreenProps = StackScreenProps<RootStackParamList, 'ChattingRoomScreen'>;
@@ -32,30 +31,15 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const [sendMessageCount, setSendMessageCount] = useState(0);
   const myInfo = useRecoilValue(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
-  console.log('TTTT', Object.keys(CHAT_PRODUCT_STATE));
-  console.log('TTTT2', chattingStateInfo);
   const filteredChattingState = chattingStateInfo && chattingStateInfo.length > 0 ? chattingStateInfo.filter(chatting => chatting.c_id === chattingId) : [];
   const [messages, setMessages] = useState<IMessage[]>(filteredChattingState.length > 0 ? [...filteredChattingState[0].c_messages] : []);
-
   const [currentProductState, setCurrentProductState] = useState(product ? product.p_status : filteredChattingState.length > 0 ? filteredChattingState[0]?.c_product.p_status : '1');
 
-  // const systemMessage = {
-  //   _id: 0,
-  //   text: '부적절하거나 불쾌감을 줄 수 있는 대화는 삼가 부탁드립니다. 회원제재를 받을 수 있습니다.',
-  //   createdAt: new Date().getTime(),
-  //   system: true,
-  //   user: {_id: ''},
-  // };
-
   useEffect(() => {
-    console.log('useEffect ', chattingStateInfo);
     if (chattingId) {
       initChattingData();
       updateIsOnline(true);
     }
-    // navigation.setOptions({
-    //   title: product?.p_title ? product.p_title : filteredChattingState[0]?.c_product.p_title,
-    // });
 
     return () => {
       if (chattingId) {
@@ -70,7 +54,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
     // 채팅이 시작된 상태에서 (메시지를 한개라도 보내야 chattingId가 생성됨) 채팅 데이터가 없거나 날짜가 동기화 안 된 경우에 메시지를 새로 불러온다.
     if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
-      console.log('isDiff', isDiff);
       loadMessages();
     }
   };
@@ -104,15 +87,12 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
         }
       });
 
-      console.log('messagesByServer', messagesByServer);
       saveInitChattingData(messagesByServer);
     });
   };
 
   const saveInitChattingData = async (msg: IMessage[]) => {
-    console.log('msg length ', msg.length);
     const oldChattingData = await getChattingData(chattingId);
-    console.log('업데이트', oldChattingData?.c_product.p_status);
     setCurrentProductState(oldChattingData?.c_product ? oldChattingData?.c_product.p_status : 1);
 
     msg.map(data => {
@@ -120,7 +100,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
         data.user.avatar = oldChattingData.c_from_photoUrl;
         console.log(data.user);
       } else {
-        data.user.avatar = oldChattingData.c_to_photoUrl;
+        data.user.avatar = oldChattingData?.c_to_photoUrl;
       }
       return data;
     });
@@ -134,7 +114,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     setChattingStateInfo(prevChattingInfo => {
       const findChattingInfo = prevChattingInfo.filter(chatInfo => chatInfo.c_id === chattingId);
 
-      console.log('setChatting', prevChattingInfo);
       //return prevChattingInfo;
       if (findChattingInfo && findChattingInfo.length > 0) {
         let findIndex = -1;
@@ -167,55 +146,58 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       updateChatting(chattingId, {c_from_online: isOnline, c_from_not_read_cnt: 0});
     }
   };
-
+  type newMessageState = {
+    message: IMessage;
+    c_id?: string;
+  };
   /* 채팅 저장 */
-  const addNewChattingInfo = useCallback(async (message: IMessage, newChattingId: string) => {
-    const sellerInfo = await getUserInfo(product?.u_id);
+  const addNewChattingInfo = useCallback(
+    async ({message}: newMessageState, newChattingId: string) => {
+      const sellerInfo = await getUserInfo(product?.u_id);
 
-    if (!sellerInfo) {
-      return;
-    }
-    const chatting = {
-      c_id: newChattingId,
-      c_from_id: myInfo.u_id,
-      c_from_nickname: myInfo.u_nickname,
-      c_from_photoUrl: myInfo.u_photoUrl ? myInfo.u_photoUrl : '',
-      c_to_id: product?.u_id,
-      c_to_nickname: sellerInfo.u_nickname,
-      c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
-      c_product: product,
-      c_lastMessage: message.text,
-      c_regdate: moment().format('YYYY-MM-DD HH:mm:ss'),
-      c_product_state: CHAT_PRODUCT_STATE.SELL,
-    };
+      if (!sellerInfo) {
+        return;
+      }
+      const chatting = {
+        c_id: newChattingId,
+        c_from_id: myInfo.u_id,
+        c_from_nickname: myInfo.u_nickname,
+        c_from_photoUrl: myInfo.u_photoUrl ? myInfo.u_photoUrl : '',
+        c_to_id: product?.u_id,
+        c_to_nickname: sellerInfo.u_nickname,
+        c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
+        c_product: product,
+        c_lastMessage: message.text,
+        c_regdate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        c_product_state: CHAT_PRODUCT_STATE.SELL,
+      };
 
-    const chattingInfo: chattingStateProps = {
-      ...chatting,
-      c_messages: [message],
-    };
-    setMessages(prevMessages => [message, ...prevMessages]);
-    console.log('gggg', JSON.stringify(chattingInfo));
-    setChattingStateInfo(prevChattingInfo => {
-      const newChattingInfo = [...prevChattingInfo, chattingInfo];
-      storeChattingData({...newChattingInfo, u_id: myInfo.u_id});
-      return newChattingInfo;
-    });
-    createChatting(chatting);
+      const chattingInfo: chattingStateProps = {
+        ...chatting,
+        c_messages: [message],
+      };
+      setMessages(prevMessages => [message, ...prevMessages]);
 
-    // navigation.pop();
-    // events.emit('refresh');
-  }, []);
+      setChattingStateInfo(prevChattingInfo => {
+        const newChattingInfo = [...prevChattingInfo, chattingInfo];
+        storeChattingData({...newChattingInfo, u_id: myInfo.u_id});
+        return newChattingInfo;
+      });
+      createChatting(chatting);
 
-  const storeChattingData = async value => {
+      updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_chat', filteredChattingState[0]?.c_product.p_chat + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+    },
+    [filteredChattingState, myInfo.u_id, myInfo.u_nickname, myInfo.u_photoUrl, product, setChattingStateInfo],
+  );
+
+  const storeChattingData = async (value: chattingStateProps[]) => {
     try {
       await AsyncStorage.setItem('@chattingInfo', JSON.stringify(value));
     } catch (e) {
-      // saving error
+      console.log('saving error', e);
     }
   };
-  const sendPushNotification = async (token, title, body) => {
-    //  const FIREBASE_API_KEY = 'ya29.a0AVvZVsoOHEZQ7Ob3La66dtmjJ-nkpnt56455TR6gBA0L7H0kUNgGFKaqDyL6mm_ins_CAtDUxsO5u7LIICG3lOh5ZhQLvLmd6ngoSzu92Ox79i2KuTHNhYf6iMJz_gVOkwhS80YzqJ3Wo60DJFClh8-F5rLHaCgYKAfYSARASFQGbdwaICZWd94zcbrQP0lYHB-nsGg0163';
-    const FIREBASE_API_KEY = 'AAAA6A9nhs0:APA91bFkaFYX0SxeeTnNEzcLD74Ar1G8RlmpMjFAqF1oR-HGi9e-wpLFeAWPkmHkm5M-0GvE_aM8GeeWkuueVg0SSulid4KEkF_Fq7PERJFnKiABm94BBk2_8q13tp6UXZu13k-WAMF6';
+  const sendPushNotification = async (token: string, title: string, body: string) => {
     const message = {
       registration_ids: [token],
       notification: {
@@ -229,16 +211,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       },
     };
 
-    // const message = {
-    //   message: {
-    //     token,
-    //     notification: {
-    //       body,
-    //       title,
-    //     },
-    //   },
-    // };
-
     let headers = new Headers({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + FIREBASE_API_KEY,
@@ -249,8 +221,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       headers,
       body: JSON.stringify(message),
     });
-    response = await response.json();
-    console.log('fcmTEST', response);
+    await response.json();
   };
 
   const updateChattingInfo = useCallback(
@@ -308,17 +279,12 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     [sendMessageCount, myInfo, filteredChattingState, chattingId, setChattingStateInfo],
   );
 
-  const sendMessage = message => {
-    console.log('보낸 메시지@!?', message);
-    console.log('현재 메시지@!?', messages);
+  const sendMessage = (message: IMessage[]) => {
     let currentChattingId = chattingId ? chattingId : uuid.v4().toString();
-    // let timestamp = today.toISOString();
+    const timestamp = moment().toDate();
 
-    const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
-    //const t = new clockSync({});
     console.log('timestamp!!!', timestamp);
     if (messages.length === 0) {
-      console.log('!??');
       addNewChattingInfo({...message[0], createdAt: timestamp, c_id: currentChattingId}, currentChattingId);
       setChattingId(currentChattingId);
     } else {
@@ -341,13 +307,13 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       }*/
     }
   };
-  const onPressAvatar = user => {
+  const onPressAvatar = (user: User) => {
     navigation.push('UserHomeScreen', {u_id: user._id});
 
     // this.setState({reportUser: user.name});
     // this.Standard.open();
   };
-  const onRenderSystemMessage = props => <SystemMessage {...props} containerStyle={{backgroundColor: '#7cc8c3'}} textStyle={{color: 'white', fontWeight: '500', fontSize: 17, textAlign: 'center'}} />;
+  //  const onRenderSystemMessage = props => <SystemMessage {...props} containerStyle={{backgroundColor: '#7cc8c3'}} textStyle={{color: 'white', fontWeight: '500', fontSize: 17, textAlign: 'center'}} />;
 
   const closeChat = () => {
     if (database) {
@@ -355,7 +321,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
-  const onChangeProductState = state => {
+  const onChangeProductState = (state: string) => {
     console.log('채팅 제품', filteredChattingState[0]?.c_product);
 
     const updChattingInfo: updateChattingProps = {c_product: {...filteredChattingState[0]?.c_product, p_status: state}, c_regdate: moment().format('YYYY-MM-DD HH:mm:ss')};
@@ -367,7 +333,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   };
 
   let p_status_str = ''; // 1:판매중, 2:예약중, 3:거래완료, 4:판매중지
-  let p_buy_available = true; // 판매중, 예약중 일때만 구매 가능. 거래완료, 판매중지 일 경우 false 로 변경.
+  //let p_buy_available = true; // 판매중, 예약중 일때만 구매 가능. 거래완료, 판매중지 일 경우 false 로 변경.
 
   switch (currentProductState) {
     case 1:
@@ -378,25 +344,26 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       break;
     case 3:
       p_status_str = '거래완료';
-      p_buy_available = false;
+      //p_buy_available = false;
       break;
     case 4:
       p_status_str = '판매중지';
-      p_buy_available = false;
+      //p_buy_available = false;
       break;
   }
 
   return (
-    // 주임님 conflict
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={styles.touchFlex}>
+    <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.touchFlex} behavior="padding">
         <Image style={styles.imageBox} source={product ? (product.p_images && product.p_images.length > 0 ? {uri: product.p_images[0].p_url} : require('../assets/user.png')) : filteredChattingState[0]?.c_product.p_images && filteredChattingState[0]?.c_product.p_images.length > 0 ? {uri: filteredChattingState[0]?.c_product.p_images[0].p_url} : require('../assets/user.png')} />
-        <View style={{flex: 1}}>
-          <View style={styles.row}>
-            <View style={{flex: 0.55}}>
-              <Text style={styles.text}>제품명: {product ? product.p_title : filteredChattingState[0]?.c_product?.p_title}</Text>
+        <View style={styles.container}>
+          <View style={styles.infoRow}>
+            <View style={styles.flex2}>
+              <Text numberOfLines={1} style={styles.text}>
+                제품명: {product ? product.p_title : filteredChattingState[0]?.c_product?.p_title}
+              </Text>
             </View>
-            <View style={{flex: 0.45}}>
+            <View style={styles.flex3}>
               {filteredChattingState[0]?.c_to_id === myInfo.u_id ? (
                 <Picker selectedValue={currentProductState} onValueChange={onChangeProductState} style={{width: '100%'}}>
                   <Picker.Item label="판매중" value={1} />
@@ -408,12 +375,12 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
               )}
             </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.bold3}>{`${comma(product ? product.p_price : filteredChattingState[0]?.c_product?.p_price)}원`}</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.bold3}>{`${comma(product ? (product.p_price > 0 ? product.p_price : 0) : Number(filteredChattingState[0]?.c_product?.p_price) > 0 ? filteredChattingState[0]?.c_product?.p_price : 0)}원`}</Text>
           </View>
         </View>
-      </View>
-      <View style={{flex: 0.9}}>
+      </KeyboardAvoidingView>
+      <View style={styles.chattingRow}>
         <GiftedChat
           locale="ko"
           messages={messages}
@@ -424,75 +391,26 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
             _id: myInfo.u_id,
             name: myInfo.u_nickname,
           }}
-          //this.props.route.params.nickname
-          renderSystemMessage={onRenderSystemMessage}
+          // renderSystemMessage={onRenderSystemMessage}
           placeholder="message 입력"
           onPressAvatar={onPressAvatar}
-          // onPressActionButton={this.onPressActionButton}
-          // renderUsernameOnMessage
         />
       </View>
     </View>
   );
 }
-{
-  /* <Chat
-      renderBubble={renderBubble}
-      theme={{
-        ...defaultTheme,
-        colors: {...defaultTheme.colors, primary: '#1d1c21'},
-      }}
-      messages={messages}
-      // onSendPress={handleSendPress}
-      user={'user'}
-      color={'#c00'}
-    /> */
-}
-{
-  /* <RBSheet
-      ref={ref => {
-        this.Standard = ref;
-      }}
-      height={230}
-      closeOnDragDown
-      customStyles={{
-        container: {alignItems: 'center', backgroundColor: '#F5FCFF', borderTopLeftRadius: 30, borderTopRightRadius: 30},
-      }}>
-      <View>
-        <TouchableOpacity onPress={this.onHandleEmail}>
-          <Icon name={'report-problem'} />
-          <Text />
-        </TouchableOpacity>
-      </View>
-      <View>
-        <View>
-          <Icon name={'ios-person'} />
-          <Text>유저정보</Text>
-          {/* <Text>{reportUser}</Text> */
-}
-{
-  /* </View>
-      </View>
-      <View>
-        <TouchableOpacity>
-          <Icon name={'thumb-down-alt'} />
-          <Text>싫어요</Text>
-        </TouchableOpacity>
-      </View>
-    </RBSheet>
-  </View> */
-}
 
 const styles = StyleSheet.create({
-  fullscreen: {
+  container: {
     flex: 1,
-    paddingHorizontal: 2,
+    backgroundColor: 'white',
   },
   touchFlex: {
-    flex: 0.1,
-    paddingVertical: 12,
+    flex: 0.12,
+    minHeight: 22,
     paddingHorizontal: 12,
     flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#dfdfdf',
@@ -502,34 +420,24 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     flexDirection: 'row',
   },
-  flex2: {
-    // flex: 1,
-    //paddingVertical: 6,
-    flexDirection: 'row',
-  },
-  flex3: {
-    flex: 1,
-    // paddingVertical: 10,
-    // flexDirection: 'row',
-  },
-  flex4: {
-    // flex: 1,
-    width: '100%',
-    // alignItems: 'flex-start',
-    // justifyContent: 'flex-start',
-    // marginBottom: -30,
-    // paddingVertical: 10,
-    flexDirection: 'row',
-  },
+  flex2: {flex: 0.55},
+  flex3: {flex: 0.45},
   row: {
     //paddingTop: 10,
     // textAlign: 20,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 2,
-    // justifyContent: 'flex-start',
-    // paddingVertical: 10,
+  },
+  infoRow: {
+    flex: 0.55,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priceRow: {
+    flex: 0.45,
+    flexDirection: 'row',
+    marginLeft: 8,
   },
   bold1: {marginTop: 16, marginLeft: 16, fontSize: 18, fontWeight: 'bold', color: '#039DF4'},
   bold2: {fontSize: 18, fontWeight: 'bold'},
@@ -547,7 +455,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 6,
-    //backgroundColor: 'transparent',
     color: '#898989',
     marginRight: 12,
   },
@@ -581,6 +488,9 @@ const styles = StyleSheet.create({
     borderRightColor: '#039DF4',
     borderTopColor: '#039DF4',
     borderLeftColor: '#039DF4',
+  },
+  chattingRow: {
+    flex: 0.88,
   },
 });
 export default ChattingRoomScreen;
