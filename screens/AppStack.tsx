@@ -32,6 +32,7 @@ import {authInfoProps, authInfoState} from '../recoil/authInfoAtom';
 import {productProps} from '../utils/products';
 import SearchResultScreen from './SearchResultScreen';
 import {informationProps} from '../utils/informations';
+import moment from 'moment-timezone';
 
 export interface u_idProp {
   u_id: string;
@@ -88,6 +89,7 @@ function AppStackRoot() {
       }
       setAuthInfo(profile);
       i18n.changeLanguage(profile.u_lang);
+      moment.locale(profile.u_lang);
     });
   }, [i18n, setAuthInfo]);
 

@@ -8,6 +8,7 @@ import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {createUser} from '../utils/auth';
+import moment from 'moment-timezone';
 
 function SettingScreen() {
   const {t, i18n} = useTranslation();
@@ -22,6 +23,7 @@ function SettingScreen() {
     setAuthInfo(updatedInfo);
     i18n.changeLanguage(lang);
     AsyncStorage.setItem('@language', lang);
+    moment.locale(lang);
   };
 
   const onPressChangeGroup = () => {

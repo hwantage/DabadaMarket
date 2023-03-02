@@ -27,6 +27,9 @@ function App() {
     if (lang) {
       // 스토리지에 저장된 언어 설정 적용(설정 화면에서 변경한 언어 반영)
       i18n.changeLanguage(lang);
+      moment.locale(lang);
+    } else {
+      moment.locale('ko');
     }
   }, [i18n]);
 

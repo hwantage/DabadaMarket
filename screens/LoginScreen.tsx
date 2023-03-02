@@ -13,6 +13,7 @@ import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {chattingInfoState} from '../recoil/chattingAtom';
 import messaging from '@react-native-firebase/messaging';
+import moment from 'moment-timezone';
 
 type ParamList = {
   params: {
@@ -55,6 +56,7 @@ function LoginScreen() {
   const setLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     AsyncStorage.setItem('@language', lang);
+    moment.locale(lang);
   };
 
   const onSubmit = async () => {
