@@ -371,7 +371,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
             </View>
             <View style={styles.flex3}>
               {filteredChattingState[0]?.c_to_id === myInfo.u_id ? (
-                <Picker selectedValue={currentProductState} onValueChange={onChangeProductState} style={{width: '100%'}}>
+                <Picker selectedValue={currentProductState} onValueChange={onChangeProductState} style={styles.picker}>
                   <Picker.Item label="판매중" value={1} />
                   <Picker.Item label="예약중" value={2} />
                   <Picker.Item label="거래완료" value={3} />
@@ -444,6 +444,9 @@ const styles = StyleSheet.create({
     flex: 0.45,
     flexDirection: 'row',
     marginLeft: 8,
+  },
+  picker: {
+    width: '100%',
   },
   bold1: {marginTop: 16, marginLeft: 16, fontSize: 18, fontWeight: 'bold', color: '#039DF4'},
   bold2: {fontSize: 18, fontWeight: 'bold'},
