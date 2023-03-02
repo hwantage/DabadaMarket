@@ -14,18 +14,21 @@ moment.tz.setDefault('Asia/Seoul');
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('[Background Remote Message]', remoteMessage);
 });
-const getFcmToken = async () => {
-  const fcmToken = await messaging().getToken();
-  console.log('[FCM Token] ', fcmToken);
-};
 
 function App() {
+  // FCM 토큰 정보 확인
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    console.log('[FCM Token] ', fcmToken);
+  };
+
   // 언어 설정 정보 확인
   const {i18n} = useTranslation();
+
+  // 스토리지에 저장된 언어 설정 적용(설정 화면에서 변경한 언어 반영)
   const getLanguage = useCallback(async () => {
     let lang = await AsyncStorage.getItem('@language');
     if (lang) {
-      // 스토리지에 저장된 언어 설정 적용(설정 화면에서 변경한 언어 반영)
       i18n.changeLanguage(lang);
       moment.locale(lang);
     } else {
