@@ -39,7 +39,7 @@ function UserSellScreen({route}: UserSellCompleteScreenProps) {
 
   const renderItem: ListRenderItem<productProps> = ({item}) => <ProductCard product={item} querymode="sell" />;
   const listFooterComponent: any = !products.noMoreProduct && <ActivityIndicator style={styles.spinner} size={32} color="#347deb" />;
-  const listRefreshControl: any = <RefreshControl onRefresh={products.onRefresh} refreshing={products.refreshing} colors={['#347deb']} />;
+  const listRefreshControl: any = <RefreshControl onRefresh={products.refreshProduct} refreshing={products.refreshing} colors={['#347deb']} />;
 
   return (
     <>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   nickname: {
     lineHeight: 16,
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 8,
     fontWeight: 'bold',
   },
