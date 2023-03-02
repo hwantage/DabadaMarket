@@ -8,7 +8,7 @@ import {useRecoilState, useRecoilValue} from 'recoil';
 import uuid from 'react-native-uuid';
 import {CHAT_PRODUCT_STATE, compareDiffChattingDate, createChatting, getChattingData, updateChatting, updateChattingProps} from '../utils/chatting';
 import {getUserInfo} from '../utils/auth';
-import {chattingInfoState, chattingStateProps} from '../recoil/chattingAtom';
+import {chatMessageProps, chattingInfoState, chattingStateProps} from '../recoil/chattingAtom';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
 import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
@@ -29,36 +29,63 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
   const [chattingId, setChattingId] = useState(findChatInfoByProduct.length > 0 ? findChatInfoByProduct[0]?.c_id : c_id);
   const [sendMessageCount, setSendMessageCount] = useState(0);
+
   const myInfo = useRecoilValue(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const filteredChattingState = chattingStateInfo && chattingStateInfo.length > 0 ? chattingStateInfo.filter(chatting => chatting.c_id === chattingId) : [];
+
+  const [filteredChattingState, setFilteredChattingState] = useState<chattingStateProps[]>([]);
   const [messages, setMessages] = useState<IMessage[]>(filteredChattingState.length > 0 ? [...filteredChattingState[0].c_messages] : []);
-  const [currentProductState, setCurrentProductState] = useState(product ? product.p_status : filteredChattingState.length > 0 ? filteredChattingState[0]?.c_product.p_status : '1');
+  const [currentProductState, setCurrentProductState] = useState(product ? product.p_status : filteredChattingState.length > 0 ? filteredChattingState[0]?.c_product.p_status : 1);
+  const saveInitChattingData = useCallback(
+    async (msg: IMessage[]) => {
+      const oldChattingData = await getChattingData(chattingId);
+      setCurrentProductState(oldChattingData?.c_product ? oldChattingData?.c_product.p_status : 1);
 
-  useEffect(() => {
-    if (chattingId) {
-      initChattingData();
-      updateIsOnline(true);
-    }
+      msg.map(data => {
+        if (oldChattingData && oldChattingData.c_from_id !== myInfo.u_id) {
+          data.user.avatar = String(oldChattingData.c_from_photoUrl);
+        } else {
+          data.user.avatar = String(oldChattingData.c_to_photoUrl);
+        }
+        return data;
+      });
+      const chattingInfo: chattingStateProps = {
+        ...oldChattingData,
+        c_messages: msg,
+      };
 
-    return () => {
-      if (chattingId) {
-        updateIsOnline(false);
-      }
-      closeChat();
-    };
-  }, []);
+      setMessages(msg);
 
-  const initChattingData = async () => {
-    const isDiff = await compareDiffChattingDate(chattingId, filteredChattingState[0]?.c_regdate);
+      setChattingStateInfo(prevChattingInfo => {
+        const findChattingInfo = prevChattingInfo.filter(chatInfo => chatInfo.c_id === chattingId);
 
-    // 채팅이 시작된 상태에서 (메시지를 한개라도 보내야 chattingId가 생성됨) 채팅 데이터가 없거나 날짜가 동기화 안 된 경우에 메시지를 새로 불러온다.
-    if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
-      loadMessages();
-    }
-  };
-
-  const loadMessages = () => {
+        //return prevChattingInfo;
+        if (findChattingInfo && findChattingInfo.length > 0) {
+          let findIndex = -1;
+          let copyChattingInfo = [...prevChattingInfo];
+          prevChattingInfo.map((chatInfo, idx) => {
+            if (chatInfo.c_id === chattingId) {
+              findIndex = idx;
+            }
+          });
+          if (findIndex === -1) {
+            storeChattingData(prevChattingInfo);
+            return prevChattingInfo;
+          } else {
+            copyChattingInfo[findIndex] = {...chattingInfo, u_id: myInfo.u_id};
+            storeChattingData(copyChattingInfo);
+            return copyChattingInfo;
+          }
+        } else {
+          const newChattingInfo = [...prevChattingInfo, {...chattingInfo, u_id: myInfo.u_id}];
+          storeChattingData(newChattingInfo);
+          return newChattingInfo;
+        }
+      });
+    },
+    [chattingId, myInfo.u_id, setChattingStateInfo],
+  );
+  const loadMessages = useCallback(() => {
     database.off(); //Detaches a callback previously attached with on()
     database.orderByChild('createdAt').on('value', snapshot => {
       const messagesByServer: IMessage[] = [];
@@ -85,74 +112,55 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
             messagesByServer.unshift(message);
           }
         }
+        return true;
       });
 
       saveInitChattingData(messagesByServer);
     });
-  };
+  }, [chattingId, saveInitChattingData]);
 
-  const saveInitChattingData = async (msg: IMessage[]) => {
-    const oldChattingData = await getChattingData(chattingId);
-    setCurrentProductState(oldChattingData?.c_product ? oldChattingData?.c_product.p_status : 1);
-
-    msg.map(data => {
-      if (oldChattingData && oldChattingData.c_from_id !== myInfo.u_id) {
-        data.user.avatar = oldChattingData.c_from_photoUrl;
-        console.log(data.user);
+  const updateIsOnline = useCallback(
+    (isOnline: boolean) => {
+      if (filteredChattingState[0]?.c_from_id !== myInfo.u_id) {
+        updateChatting(chattingId, {c_to_online: isOnline, c_to_not_read_cnt: 0});
       } else {
-        data.user.avatar = oldChattingData?.c_to_photoUrl;
+        updateChatting(chattingId, {c_from_online: isOnline, c_from_not_read_cnt: 0});
       }
-      return data;
-    });
-    const chattingInfo: chattingStateProps = {
-      ...oldChattingData,
-      c_messages: msg,
-    };
+    },
+    [chattingId, filteredChattingState, myInfo.u_id],
+  );
 
-    setMessages(msg);
+  const initChattingData = useCallback(async () => {
+    const isDiff = await compareDiffChattingDate(chattingId, filteredChattingState[0]?.c_regdate);
 
-    setChattingStateInfo(prevChattingInfo => {
-      const findChattingInfo = prevChattingInfo.filter(chatInfo => chatInfo.c_id === chattingId);
-
-      //return prevChattingInfo;
-      if (findChattingInfo && findChattingInfo.length > 0) {
-        let findIndex = -1;
-        let copyChattingInfo = [...prevChattingInfo];
-        prevChattingInfo.map((chatInfo, idx) => {
-          if (chatInfo.c_id === chattingId) {
-            findIndex = idx;
-          }
-        });
-        if (findIndex === -1) {
-          storeChattingData(prevChattingInfo);
-          return prevChattingInfo;
-        } else {
-          copyChattingInfo[findIndex] = {...chattingInfo, u_id: myInfo.u_id};
-          storeChattingData(copyChattingInfo);
-          return copyChattingInfo;
-        }
-      } else {
-        const newChattingInfo = [...prevChattingInfo, {...chattingInfo, u_id: myInfo.u_id}];
-        storeChattingData(newChattingInfo);
-        return newChattingInfo;
-      }
-    });
-  };
-
-  const updateIsOnline = (isOnline: boolean) => {
-    if (filteredChattingState[0]?.c_from_id !== myInfo.u_id) {
-      updateChatting(chattingId, {c_to_online: isOnline, c_to_not_read_cnt: 0});
-    } else {
-      updateChatting(chattingId, {c_from_online: isOnline, c_from_not_read_cnt: 0});
+    // 채팅이 시작된 상태에서 (메시지를 한개라도 보내야 chattingId가 생성됨) 채팅 데이터가 없거나 날짜가 동기화 안 된 경우에 메시지를 새로 불러온다.
+    if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
+      loadMessages();
     }
-  };
-  type newMessageState = {
-    message: IMessage;
-    c_id?: string;
-  };
+  }, [chattingId, filteredChattingState, loadMessages]);
+  useEffect(() => {
+    if (chattingStateInfo && chattingStateInfo.length > 0) {
+      setFilteredChattingState(chattingStateInfo.filter(chatting => chatting.c_id === chattingId));
+    }
+  }, [chattingId, chattingStateInfo]);
+
+  useEffect(() => {
+    if (chattingId) {
+      initChattingData();
+      updateIsOnline(true);
+    }
+
+    return () => {
+      if (chattingId) {
+        updateIsOnline(false);
+      }
+      closeChat();
+    };
+  }, [chattingId, chattingStateInfo, initChattingData, updateIsOnline]);
+
   /* 채팅 저장 */
   const addNewChattingInfo = useCallback(
-    async ({message}: newMessageState, newChattingId: string) => {
+    async (message: chatMessageProps, newChattingId: string) => {
       const sellerInfo = await getUserInfo(product?.u_id);
 
       if (!sellerInfo) {
@@ -180,7 +188,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
       setChattingStateInfo(prevChattingInfo => {
         const newChattingInfo = [...prevChattingInfo, chattingInfo];
-        storeChattingData({...newChattingInfo, u_id: myInfo.u_id});
+        storeChattingData({...newChattingInfo});
         return newChattingInfo;
       });
       createChatting(chatting);
@@ -225,7 +233,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   };
 
   const updateChattingInfo = useCallback(
-    async message => {
+    async (message: chatMessageProps) => {
       const currentDatetime = moment().format('YYYY-MM-DD HH:mm:ss');
       setMessages(prevMessages => [message, ...prevMessages]);
       setChattingStateInfo(prevChattingInfo => {
@@ -239,7 +247,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           return chattingInfo;
         });
         console.log('저장', convertedChattingInfo);
-        storeChattingData({...convertedChattingInfo, u_id: myInfo.u_id});
+        storeChattingData({...convertedChattingInfo});
         return convertedChattingInfo;
       });
 
@@ -247,7 +255,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       const updChattingInfo: updateChattingProps = {c_lastMessage: message.text, c_regdate: currentDatetime};
 
       let readCnt = sendMessageCount;
-      let senderId = currentChattingInfo.c_from_id;
+      let senderId = currentChattingInfo?.c_from_id;
       if (currentChattingInfo?.c_from_id === myInfo.u_id) {
         senderId = currentChattingInfo.c_to_id;
       }
@@ -271,12 +279,10 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
         setSendMessageCount(readCnt + 1);
         updateChatting(chattingId, updChattingInfo);
       } else {
-        console.log('!!!other');
         updateChatting(chattingId, updChattingInfo);
       }
-      console.log('isOnline', filteredChattingState[0]?.c_from_online);
     },
-    [sendMessageCount, myInfo, filteredChattingState, chattingId, setChattingStateInfo],
+    [sendMessageCount, myInfo, chattingId, setChattingStateInfo],
   );
 
   const sendMessage = (message: IMessage[]) => {
@@ -321,7 +327,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
-  const onChangeProductState = (state: string) => {
+  const onChangeProductState = (state: number) => {
     console.log('채팅 제품', filteredChattingState[0]?.c_product);
 
     const updChattingInfo: updateChattingProps = {c_product: {...filteredChattingState[0]?.c_product, p_status: state}, c_regdate: moment().format('YYYY-MM-DD HH:mm:ss')};
@@ -376,7 +382,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
             </View>
           </View>
           <View style={styles.priceRow}>
-            <Text style={styles.bold3}>{`${comma(product ? (product.p_price > 0 ? product.p_price : 0) : Number(filteredChattingState[0]?.c_product?.p_price) > 0 ? filteredChattingState[0]?.c_product?.p_price : 0)}원`}</Text>
+            <Text style={styles.bold3}>{`${comma(product ? (product.p_price > '0' ? product.p_price : '0') : filteredChattingState[0]?.c_product?.p_price > '0' ? filteredChattingState[0]?.c_product?.p_price : '0')}원`}</Text>
           </View>
         </View>
       </KeyboardAvoidingView>

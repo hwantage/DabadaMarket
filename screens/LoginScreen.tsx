@@ -113,14 +113,14 @@ function LoginScreen() {
     }
   };
 
-  const getChattingData = async (uid: string) => {
+  const getChattingData = async (u_id: string) => {
     try {
       const value = await AsyncStorage.getItem('@chattingInfo');
 
       if (value !== null) {
         let allChattingInfoState = JSON.parse(value);
         console.log('allChattingInfoState', allChattingInfoState);
-        let myChattingInfoState = allChattingInfoState.filter((chattingInfo: {u_id: string}) => chattingInfo.u_id === uid);
+        let myChattingInfoState = allChattingInfoState.filter((chattingInfo: {u_id: string}) => chattingInfo.u_id === u_id);
         setChattingInfoState(myChattingInfoState);
       }
     } catch (e: any) {

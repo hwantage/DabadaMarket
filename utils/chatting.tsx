@@ -1,4 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
+import {chattingStateProps} from '../recoil/chattingAtom';
 import {productProps} from './products';
 export const chattingCollection = firestore().collection('chatting');
 
@@ -68,9 +69,9 @@ export async function compareDiffChattingDate(c_id: string, c_regdate: string) {
   return c_regdate !== chattingData.c_regdate;
 }
 
-export async function getChattingData(c_id: string) {
+export async function getChattingData(c_id: string): Promise<chattingStateProps> {
   const doc = await chattingCollection.doc(c_id).get();
-  const chattingData = await doc.data();
+  const chattingData: any = await doc.data();
 
   return chattingData;
 }
