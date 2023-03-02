@@ -40,7 +40,7 @@ export interface u_idProp {
 export type RootStackParamList = {
   BottomTab: undefined;
   ChattingListScreen: undefined;
-  ChattingRoomScreen: undefined;
+  ChattingRoomScreen: {p_id: string; c_id: string; product: productProps};
   InformationAddScreen: undefined;
   InformationDetailScreen: {information: informationProps};
   InformationModifyScreen: {i_id: string};
