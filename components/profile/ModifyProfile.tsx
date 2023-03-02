@@ -32,29 +32,12 @@ function ModifyProfile() {
   const {t} = useTranslation();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [authInfo, setAuthInfo] = useRecoilState<authInfoProps>(authInfoState);
-  const [nickname, setNickname] = useState(authInfo.u_nickname);
+  const [nickname, setNickname] = useState<string>('');
   const [response, setResponse] = useState<any>(null);
   const [defaultImageIndex, setDefaultImageIndex] = useState<number>(-1);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [arrDefaultImages, setArrDefaultImages] = useState<string[]>([]);
-
-  /* firebase store 의 defaultProfile 폴더의 이미지 조회 */
-  useEffect(() => {
-    const storageRef = storage().ref('/defaultProfile/');
-    storageRef
-      .listAll()
-      .then(result => {
-        const promises = result.items.map(item => item.getDownloadURL());
-        Promise.all(promises)
-          .then(urls => {
-            const files: string[] = result.items.map((item, index) => urls[index]);
-            setArrDefaultImages(files);
-          })
-          .catch(error => console.log(error));
-      })
-      .catch(error => console.log(error));
-  }, []);
 
   const onSubmit: any = useCallback(async () => {
     setLoading(true);
@@ -96,9 +79,26 @@ function ModifyProfile() {
     navigation.navigate('BottomTab');
   }, [arrDefaultImages, authInfo.u_fcmToken, authInfo.u_id, authInfo.u_photoUrl, defaultImageIndex, navigation, nickname, response, setAuthInfo]);
 
-  navigation.setOptions({
-    headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
-  });
+  /* firebase store 의 defaultProfile 폴더의 이미지 조회 */
+  useEffect(() => {
+    const storageRef = storage().ref('/defaultProfile/');
+    storageRef
+      .listAll()
+      .then(result => {
+        const promises = result.items.map(item => item.getDownloadURL());
+        Promise.all(promises)
+          .then(urls => {
+            const files: string[] = result.items.map((item, index) => urls[index]);
+            setArrDefaultImages(files);
+          })
+          .catch(error => console.log(error));
+      })
+      .catch(error => console.log(error));
+
+    navigation.setOptions({
+      headerRight: () => (!loading ? <TopRightButton name="check" onPress={onSubmit} /> : <ActivityIndicator size={20} color="#347deb" />),
+    });
+  }, [loading, navigation, onSubmit]);
 
   const onPickImage = (res: any) => {
     if (res.didCancel || !res) {
@@ -168,7 +168,7 @@ function ModifyProfile() {
         <View style={styles.fullscreen}>
           <KeyboardAvoidingView behavior={Platform.select({ios: 'padding'})}>
             <Text style={styles.bold2}>{t('common.nickname', '닉네임')}</Text>
-            <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={true} />
+            <DabadaInput placeholder={t('common.nickname', '닉네임')} defaultValue={authInfo.u_nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={true} />
           </KeyboardAvoidingView>
           {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
           <ActionSheetModal
