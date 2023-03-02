@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS, ScrollView} from 'react-native';
+import {Pressable, StyleSheet, View, Platform, Image, ActivityIndicator, ActionSheetIOS, ScrollView, KeyboardAvoidingView} from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import DabadaText, {default as Text} from '../common/DabadaText';
 import storage from '@react-native-firebase/storage';
@@ -166,8 +166,10 @@ function ModifyProfile() {
           </Pressable>
         </View>
         <View style={styles.fullscreen}>
-          <Text style={styles.bold2}>{t('common.nickname', '닉네임')}</Text>
-          <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={true} />
+          <KeyboardAvoidingView behavior={Platform.select({ios: 'padding'})}>
+            <Text style={styles.bold2}>{t('common.nickname', '닉네임')}</Text>
+            <DabadaInput placeholder={t('common.nickname', '닉네임')} value={nickname} onChangeText={setNickname} onSubmitEditing={onSubmit} returnKeyType="next" hasMarginBottom={true} />
+          </KeyboardAvoidingView>
           {loading && <ActivityIndicator size={32} color="#347deb" style={styles.spinner} />}
           <ActionSheetModal
             visible={modalVisible}
