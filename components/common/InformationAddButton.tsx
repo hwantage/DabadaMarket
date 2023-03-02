@@ -28,7 +28,7 @@ function InformationAddButton() {
           }}
           style={styles.circle}
           onPress={onPress}>
-          <Icon name="plus-thick" color="white" size={28} />
+          <Icon name="pencil" color="white" size={32} />
         </Pressable>
       </View>
     </>
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
   wrapper: {
     zIndex: 5,
     borderRadius: 27,
-    height: 34,
-    width: 34,
+    height: 45,
+    width: 45,
     position: 'absolute',
     marginBottom: 0,
     right: '4%',
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
   circle: {
     backgroundColor: '#f403b8',
     borderRadius: 27,
-    height: 34,
-    width: 34,
+    height: 45,
+    width: 45,
     alignItems: 'center',
     justifyContent: 'center',
   },
