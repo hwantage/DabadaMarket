@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, Platform, Image, ActivityIndicator, ScrollView, TextInput, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Platform, Image, ActivityIndicator, ScrollView, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import DabadaInputLine from '../components/common/DabadaInputLine';
 import DabadaInput from '../components/common/DabadaInput';
@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   input: {
-    height: 160,
+    height: Dimensions.get('window').height - 380,
+    backgroundColor: '#ffffff',
     borderRadius: 4,
     alignItems: 'flex-start',
     border: 'none',

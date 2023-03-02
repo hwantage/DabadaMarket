@@ -1,22 +1,23 @@
 import React from 'react';
-import {KeyboardAvoidingView, StyleSheet, SafeAreaView, Platform} from 'react-native';
+import {StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import ModifyProfile from '../components/profile/ModifyProfile';
 
 function MyProfileModifyScreen() {
   return (
     <>
-      <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.select({ios: 'padding'})}>
+      <ScrollView style={styles.scrollView}>
         <SafeAreaView style={styles.block}>
           <ModifyProfile />
         </SafeAreaView>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  keyboardAvoidingView: {
+  scrollView: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   block: {
     flex: 1,

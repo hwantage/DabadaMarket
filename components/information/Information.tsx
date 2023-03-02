@@ -195,7 +195,7 @@ function Information({information}: InformationProps) {
                       {editingCommentId === item.ic_id ? (
                         <>
                           <Icon name="save" color="#898989" size={16} onPress={() => handleUpdateComment(item.ic_id)} />
-                          <Icon name="close" color="#898989" size={16} onPress={() => setEditingCommentId(item.ic_id)} />
+                          <Icon name="close" color="#898989" size={16} onPress={() => setEditingCommentId(null)} />
                         </>
                       ) : (
                         <>

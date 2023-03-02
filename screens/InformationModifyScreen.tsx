@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, Platform, Image, ActivityIndicator, ScrollView, TextInput, TouchableOpacity, Alert} from 'react-native';
+import {StyleSheet, View, Platform, Image, ActivityIndicator, ScrollView, TextInput, TouchableOpacity, Alert, Dimensions} from 'react-native';
 import {default as Text} from '../components/common/DabadaText';
 import DabadaInput from '../components/common/DabadaInput';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
@@ -120,7 +120,7 @@ function InformationModifyScreen({route}: InformationModifyScreenProps) {
           </View>
         </View>
       </View>
-      <View>
+      <View style={styles.imageContainerWrapper}>
         <ScrollView contentContainerStyle={styles.imageContainer} horizontal={true} showsHorizontalScrollIndicator={true}>
           <TouchableOpacity onPress={onSelectImage} style={styles.imageBox}>
             <Icon style={styles.icon} name="add-a-photo" size={38} />
@@ -208,11 +208,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
     width: '100%',
   },
+  imageContainerWrapper: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderColor: '#efefef',
+    borderWidth: 1,
+  },
   imageContainer: {
     padding: 12,
   },
   input: {
-    height: 160,
+    height: Dimensions.get('window').height - 300,
     borderRadius: 4,
     alignItems: 'flex-start',
     border: 'none',
