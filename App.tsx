@@ -7,6 +7,7 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
 import {useTranslation} from 'react-i18next';
+import 'moment/locale/ko';
 
 // 타임존 전역설정
 moment.tz.setDefault('Asia/Seoul');
