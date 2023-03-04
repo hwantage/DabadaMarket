@@ -1,5 +1,5 @@
 # DabadaMarket
-다바다 마켓
+![image](https://user-images.githubusercontent.com/82494320/222872893-9bf623fe-9f73-4333-ab06-83a4055a47e9.png)
 
 ## **직장 또는 그룹 내에서 온정을 주고 받는 마켓플레이스**
 
