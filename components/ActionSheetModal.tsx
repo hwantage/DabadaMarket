@@ -17,7 +17,7 @@ function ActionSheetModal({visible, onClose, actions}: any) {
               }}
               key={action.text}>
               <Icon name={action.icon} color="#757575" size={24} style={styles.icon} />
-              <Text>{action.text}</Text>
+              <Text style={styles.iconText}>{action.text}</Text>
             </Pressable>
           ))}
         </View>
@@ -46,10 +46,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 8,
+    color: '#b9b9b9',
   },
   text: {
     fontSize: 16,
   },
+  iconText: {color: '#000000'},
 });
 
 export default ActionSheetModal;

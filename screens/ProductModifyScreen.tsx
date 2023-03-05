@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     lineHeight: 70,
     marginRight: 4,
+    color: '#b9b9b9',
   },
   photoNum: {
     position: 'absolute',

@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     lineHeight: 70,
     marginRight: 4,
+    color: '#b9b9b9',
   },
   photoNum: {
     position: 'absolute',
@@ -187,6 +188,7 @@ const styles = StyleSheet.create({
     color: '#dfdfdf',
   },
   border: {
+    color: '#000000',
     borderTopWidth: 1,
     borderTopColor: '#dfdfdf',
     borderBottomWidth: 1,
@@ -209,6 +211,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   input: {
+    color: '#000000',
     height: Dimensions.get('window').height - 380,
     backgroundColor: '#ffffff',
     borderRadius: 4,
