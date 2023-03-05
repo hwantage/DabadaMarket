@@ -40,7 +40,6 @@ export interface updateChattingProps {
 
 export async function getChatting(u_id: string): Promise<chattingProps[]> {
   let query = chattingCollection;
-  console.log(u_id);
   const query1 = query.where('c_from_id', '==', u_id).get();
   const query2 = query.where('c_to_id', '==', u_id).get();
 

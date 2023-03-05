@@ -4,11 +4,11 @@ import db from '@react-native-firebase/database';
 import {View, StyleSheet, Image, KeyboardAvoidingView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authInfoState} from '../recoil/authInfoAtom';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import uuid from 'react-native-uuid';
 import {CHAT_PRODUCT_STATE, compareDiffChattingDate, createChatting, getChattingData, updateChatting, updateChattingProps} from '../utils/chatting';
 import {getUserInfo} from '../utils/auth';
-import {chatMessageProps, chattingInfoState, chattingStateProps} from '../recoil/chattingAtom';
+import {chatMessageProps, chattingInfoState, chattingNotificationCntState, chattingStateProps} from '../recoil/chattingAtom';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
 import {RootStackParamList} from './AppStack';
 import {useNavigation} from '@react-navigation/native';
@@ -24,6 +24,7 @@ type ChattingRoomScreenProps = StackScreenProps<RootStackParamList, 'ChattingRoo
 function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const {p_id, c_id, product} = route.params;
   const [chattingStateInfo, setChattingStateInfo] = useRecoilState(chattingInfoState);
+  const setChattingNotificationCnt = useSetRecoilState(chattingNotificationCntState);
 
   const findChatInfoByProduct = product && chattingStateInfo && chattingStateInfo.length > 0 ? chattingStateInfo.filter(chat => chat?.c_product?.p_id === product?.p_id) : [];
 
@@ -85,79 +86,83 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     },
     [chattingId, myInfo.u_id, setChattingStateInfo],
   );
-  const loadMessages = useCallback(() => {
+  const loadMessages = () => {
     database.off(); //Detaches a callback previously attached with on()
+
     database.orderByChild('createdAt').on('value', snapshot => {
       const messagesByServer: IMessage[] = [];
 
       snapshot.forEach(data => {
-        const filteredData = messagesByServer.filter(m => m._id === data.key);
-        console.log('snap ', filteredData);
-        if (filteredData.length === 0) {
-          const serverData = data.val();
-          console.log('CHILD', serverData);
-          const message = {
-            _id: data.key || '',
-            text: serverData.text,
-            createdAt: serverData.createdAt,
-            user: {
-              _id: serverData?.user._id,
-              name: serverData.user.name,
-            },
-          };
+        const serverData = data.val();
+        console.log('CHILD', serverData);
+        const message = {
+          _id: data.key || '',
+          text: serverData.text,
+          createdAt: serverData.createdAt,
+          user: {
+            _id: serverData?.user._id,
+            name: serverData.user.name,
+          },
+        };
 
-          // if (serverData.c_id === chattingId && serverData?.c_product_p_id === filteredChattingState[0]?.c_product.p_id) {
-
-          if (serverData.c_id === chattingId) {
-            messagesByServer.unshift(message);
-          }
+        if (serverData.c_id === chattingId) {
+          messagesByServer.unshift(message);
         }
-        return true;
+        return undefined;
       });
 
       saveInitChattingData(messagesByServer);
     });
-  }, [chattingId, saveInitChattingData]);
+  };
 
-  const updateIsOnline = useCallback(
-    (isOnline: boolean) => {
-      if (filteredChattingState[0]?.c_from_id !== myInfo.u_id) {
-        updateChatting(chattingId, {c_to_online: isOnline, c_to_not_read_cnt: 0});
-      } else {
-        updateChatting(chattingId, {c_from_online: isOnline, c_from_not_read_cnt: 0});
-      }
-    },
-    [chattingId, filteredChattingState, myInfo.u_id],
-  );
+  const updateIsOnline = async (isOnline: boolean) => {
+    const oldChattingData = await getChattingData(chattingId);
 
-  const initChattingData = useCallback(async () => {
+    let readCnt = 0;
+    if (oldChattingData?.c_from_id !== myInfo.u_id) {
+      readCnt = oldChattingData?.c_to_not_read_cnt || 0;
+
+      updateChatting(chattingId, {c_to_online: isOnline, c_to_not_read_cnt: 0});
+    } else {
+      readCnt = oldChattingData?.c_from_not_read_cnt || 0;
+
+      console.log('readCnt2', oldChattingData);
+      setChattingNotificationCnt(prevCnt => {
+        console.log('prevCnt', prevCnt);
+        return prevCnt - readCnt;
+      });
+      setChattingNotificationCnt(prevCnt => prevCnt - readCnt);
+      updateChatting(chattingId, {c_from_online: isOnline, c_from_not_read_cnt: 0});
+    }
+  };
+
+  const initChattingData = async () => {
     const isDiff = await compareDiffChattingDate(chattingId, filteredChattingState[0]?.c_regdate);
 
     // 채팅이 시작된 상태에서 (메시지를 한개라도 보내야 chattingId가 생성됨) 채팅 데이터가 없거나 날짜가 동기화 안 된 경우에 메시지를 새로 불러온다.
     if (chattingId && (filteredChattingState.length === 0 || isDiff)) {
       loadMessages();
     }
-  }, [chattingId, filteredChattingState, loadMessages]);
-  useEffect(() => {
-    if (chattingStateInfo && chattingStateInfo.length > 0) {
-      setFilteredChattingState(chattingStateInfo.filter(chatting => chatting.c_id === chattingId));
-    }
-  }, [chattingId, chattingStateInfo]);
+  };
 
   useEffect(() => {
+    const currentChattingData = chattingStateInfo.filter(chatting => chatting.c_id === chattingId);
+    if (chattingStateInfo && chattingStateInfo.length > 0) {
+      setFilteredChattingState(currentChattingData);
+    }
+
     if (chattingId) {
       initChattingData();
       updateIsOnline(true);
     }
-
     return () => {
       if (chattingId) {
         updateIsOnline(false);
       }
       closeChat();
     };
-  }, [chattingId, chattingStateInfo, initChattingData, updateIsOnline]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   /* 채팅 저장 */
   const addNewChattingInfo = useCallback(
     async (message: chatMessageProps, newChattingId: string) => {
@@ -272,9 +277,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
         setSendMessageCount(readCnt + 1);
         updateChatting(chattingId, updChattingInfo);
-        console.log('c_from_not_read_cnt');
       } else if (currentChattingInfo?.c_to_id === myInfo.u_id && !currentChattingInfo.c_from_online) {
-        console.log('!!!c_to_not_read_cnt ', sendMessageCount + 1);
         updChattingInfo.c_from_not_read_cnt = readCnt + 1;
         setSendMessageCount(readCnt + 1);
         updateChatting(chattingId, updChattingInfo);
@@ -289,38 +292,27 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     let currentChattingId = chattingId ? chattingId : uuid.v4().toString();
     const timestamp = moment().toDate();
 
-    console.log('timestamp!!!', timestamp);
     if (messages.length === 0) {
       addNewChattingInfo({...message[0], createdAt: timestamp, c_id: currentChattingId}, currentChattingId);
       setChattingId(currentChattingId);
     } else {
-      updateChattingInfo({...message[0], createdAt: timestamp, p_id, c_id: currentChattingId});
+      updateChattingInfo({...message[0], createdAt: timestamp, c_id: currentChattingId});
     }
 
     for (let i = 0; i < message.length; i++) {
-      console.log('send', message.length);
+      console.log('send mee', message);
       database.push({
         text: message[i].text,
         user: message[i].user,
-        createdAt: timestamp,
+        createdAt: String(timestamp),
         p_id,
         c_id: currentChattingId,
       });
-      /*
-      if (setFilterText(message[i].text)) {
-      } else {
-         showToast('불쾌감을 줄 수 있는 내용은 삼가 부탁드립니다', '전송 실패', defaultDuration, 'top');
-      }*/
     }
   };
   const onPressAvatar = (user: User) => {
     navigation.push('UserHomeScreen', {u_id: user._id});
-
-    // this.setState({reportUser: user.name});
-    // this.Standard.open();
   };
-  //  const onRenderSystemMessage = props => <SystemMessage {...props} containerStyle={{backgroundColor: '#7cc8c3'}} textStyle={{color: 'white', fontWeight: '500', fontSize: 17, textAlign: 'center'}} />;
-
   const closeChat = () => {
     if (database) {
       database.off();

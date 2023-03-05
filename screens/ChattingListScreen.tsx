@@ -1,18 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, FlatList, Text, ListRenderItem} from 'react-native';
 import ChattingCard from '../components/chatting/ChattingCard';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import {chattingProps, getChatting} from '../utils/chatting';
-import {StackNavigationProp} from '@react-navigation/stack';
 import firestore from '@react-native-firebase/firestore';
 import {chattingNotificationCntState} from '../recoil/chattingAtom';
 
 const chattingCollection = firestore().collection('chatting');
 function ChattingListScreen() {
   const [myInfo] = useRecoilState(authInfoState);
-  const navigation = useNavigation<StackNavigationProp<any>>();
   const setChattingNotificationCnt = useSetRecoilState(chattingNotificationCntState);
 
   const [chatting, setChatting] = useState<chattingProps[]>([]);
@@ -56,7 +53,8 @@ function ChattingListScreen() {
       setChatting(_chatting);
     });
     return unsubscribe;
-  }, [navigation, myInfo.u_id, setChattingNotificationCnt]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const renderEmpty = () => {
     return (
       <>
