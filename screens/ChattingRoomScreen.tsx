@@ -17,6 +17,7 @@ import {default as Text} from '../components/common/DabadaText';
 import {comma, updateProductField} from '../utils/products';
 import moment from 'moment-timezone';
 import {FIREBASE_API_KEY} from '../components/common/FirebaseInfo';
+import events from '../utils/events';
 
 const database = db().ref('chatting');
 type ChattingRoomScreenProps = StackScreenProps<RootStackParamList, 'ChattingRoomScreen'>;
@@ -121,16 +122,10 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     let readCnt = 0;
     if (oldChattingData?.c_from_id !== myInfo.u_id) {
       readCnt = oldChattingData?.c_to_not_read_cnt || 0;
-
+      setChattingNotificationCnt(prevCnt => prevCnt - readCnt);
       updateChatting(chattingId, {c_to_online: isOnline, c_to_not_read_cnt: 0});
     } else {
       readCnt = oldChattingData?.c_from_not_read_cnt || 0;
-
-      console.log('readCnt2', oldChattingData);
-      setChattingNotificationCnt(prevCnt => {
-        console.log('prevCnt', prevCnt);
-        return prevCnt - readCnt;
-      });
       setChattingNotificationCnt(prevCnt => prevCnt - readCnt);
       updateChatting(chattingId, {c_from_online: isOnline, c_from_not_read_cnt: 0});
     }
@@ -164,44 +159,44 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /* 채팅 저장 */
-  const addNewChattingInfo = useCallback(
-    async (message: chatMessageProps, newChattingId: string) => {
-      const sellerInfo = await getUserInfo(product?.u_id);
+  const addNewChattingInfo = async (message: chatMessageProps, newChattingId: string) => {
+    const sellerInfo = await getUserInfo(product?.u_id);
 
-      if (!sellerInfo) {
-        return;
-      }
-      const chatting = {
-        c_id: newChattingId,
-        c_from_id: myInfo.u_id,
-        c_from_nickname: myInfo.u_nickname,
-        c_from_photoUrl: myInfo.u_photoUrl ? myInfo.u_photoUrl : '',
-        c_to_id: product?.u_id,
-        c_to_nickname: sellerInfo.u_nickname,
-        c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
-        c_product: product,
-        c_lastMessage: message.text,
-        c_regdate: moment().format('YYYY-MM-DD HH:mm:ss'),
-        c_product_state: CHAT_PRODUCT_STATE.SELL,
-      };
+    if (!sellerInfo) {
+      return;
+    }
+    const chatting = {
+      c_id: newChattingId,
+      c_from_id: myInfo.u_id,
+      c_from_nickname: myInfo.u_nickname,
+      c_from_photoUrl: myInfo.u_photoUrl ? myInfo.u_photoUrl : '',
+      c_to_id: product?.u_id,
+      c_to_nickname: sellerInfo.u_nickname,
+      c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
+      c_to_not_read_cnt: 1,
+      c_product: product,
+      c_lastMessage: message.text,
+      c_regdate: moment().format('YYYY-MM-DD HH:mm:ss'),
+      c_product_state: CHAT_PRODUCT_STATE.SELL,
+    };
 
-      const chattingInfo: chattingStateProps = {
-        ...chatting,
-        c_messages: [message],
-      };
-      setMessages(prevMessages => [message, ...prevMessages]);
+    const chattingInfo: chattingStateProps = {
+      ...chatting,
+      c_messages: [message],
+    };
+    setMessages(prevMessages => [message, ...prevMessages]);
 
-      setChattingStateInfo(prevChattingInfo => {
-        const newChattingInfo = [...prevChattingInfo, chattingInfo];
-        storeChattingData({...newChattingInfo});
-        return newChattingInfo;
-      });
-      createChatting(chatting);
+    setChattingStateInfo(prevChattingInfo => {
+      const newChattingInfo = [...prevChattingInfo, chattingInfo];
+      storeChattingData({...newChattingInfo});
+      return newChattingInfo;
+    });
+    createChatting(chatting);
 
-      updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_chat', filteredChattingState[0]?.c_product.p_chat + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
-    },
-    [filteredChattingState, myInfo.u_id, myInfo.u_nickname, myInfo.u_photoUrl, product, setChattingStateInfo],
-  );
+    let chatCnt = (product ? product.p_chat : filteredChattingState[0]?.c_product.p_chat) || 0;
+    updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_chat', chatCnt + 1); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
+    events.emit('updateProduct', product ? product.p_id : filteredChattingState[0]?.c_product.p_id, {...(product ? product : filteredChattingState[0]?.c_product), p_chat: chatCnt + 1});
+  };
 
   const storeChattingData = async (value: chattingStateProps[]) => {
     try {
@@ -274,7 +269,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       console.log('current_chatting', currentChattingInfo);
       if (currentChattingInfo?.c_from_id === myInfo.u_id && !currentChattingInfo.c_to_online) {
         updChattingInfo.c_to_not_read_cnt = readCnt + 1;
-
         setSendMessageCount(readCnt + 1);
         updateChatting(chattingId, updChattingInfo);
       } else if (currentChattingInfo?.c_to_id === myInfo.u_id && !currentChattingInfo.c_from_online) {
@@ -320,13 +314,26 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   };
 
   const onChangeProductState = (state: number) => {
-    console.log('채팅 제품', filteredChattingState[0]?.c_product);
+    let buyId = '';
+
+    if (filteredChattingState[0]?.c_from_id === myInfo.u_id) {
+      buyId = filteredChattingState[0]?.c_to_id;
+    } else {
+      buyId = filteredChattingState[0]?.c_from_id;
+    }
 
     const updChattingInfo: updateChattingProps = {c_product: {...filteredChattingState[0]?.c_product, p_status: state}, c_regdate: moment().format('YYYY-MM-DD HH:mm:ss')};
     console.log('onChangeStatus', state);
     updateChatting(chattingId, updChattingInfo);
     updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_status', state); // p_view 조회수 카운터 증가 내역을 Firestore에 반영
-    updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_buyer_id', filteredChattingState[0]?.c_product.u_id);
+    if (state === 3) {
+      updateProductField(product ? product.p_id : filteredChattingState[0]?.c_product.p_id, 'p_buyer_id', buyId);
+    }
+    console.log('p_id: ', product ? product.p_id : filteredChattingState[0]?.c_product.p_id);
+    console.log('product: ', product ? product.p_id : filteredChattingState[0]?.c_product.p_id);
+
+    events.emit('updateProduct', product ? product.p_id : filteredChattingState[0]?.c_product.p_id, {...(product ? product : filteredChattingState[0]?.c_product), p_status: state, p_buyer_id: state === 3 ? buyId : ''});
+
     setCurrentProductState(state);
   };
 
@@ -349,7 +356,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       //p_buy_available = false;
       break;
   }
-
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={styles.touchFlex} behavior="padding">
@@ -385,6 +391,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           onSend={message => {
             sendMessage(message);
           }}
+          textInputStyle={{color: '#000000'}}
           user={{
             _id: myInfo.u_id,
             name: myInfo.u_nickname,
@@ -439,6 +446,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     width: '100%',
+    color: '#000000',
   },
   bold1: {marginTop: 16, marginLeft: 16, fontSize: 18, fontWeight: 'bold', color: '#039DF4'},
   bold2: {fontSize: 18, fontWeight: 'bold'},
