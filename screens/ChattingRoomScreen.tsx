@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {GiftedChat, IMessage, User} from 'react-native-gifted-chat';
 import db from '@react-native-firebase/database';
-import {View, StyleSheet, Image, KeyboardAvoidingView} from 'react-native';
+import {View, StyleSheet, Image, KeyboardAvoidingView, Dimensions} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authInfoState} from '../recoil/authInfoAtom';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
@@ -35,7 +35,10 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const myInfo = useRecoilValue(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
 
-  const [filteredChattingState, setFilteredChattingState] = useState<chattingStateProps[]>([]);
+  //const [filteredChattingState, setFilteredChattingState] = useState<chattingStateProps[]>([]);
+  //const [filteredChattingState, setFilteredChattingState] = useState<chattingStateProps[]>([]);
+  let filteredChattingState: chattingStateProps[] = chattingStateInfo.filter(chatting => chatting.c_id === chattingId);
+
   const [messages, setMessages] = useState<IMessage[]>(filteredChattingState.length > 0 ? [...filteredChattingState[0].c_messages] : []);
   const [currentProductState, setCurrentProductState] = useState(product ? product.p_status : filteredChattingState.length > 0 ? filteredChattingState[0]?.c_product.p_status : 1);
   const saveInitChattingData = useCallback(
@@ -140,13 +143,23 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
-  useEffect(() => {
-    const currentChattingData = chattingStateInfo.filter(chatting => chatting.c_id === chattingId);
-    if (chattingStateInfo && chattingStateInfo.length > 0) {
-      setFilteredChattingState(currentChattingData);
-    }
+  if (filteredChattingState.length > 0) {
+    navigation.setOptions({
+      title: filteredChattingState[0]?.c_from_id === myInfo.u_id ? filteredChattingState[0]?.c_from_nickname : filteredChattingState[0]?.c_to_nickname,
+    });
+  }
 
+  useEffect(() => {
     if (chattingId) {
+      // const currentChattingData = chattingStateInfo.filter(chatting => chatting.c_id === chattingId);
+      // if (chattingStateInfo && chattingStateInfo.length > 0) {
+      // setFilteredChattingState(currentChattingData);
+
+      //  filteredChattingState = currentChattingData;
+      //   navigation.setOptions({
+      //     title: currentChattingData[0]?.c_from_id === myInfo.u_id ? currentChattingData[0]?.c_from_nickname : currentChattingData[0]?.c_to_nickname,
+      //   });
+      // }
       initChattingData();
       updateIsOnline(true);
     }
@@ -170,6 +183,8 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       c_from_id: myInfo.u_id,
       c_from_nickname: myInfo.u_nickname,
       c_from_photoUrl: myInfo.u_photoUrl ? myInfo.u_photoUrl : '',
+      c_from_online: true,
+      c_to_online: false,
       c_to_id: product?.u_id,
       c_to_nickname: sellerInfo.u_nickname,
       c_to_photoUrl: sellerInfo.u_photoUrl ? sellerInfo.u_photoUrl : '',
@@ -356,6 +371,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       //p_buy_available = false;
       break;
   }
+  console.log('chatting product', filteredChattingState[0]?.c_product);
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={styles.touchFlex} behavior="padding">
@@ -391,7 +407,10 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           onSend={message => {
             sendMessage(message);
           }}
-          textInputStyle={{color: '#000000'}}
+          textInputProps={{
+            color: '#000000',
+            width: Dimensions.get('window').width - 50,
+          }}
           user={{
             _id: myInfo.u_id,
             name: myInfo.u_nickname,
