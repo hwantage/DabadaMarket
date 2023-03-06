@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     border: 'none',
     textAlignVertical: 'top',
+    color: '#000000',
   },
   bold1: {fontSize: 16, fontWeight: 'bold', color: '#898989'},
   bold2: {fontSize: 20, fontWeight: 'bold'},

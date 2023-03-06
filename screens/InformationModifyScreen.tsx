@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     lineHeight: 70,
     marginRight: 4,
+    color: '#b9b9b9',
   },
   photoNum: {
     position: 'absolute',
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     border: 'none',
     textAlignVertical: 'top',
+    color: '#000000',
   },
   chkTxt: {
     textDecorationLine: 'none',

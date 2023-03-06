@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#dfdfdf',
     borderBottomWidth: 1,
     borderBottomColor: '#dfdfdf',
+    color: '#000000',
   },
   imageBox: {
     alignItems: 'flex-start',
@@ -259,6 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     border: 'none',
     textAlignVertical: 'top',
+    color: '#000000',
   },
   chkTxt: {
     textDecorationLine: 'none',
