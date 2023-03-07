@@ -38,7 +38,7 @@ function Product({product}: ProductProps) {
     if (product.p_status === 1 || product.p_status === 2) {
       setCanBuy(true);
     }
-  }, [product, product.p_status, setUserAvatar]);
+  }, [product.p_status, setUserAvatar]);
 
   const goChattingScreen = () => {
     navigation.push('ChattingRoomScreen', {product});
