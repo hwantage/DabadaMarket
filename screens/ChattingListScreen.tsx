@@ -6,6 +6,7 @@ import {useRecoilState, useSetRecoilState} from 'recoil';
 import {chattingProps, getChatting} from '../utils/chatting';
 import firestore from '@react-native-firebase/firestore';
 import {chattingNotificationCntState} from '../recoil/chattingAtom';
+import moment from 'moment';
 
 const chattingCollection = firestore().collection('chatting');
 function ChattingListScreen() {
@@ -31,6 +32,11 @@ function ChattingListScreen() {
         if (isChanged) {
           getChatting(myInfo.u_id).then(_chatting => {
             let cnt = 0;
+            _chatting.sort((a, b) => {
+              let dateDiff = moment(b?.c_regdate).diff(a?.c_regdate);
+              return dateDiff;
+            });
+
             _chatting.map(chattingInfo => {
               if (myInfo.u_id === chattingInfo.c_from_id) {
                 cnt += chattingInfo.c_from_not_read_cnt ? chattingInfo.c_from_not_read_cnt : 0;
@@ -50,6 +56,10 @@ function ChattingListScreen() {
       },
     );
     getChatting(myInfo.u_id).then(_chatting => {
+      _chatting.sort((a, b) => {
+        let dateDiff = moment(b?.c_regdate).diff(a?.c_regdate);
+        return dateDiff;
+      });
       setChatting(_chatting);
     });
     return unsubscribe;

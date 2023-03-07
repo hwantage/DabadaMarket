@@ -26,7 +26,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const {p_id, c_id, product} = route.params;
   const [chattingStateInfo, setChattingStateInfo] = useRecoilState(chattingInfoState);
   const setChattingNotificationCnt = useSetRecoilState(chattingNotificationCntState);
-
   const findChatInfoByProduct = product && chattingStateInfo && chattingStateInfo.length > 0 ? chattingStateInfo.filter(chat => chat?.c_product?.p_id === product?.p_id) : [];
 
   const [chattingId, setChattingId] = useState(findChatInfoByProduct.length > 0 ? findChatInfoByProduct[0]?.c_id : c_id);
@@ -35,8 +34,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
   const myInfo = useRecoilValue(authInfoState);
   const navigation = useNavigation<StackNavigationProp<any>>();
 
-  //const [filteredChattingState, setFilteredChattingState] = useState<chattingStateProps[]>([]);
-  //const [filteredChattingState, setFilteredChattingState] = useState<chattingStateProps[]>([]);
   let filteredChattingState: chattingStateProps[] = chattingStateInfo.filter(chatting => chatting.c_id === chattingId);
 
   const [messages, setMessages] = useState<IMessage[]>(filteredChattingState.length > 0 ? [...filteredChattingState[0].c_messages] : []);
@@ -64,7 +61,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       setChattingStateInfo(prevChattingInfo => {
         const findChattingInfo = prevChattingInfo.filter(chatInfo => chatInfo.c_id === chattingId);
 
-        //return prevChattingInfo;
         if (findChattingInfo && findChattingInfo.length > 0) {
           let findIndex = -1;
           let copyChattingInfo = [...prevChattingInfo];
@@ -98,7 +94,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
 
       snapshot.forEach(data => {
         const serverData = data.val();
-        console.log('CHILD', serverData);
         const message = {
           _id: data.key || '',
           text: serverData.text,
@@ -143,23 +138,16 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
     }
   };
 
-  if (filteredChattingState.length > 0) {
-    navigation.setOptions({
-      title: filteredChattingState[0]?.c_from_id === myInfo.u_id ? filteredChattingState[0]?.c_from_nickname : filteredChattingState[0]?.c_to_nickname,
-    });
-  }
+  useEffect(() => {
+    if (filteredChattingState.length > 0) {
+      navigation.setOptions({
+        title: filteredChattingState[0]?.c_from_id === myInfo.u_id ? filteredChattingState[0]?.c_to_nickname : filteredChattingState[0]?.c_from_nickname,
+      });
+    }
+  }, [filteredChattingState, myInfo.u_id, navigation]);
 
   useEffect(() => {
     if (chattingId) {
-      // const currentChattingData = chattingStateInfo.filter(chatting => chatting.c_id === chattingId);
-      // if (chattingStateInfo && chattingStateInfo.length > 0) {
-      // setFilteredChattingState(currentChattingData);
-
-      //  filteredChattingState = currentChattingData;
-      //   navigation.setOptions({
-      //     title: currentChattingData[0]?.c_from_id === myInfo.u_id ? currentChattingData[0]?.c_from_nickname : currentChattingData[0]?.c_to_nickname,
-      //   });
-      // }
       initChattingData();
       updateIsOnline(true);
     }
@@ -371,7 +359,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
       //p_buy_available = false;
       break;
   }
-  console.log('chatting product', filteredChattingState[0]?.c_product);
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={styles.touchFlex} behavior="padding">
@@ -380,7 +367,7 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
           <View style={styles.infoRow}>
             <View style={styles.flex2}>
               <Text numberOfLines={1} style={styles.text}>
-                제품명: {product ? product.p_title : filteredChattingState[0]?.c_product?.p_title}
+                {product ? product.p_title : filteredChattingState[0]?.c_product?.p_title}
               </Text>
             </View>
             <View style={styles.flex3}>
@@ -415,7 +402,6 @@ function ChattingRoomScreen({route}: ChattingRoomScreenProps) {
             _id: myInfo.u_id,
             name: myInfo.u_nickname,
           }}
-          // renderSystemMessage={onRenderSystemMessage}
           placeholder="message 입력"
           onPressAvatar={onPressAvatar}
         />
@@ -447,8 +433,6 @@ const styles = StyleSheet.create({
   flex2: {flex: 0.55},
   flex3: {flex: 0.45},
   row: {
-    //paddingTop: 10,
-    // textAlign: 20,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -474,7 +458,6 @@ const styles = StyleSheet.create({
   dot: {paddingHorizontal: 4, marginTop: 8},
   text: {
     fontSize: 14,
-    //color: '#039DF4',
     marginLeft: 6,
   },
   imageBox: {
