@@ -59,6 +59,16 @@ function LoginScreen() {
     moment.locale(lang);
   };
 
+  const onSubmitGuest = async () =>{
+    setLoading(true);
+    const {user} = await login('guest@gmail.com', 'guest1234');
+    const userInfo = await getUserInfo(user.uid);
+    setAuthInfo(userInfo);
+    setLanguage(userInfo.u_lang);
+    getChattingData(user.uid);
+    setLoading(false);
+  }
+
   const onSubmit = async () => {
     Keyboard.dismiss();
 
@@ -152,6 +162,7 @@ function LoginScreen() {
                   </View>
                   */}
                   <DabadaButton title={t('common.login', '로그인')} hasMarginBottom={false} onPress={onSubmit} />
+                  <DabadaButton title={t('common.guestlogin', '게스트 로그인')} theme="secondary" hasMarginBottom={false} onPress={onSubmitGuest} />
                   <DabadaButton
                     title={t('common.join', '사용자 등록')}
                     theme="secondary"

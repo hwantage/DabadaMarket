@@ -28,6 +28,7 @@
     "password": "비밀번호",
     "passwordConfirm": "비밀번호 확인",
     "login": "로그인",
+    "guestlogin": "게스트 로그인",
     "join": "사용자 등록",
     "fail": "실패",
     "alert": "알림",
