@@ -59,7 +59,7 @@ function LoginScreen() {
     moment.locale(lang);
   };
 
-  const onSubmitGuest = async () =>{
+  const onSubmitGuest = async () => {
     setLoading(true);
     const {user} = await login('guest@gmail.com', 'guest1234');
     const userInfo = await getUserInfo(user.uid);
@@ -67,7 +67,7 @@ function LoginScreen() {
     setLanguage(userInfo.u_lang);
     getChattingData(user.uid);
     setLoading(false);
-  }
+  };
 
   const onSubmit = async () => {
     Keyboard.dismiss();
