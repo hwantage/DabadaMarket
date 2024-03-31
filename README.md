@@ -108,3 +108,13 @@
 
 ## Google Play Store 출시 현황
 [안드로이드 마켓](https://play.google.com/store/apps/details?id=com.dabadamarket&pcampaignid=web_share)
+
+## 케릭터 디자인 by 김시윤(초등학교 4학년 아들)
+![bada1](https://github.com/hwantage/DabadaMarket/assets/82494320/b5cb4b4e-dc43-43c0-a2f0-f222518aeaff)
+![bada2](https://github.com/hwantage/DabadaMarket/assets/82494320/5c3c2664-778d-4a86-aa9f-79bd26f8ad0a)
+![bada3](https://github.com/hwantage/DabadaMarket/assets/82494320/9aa5654d-3310-4890-af3d-8916bb6c0e73)
+![bada4](https://github.com/hwantage/DabadaMarket/assets/82494320/8bd9f681-c8e9-43a5-ba08-4fd9eba85f55)
+![bada5](https://github.com/hwantage/DabadaMarket/assets/82494320/999949cd-f091-439d-a4dd-76b4a67c1be3)
+![bada6](https://github.com/hwantage/DabadaMarket/assets/82494320/8afb82f9-4239-435d-b7eb-8a0ed80c3897)
+![bada7](https://github.com/hwantage/DabadaMarket/assets/82494320/1b03e74a-9f8d-4c57-aa2a-299e6ceeefef)
+![bada8](https://github.com/hwantage/DabadaMarket/assets/82494320/4385477b-0dd3-4028-bd96-9ff371253e7b)
