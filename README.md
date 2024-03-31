@@ -12,6 +12,12 @@
 심지어는 그냥 드립니다. 술이나 한잔 사세요!
 친구, 친척, 아는 지인들에게는 더 싸게 파는 성향을 반영하여 같은 직장, 같은 건물 등 소규모 집단내에서 손쉽게 판매할 수 있는 플랫폼
 
+주요 기능
+* 그냥바다 : 나눔
+* 한잔바다 : 커피한잔? 소주한잔?
+* 몰래바다 : 선착순나눔
+* 현금바다 : 현금 거래
+
 ## **Installation**
 
 <pre>
@@ -95,3 +101,10 @@
 ## 앱 스택 네비게이션 구조
 
 ![image](https://user-images.githubusercontent.com/82494320/221725076-025362ac-aafd-40a3-a1e6-a4e1c74cf916.png)
+
+
+## 개발 노트
+[개발노트](https://eastern-marsupial-00a.notion.site/aa1d255b85604a5f8537a18b2c900d4a)
+
+## Google Play Store 출시 현황
+[안드로이드 마켓](https://play.google.com/store/apps/details?id=com.dabadamarket&pcampaignid=web_share)
